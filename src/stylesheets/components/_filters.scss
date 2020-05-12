@@ -1,0 +1,50 @@
+@include media-breakpoint-up(sm) {
+  .search-filters {
+    max-width: 340px;
+    padding-right: .5rem;
+    position: sticky;
+    top: calc(56px + 1rem);
+    width: 340px;
+    height: 80vh;
+  }
+
+  .filters-display-container {
+    flex-direction: row;
+    top: 0;
+  }
+
+  .search-display {
+    min-width: 220px;
+  }
+
+  .show-when-small {
+    display: none;
+  }
+
+  .show-when-big {
+    display: block;
+  }
+}
+
+@include media-breakpoint-down(xs) {
+  .search-filters {
+    padding-top: 1rem;
+    width: 100%;
+  }
+
+  .search-filters-invisible {
+    display: none;
+  }
+
+  .filters-display-container {
+    flex-direction: column;
+  }
+
+  .show-when-small {
+    display: block;
+  }
+
+  .show-when-big {
+    display: none;
+  }
+}

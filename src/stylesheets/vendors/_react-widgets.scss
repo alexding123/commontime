@@ -1,0 +1,65 @@
+.react-toggle {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.rw-multiselect-taglist {
+  display: inline;
+}
+
+.rw-multiselect {
+  .rw-input-reset {
+    padding: 10 0;
+    width: calc(100%-20px);
+  }
+}
+
+@include media-breakpoint-down(xs) {
+  .rdrCalendarWrapper {
+    &.rdrDateRangeWrapper {
+      width: 100%;
+    }
+  }
+}
+
+.rdrMonths {
+  &.rdrMonthsVertical {
+    align-self: center;
+  }
+}
+
+/// i'm sorrrrry but react-widgets hardcodes colors
+.rdrDayStartPreview, .rdrDayEndPreview, .rdrDayInPreview, .rdrDateDisplay {
+  color: $color-secondary !important;
+}
+
+.rdrDayToday {
+  .rdrDayNumber {
+    ::after {
+      background: $color-secondary !important;
+    }
+  }
+}
+
+.rdrStartEdge, .rdrEndEdge, .rdrInRange {
+  background: $color-secondary !important;
+}
+
+.rw-multiselect-tag {
+  background-color: $color-secondary;
+  border: 0;
+  color: $white;
+}
+
+.rw-state-focus {
+  .rw-widget-container {
+    border-color: $color-secondary !important;
+    box-shadow: 0 0 8px rgba($color-secondary, .6) !important;
+  }
+}
+
+.rw-list-option {
+  &.rw-state-focus {
+    border-color: $color-secondary !important;
+  }
+}

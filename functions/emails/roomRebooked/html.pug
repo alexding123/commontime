@@ -1,0 +1,13 @@
+doctype html
+html(lang='en')
+  head
+    title Your room has been rebooked by a teacher
+  body
+    div
+      p 
+        | Your booking of #{roomName} for #{periodName} on #{date} has been overwritten by a teacher, #{byName}.
+  footer
+    p 
+      | You're receiving this email because of your Commontime email settings. To change it, visit your 
+      a(href=`${baseUrl}/Profile`) profile page
+      |.

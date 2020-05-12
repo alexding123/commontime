@@ -1,0 +1,64 @@
+// -----------------------------------------------------------------------------
+// This file contains very basic styles.
+// -----------------------------------------------------------------------------
+
+/**
+ * Set up a decent box model on the root element
+ */
+html {
+  box-sizing: border-box;
+}
+
+/**
+ * Make all elements from the DOM inherit from the parent box-sizing
+ * Since `*` has a specificity of 0, it does not override the `html` value
+ * making all elements inheriting from the root box-sizing value
+ * See: https://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/
+ */
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+/**
+ * Basic styles for links
+ */
+a {
+  @include on-event {
+    color: darken($color-tertiary, 75%);
+    text-decoration: underline;
+  }
+
+  color: $color-secondary;
+  text-decoration: none;
+}
+
+/**
+ * React default styles
+ */
+body {
+  background-color: $color-tertiary;
+  margin: 0;
+  min-height: 100vh;
+}
+
+code {
+  font-family: $code-font-stack;
+}
+
+.main {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 2rem;
+  width: 100%;
+}
+
+.inline-link {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+}

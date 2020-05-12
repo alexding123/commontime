@@ -1,0 +1,63 @@
+// -----------------------------------------------------------------------------
+// This file contains all application-wide Sass variables.
+// -----------------------------------------------------------------------------
+
+
+
+
+
+/// Regular font family
+/// @type List
+$text-font-stack: 'Open Sans', 'Helvetica Neue Light', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif !default;
+
+/// Code (monospace) font family
+/// @type List
+$code-font-stack: 'Courier New', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Monaco', monospace !default;
+
+
+
+// $color-primary: #d32f2f;
+// $color-secondary: #669db3;
+// $color-tertiary: #f0f6f7;
+// $color-quaternary: #ab9c94;
+// $color-quinary: #3a4f56;
+
+$color-primary: #3a4f56;
+$color-secondary: #d32f2f;
+$color-tertiary: #eef5f7;
+$color-quaternary: #377d90;
+$color-quinary: #253338;
+
+
+/// Copy text color
+/// @type Color
+$text-color: rgb(34, 34, 34) !default;
+
+/// Main brand color
+/// @type Color
+$brand-color: $color-primary !default;
+
+/// White
+/// @type Color
+$white: rgb(255, 255, 255) !default;
+
+/// Light grey
+/// @type Color
+$light-grey: rgb(237, 237, 237) !default;
+
+/// Medium grey
+/// @type Color
+$mid-grey: rgb(153, 153, 153) !default;
+
+/// Dark grey
+/// @type Color
+$dark-grey: rgb(68, 68, 68) !default;
+
+/// Black
+/// @type Color
+$black: rgb(0, 0, 0) !default;
+
+/// Container's maximum width
+/// @type Length
+$max-width: 1180px !default;
+

@@ -1,0 +1,18 @@
+doctype html
+html(lang='en')
+  head
+    title You have been added to a meeting
+  body
+    div
+      p 
+        | #{creatorName} has added you to a meeting on #{dayName} #{periodName}, #{dateName}
+        if roomName
+          | , in #{roomName}
+        |, for #{name}.
+      p
+        | An event has been created in your Commontime Calendar to mark the meeting. 
+  footer
+    p 
+      | You're receiving this email because of your Commontime email settings. To change it, visit your 
+      a(href=`${baseUrl}/Profile`) profile page
+      |.

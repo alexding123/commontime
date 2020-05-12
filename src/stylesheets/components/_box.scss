@@ -1,0 +1,44 @@
+.box {
+  border: 1px solid $dark-grey;
+  padding: 8px 10px 10px;
+  position: relative;
+  text-align: center;
+  width: 180px;
+}
+
+.box-bottom {
+  bottom: 0;
+  font-size: 12px;
+  position: absolute;
+}
+
+.left {
+  left: 4px;
+}
+
+.right {
+  right: 4px;
+}
+
+.box-top {
+  font-size: 12px;
+  position: absolute;
+  top: 0;
+
+  .right {
+    right: 0;
+  }
+}
+
+.box-special {
+  background-color: $color-secondary;
+  color: $white;
+
+  .btn-link {
+    @extend %btn-link-secondary;
+  }
+}
+
+.box-normal {
+  background-color: $white;
+}

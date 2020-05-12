@@ -1,0 +1,54 @@
+$theme-colors: (
+  'primary': $color-secondary,
+  'secondary': $color-tertiary,
+  'info': $color-quaternary,
+);
+
+.navbar {
+  background-color: $color-primary;
+  min-height: 56px;
+}
+
+%btn-link-secondary {
+  color: $color-tertiary;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.nav-link {
+  border-color: #dee2e6 #dee2e6 #dee2e6;
+}
+
+.tabs-heading {
+  color: $color-quinary;
+}
+
+.dropdown-menu {
+  &.show {
+    left: auto;
+    right: -15px;
+  }
+}
+
+.nav-link-icon {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  top: 0;
+}
+
+@import '~bootstrap/scss/bootstrap';
+
+.card-header {
+  background-color: $color-secondary;
+  color: $white;
+}
+
+.card {
+  background-color: none;
+}
+
+.list-group-item {
+  background-color: $white;
+}

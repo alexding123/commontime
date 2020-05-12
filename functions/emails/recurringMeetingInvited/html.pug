@@ -1,0 +1,20 @@
+doctype html
+html(lang='en')
+  head
+    title You have been invited to a recurring meeting
+  body
+    div
+      p 
+        | #{creatorName} has invited you to a weekly meeting on #{dayName} #{periodName}
+        if roomName
+          | , in #{roomName}
+        |, for #{name}.
+      p
+        | Click 
+        a(href=`${base}/Invitation/${invitationID}`) here
+        |  to accept or decline the invitation. Accepting will create events in your Google Calendar to mark this weekly meeting.
+  footer
+    p 
+      | You're receiving this email because of your Commontime email settings. To change it, visit your 
+      a(href=`${baseUrl}/Profile`) profile page
+      |.
