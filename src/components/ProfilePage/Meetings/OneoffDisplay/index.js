@@ -15,7 +15,7 @@ const OneoffDisplay = ({instances}) => {
     </div>
   }
   return (<div className="mt-2">
-    { Object.entries(instances).map(([key, instance]) => 
+    { Object.entries(instances).filter(([key, instance]) => instance).map(([key, instance]) => 
       <InstanceDisplay instance={instance} instanceID={key} key={key}/>
     )}
   </div>)

@@ -38,8 +38,6 @@ $theme-colors: (
   top: 0;
 }
 
-@import '~bootstrap/scss/bootstrap';
-
 .card-header {
   background-color: $color-secondary;
   color: $white;
@@ -52,3 +50,5 @@ $theme-colors: (
 .list-group-item {
   background-color: $white;
 }
+
+@import '~bootstrap/scss/bootstrap';

@@ -15,7 +15,7 @@ const RecurringDisplay = ({recurrings}) => {
     </div>
   }
   return (<div className="mt-2">
-    { Object.entries(recurrings).map(([key, recurring]) => 
+    { Object.entries(recurrings).filter(([key, recurring]) => recurring).map(([key, recurring]) => 
       <InstanceDisplay recurring={recurring} recurringID={key} key={key}/>
     )}
   </div>)
