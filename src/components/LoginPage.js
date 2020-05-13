@@ -7,8 +7,6 @@ import { compose } from 'recompose'
 import { login } from '../actions/authActions'
 
 const LoginPage = ({ login, auth, location, error}) => {
-
-
   if (!isEmpty(auth)) {
     const { from } = location.state || { from : { pathname: "/"}}
     return <Redirect to={from}/>

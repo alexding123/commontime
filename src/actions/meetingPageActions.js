@@ -39,7 +39,7 @@ export const addInstanceAndInvite = (instance, values) => {
   return (dispatch, getState, {getFirebase, getFirestore}) => {
     const state = getState()
     const profile = state.firebase.profile
-    const { startDate, endDate } = getPeriodTimes(state, instance.date, instance.period)
+    const { startDate, endDate } = getPeriodTimes(state, new Date(instance.date), instance.period)
     const db = getFirestore()
     db.collection('instances').add({
       creator: profile.id,

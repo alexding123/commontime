@@ -27,6 +27,7 @@ const enhance = compose(
     people: state.meetingPage.people,
     rooms: state.firestore.data.rooms,
     periods: state.firestore.data.periods,
+    instances: `bookOneOff${state.meetingPage.oneoffInstance.period}${state.meetingPage.oneoffInstance.date}Instances`
   }), {
     addInstanceAndInvite,
     addInstanceAndNotify,

@@ -14,6 +14,7 @@ function PrivateRoute({ children, ...rest }) {
           children
         ) : (
           <Redirect
+            from="*"
             to={{
               pathname: "/Login",
               state: { from: location }

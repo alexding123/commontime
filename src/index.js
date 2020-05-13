@@ -10,7 +10,7 @@ import App from './components/App'
 import { setupFB } from "./firebase"
 import configureStore from './store/configureStore'
 import { ConnectedRouter } from 'connected-react-router'
-import { Router  } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import history from './store/history'
 import * as serviceWorker from './serviceWorker'
 
@@ -19,11 +19,11 @@ const render = (Component) => {
   ReactDOM.render(
     <Provider store={store}>
       <ConnectedRouter history={history}>
-      <Router history={history}>
+      <BrowserRouter>
         <ReactReduxFirebaseProvider {...setupFB(store)}>
           <Component/>
         </ReactReduxFirebaseProvider>
-      </Router>
+      </BrowserRouter>
       </ConnectedRouter>
     </Provider>,
     document.getElementById('root')
@@ -34,8 +34,6 @@ render(App)
 
 if (module.hot && process.env.NODE_ENV !== 'production') 
 {
-  console.log(module.hot)
-  console.log("HOT")
   module.hot.accept('./components/App', () => {
     const NextApp = require('./components/App').default;
     render(NextApp)

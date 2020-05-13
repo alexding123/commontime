@@ -3,9 +3,9 @@ import { compose, withProps } from 'recompose'
 import { connect } from 'react-redux'
 import Filters from './Filters'
 import Display from './Display'
-import { Button } from 'react-bootstrap'
+import { Button, Alert } from 'react-bootstrap'
 import { toggleShowFilters } from '../../../actions/bookPageActions'
-import { firestoreConnect, isLoaded } from 'react-redux-firebase'
+import { firestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase'
 import SplashScreen from '../../SplashScreen'
 import date from 'date-and-time'
 
@@ -23,6 +23,8 @@ const BookRoom = ({showFilters, toggleShowFilters, rooms, periods, profile, inst
         <Filters/>
       </div>
       <div className="search-display flex-grow-1 pb-2">
+        { isEmpty(profile) ? 
+          <Alert variant="danger">Currently, we display a list of free rooms for each period. You must log in to book these rooms. </Alert> : null }
         <Display/>
       </div>
     </div>

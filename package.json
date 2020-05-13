@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@craco/craco": "^5.6.4",
     "@material-ui/core": "^4.9.7",
     "@material-ui/icons": "^4.9.1",
     "@testing-library/jest-dom": "^4.2.4",
@@ -40,9 +41,9 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -67,8 +68,5 @@
     "redux-logger": "^3.0.6",
     "webpack-bundle-analyzer": "^3.7.0",
     "why-did-you-update": "^1.0.8"
-  },
-  "resolutions": {
-    "babel-preset-react-app": "npm:babel-preset-react-app-with-rhl"
   }
 }
