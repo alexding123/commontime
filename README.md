@@ -1,68 +1,51 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Quote of the Week
 
-## Available Scripts
+This is the source code of [Commonwealth School](https://www.commschool.org/)'s scheduling app/website.
 
-In the project directory, you can run:
+It is built using React.js and Redux with a Google Firebase backend.
 
-### `npm start`
+## Getting Started
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Requirements
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+First of all, if you want to contribute to the project, contact a current developer to add you the as a collaborator to the Firebase project.
 
-### `npm test`
+Install [Node.js](https://nodejs.org/en/download/), and use it to install React by running
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```npm install -g create-react-app```
 
-### `npm run build`
+Install the firebase CLI by running
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```npm install -g firebase-tools```
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+Then sign into Firebase using your Google account by running
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```firebase login```
 
-### `npm run eject`
+Make sure that you're signing in with the Google account that has edit access to the Firebase project.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Clone this repository and cd into it. Install the npm packages for both the root directory (for the frontend) and the `functions` directory.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```npm install && cd functions && npm install```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Now that you're in the `functions` directory, run
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```firebase functions:config:get > .runtimeconfig.json```
 
-## Learn More
+to clone the environmental variables set on the cloud to your local machine for development.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Local Development
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+My preferred setup is to have two shells open to the root directory of the project. On one, run `npm start` for the React development server. On another, run `firebase emulators:start --only functions` to start the Firebase function emulators.
 
-### Code Splitting
+You may access the [Firebase cloud console](https://console.firebase.google.com/) to play with the database.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+**Please remember**: since the Firebase Firestore emulator is not well-supported yet, the local environment directly uses the production Cloud Firestore.
 
-### Analyzing the Bundle Size
+To deploy the build, simply run
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+```firebase deploy```
 
-### Making a Progressive Web App
+## Code Structure
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+The website frontend's source code is in `src`, and the Firebase cloud functions code is available in `functions`. `public` provides some static files for React to build the website with.
