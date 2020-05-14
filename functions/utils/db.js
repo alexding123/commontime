@@ -43,7 +43,7 @@ exports.getInstance = (id) => {
 
 exports.getRecurring = (id) => {
   if (!id) return Promise.resolve({})
-  return db.collection('getRecurring').doc(id).get().then(snap => {
+  return db.collection('recurrings').doc(id).get().then(snap => {
     if (!snap.exists) {
       return Promise.resolve({})
     }

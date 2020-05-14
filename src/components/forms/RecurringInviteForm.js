@@ -19,7 +19,6 @@ const RecurringInviteForm = ({pristine, submitting, validated, instance, invitat
   <Form onSubmit={handleSubmit}>
     <Form.Group>
       <Field 
-        className="text-align-left"
         name="people"
         valueField='id'
         textField='name'

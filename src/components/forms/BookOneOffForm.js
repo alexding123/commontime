@@ -49,7 +49,6 @@ const BookOneOffForm = ({pristine, submitting, validated, isInvite, rooms, insta
           component={Control}
         /> :
         <Field
-          className="text-align-left"
           name="room"
           valueField='id'
           textField='name'

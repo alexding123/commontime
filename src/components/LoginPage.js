@@ -3,13 +3,14 @@ import { Alert, Button, Container } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { isEmpty } from 'react-redux-firebase'
 import { Redirect, withRouter } from 'react-router-dom'
+import { withLastLocation } from 'react-router-last-location'
 import { compose } from 'recompose'
 import { login } from '../actions/authActions'
 
-const LoginPage = ({ login, auth, location, error}) => {
+const LoginPage = ({ login, auth, lastLocation, error}) => {
   if (!isEmpty(auth)) {
-    const { from } = location.state || { from : { pathname: "/"}}
-    return <Redirect to={from}/>
+    console.log(lastLocation)
+    return <Redirect to={lastLocation}/>
   }
 
   return (
@@ -26,7 +27,7 @@ const LoginPage = ({ login, auth, location, error}) => {
 }
 
 const enhance = compose(
-  withRouter,
+  withLastLocation,
   connect(
     (state) => ({
       auth: state.firebase.auth,

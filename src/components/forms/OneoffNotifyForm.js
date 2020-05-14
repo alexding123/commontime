@@ -17,8 +17,7 @@ const OneoffNotifyForm = ({pristine, submitting, validated, instance, invitation
   return (
   <Form onSubmit={handleSubmit}>
     <Form.Group>
-      <Field 
-        className="text-align-left"
+      <Field         
         name="people"
         valueField='id'
         textField='name'

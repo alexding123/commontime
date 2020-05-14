@@ -48,7 +48,6 @@ const BookRecurringForm = ({pristine, submitting, validated, period, isInvite, r
           component={Control}
         /> :
         <Field
-          className="text-align-left"
           name="room"
           valueField='id'
           textField='name'

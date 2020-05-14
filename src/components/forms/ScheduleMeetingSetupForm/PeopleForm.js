@@ -20,7 +20,7 @@ const PeopleForm = ({pristine, submitting, validated, people, profile, handleSub
   return (
   <Form onSubmit={handleSubmit}>
     <h5>Who are meeting?</h5>
-    <Form.Group className="text-align-left">
+    <Form.Group>
       <Field
         name="people"
         textField="name"

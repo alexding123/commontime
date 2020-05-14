@@ -39,7 +39,7 @@ const InstanceDisplay = ({profile, recurring, recurringID, periods, rooms, invit
       </Col>
       <Col className="p-0 d-flex justify-content-end align-items-center">
         { isCreator ?
-          <OverlayTrigger trigger='click' rootClose={true} overlay={
+          <OverlayTrigger trigger='click' rootClose={true} placement="top-start" overlay={
             isNotify ? 
             notifyFunc(recurring, recurringID, handleNotifySubmit(recurringID)) : 
             inviteFunc(recurring, recurringID, handleInviteSubmit(recurring, recurringID, profile.id))

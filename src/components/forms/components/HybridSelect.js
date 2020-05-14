@@ -6,15 +6,18 @@ const HybridSelect = ({defaultMode, onBlur, onChange, value, ...props }) => {
 
   if (modeSingle) {
     return <DropdownList
+      className="text-align-left"
       onChange={onChange}
       {...props}
     />
   } else {
     return <Multiselect
+      className="text-align-left"
       onBlur={() => onBlur()}
       onChange={onChange}
       defaultValue={[]}
       value={value || []}
+      filter="contains"
       {...props}
     />
   }

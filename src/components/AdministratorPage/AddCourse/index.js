@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { firestoreConnect, isLoaded } from 'react-redux-firebase'
 import SplashScreen from '../../SplashScreen'
+import AddCourseForm from '../../forms/AddCourseForm'
 
 const AddCourse = ({courses, periods, rooms, users}) => {
   if (!isLoaded(courses) || !courses || !isLoaded(periods) || !isLoaded(rooms) || !isLoaded(users)) {
@@ -12,6 +13,7 @@ const AddCourse = ({courses, periods, rooms, users}) => {
     <h3>Add a Course</h3>
     <div className="divider"/>
     <div>
+      <AddCourseForm/>
     </div>
   </div>)
 }

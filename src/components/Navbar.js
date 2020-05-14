@@ -5,7 +5,7 @@ import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
 import { connect } from 'react-redux'
 import { isEmpty } from 'react-redux-firebase'
-import { Link, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { logout } from '../actions/authActions'
 import { compose } from 'recompose'
 import { push } from 'connected-react-router'
@@ -13,8 +13,9 @@ import HomeIcon from '@material-ui/icons/Home'
 import EventIcon from '@material-ui/icons/Event'
 import GroupIcon from '@material-ui/icons/Group'
 
-const OurNavbar = ({location, auth, profile, redirect, logout}) => {
+const OurNavbar = ({profile, location, redirect, logout}) => {
   const isLoggedIn = !isEmpty(profile)
+  const pathname = location.pathname
   let admin = isLoggedIn ? profile.token.claims.admin : null
   return (
   <div style={{position: 'sticky', top: 0, zIndex: 1000}}>
@@ -24,25 +25,21 @@ const OurNavbar = ({location, auth, profile, redirect, logout}) => {
   </Navbar.Brand>
   <Navbar.Toggle aria-controls="navbar"/>
   <Navbar.Collapse id="navbar">
-    <Nav>
-      <Nav.Item >
-        <Nav.Link href="/" active={location.pathname === "/"}>
+    <Nav className="mr-auto" activeKey={pathname}>
+      <Nav.Item>
+        <Nav.Link href="/" eventKey="/">
           <HomeIcon fontSize="small"/> 
           Home
         </Nav.Link>
       </Nav.Item>
-    </Nav>
-    <Nav>
-      <Nav.Item >
-        <Nav.Link href="/Book" active={location.pathname === "/Book"}>
+      <Nav.Item>
+        <Nav.Link href="/Book" eventKey="/Book">
           <EventIcon fontSize="small"/>
           Book
         </Nav.Link>
       </Nav.Item>
-    </Nav>
-    <Nav className="mr-auto">
-      <Nav.Item >
-        <Nav.Link href="/Meet" active={location.pathname === "/Meet"}>
+      <Nav.Item>
+        <Nav.Link href="/Meet" eventKey="/Meet">
           <GroupIcon fontSize="small"/>
           Meet
         </Nav.Link>
@@ -50,8 +47,8 @@ const OurNavbar = ({location, auth, profile, redirect, logout}) => {
     </Nav>
     <Nav className="ml-auto">
       {isLoggedIn ? 
-        <NavDropdown title={profile.displayName}>
-          <NavDropdown.Item href='/Profile'>
+        <NavDropdown title={profile.displayName ? profile.displayName : "Loading name..."}>
+          <NavDropdown.Item href="/Profile">
             Profile
           </NavDropdown.Item>
           <NavDropdown.Divider/>
@@ -68,7 +65,7 @@ const OurNavbar = ({location, auth, profile, redirect, logout}) => {
           }}>Log Out</NavDropdown.Item>
         </NavDropdown> :
         <Nav.Item>
-        <Nav.Link href='/Login' style={{padding: 0}} component={Link} active={location.pathname === "/Login"}>
+        <Nav.Link className="p-0" href={"/Login"}>
           <Button variant="outline-light">
             Login
           </Button>
@@ -86,7 +83,6 @@ const enhance = compose(
   withRouter,
   connect(
     (state) => ({
-      auth: state.firebase.auth,
       profile: state.firebase.profile,
     }),
     (dispatch) => ({

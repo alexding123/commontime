@@ -21,11 +21,13 @@ const RecurringDisplay = ({invitation, periods, rooms, recurring, acceptInvitati
       <Row className="mx-0 p-0">
       <Col className="p-0">
       <Row className="mx-0 p-0">
+      <Col className="p-0">
         <h5 className="d-inline">{recurring.name}</h5>
         <div className="d-inline pl-1">{recurring.room ? 
           <Button className="inline-link" variant="link" href={`/Rooms/${recurring.room}`}>{roomName}</Button> :
           roomName
-        }</div>  
+        }</div>
+      </Col>  
       </Row>
       <Row className="mx-0 p-0">
         {`${dayName} ${periodName} (recurring)`}

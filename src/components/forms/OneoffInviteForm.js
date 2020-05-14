@@ -19,7 +19,6 @@ const OneoffInviteForm = ({pristine, submitting, validated, instance, invitation
   <Form onSubmit={handleSubmit}>
     <Form.Group>
       <Field 
-        className="text-align-left"
         name="people"
         valueField='id'
         textField='name'

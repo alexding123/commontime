@@ -23,7 +23,7 @@ const PeriodsForm = ({pristine, submitting, validated, periods, profile, handleS
   return (
   <Form onSubmit={handleSubmit}>
     <h5>What periods should we include in the search?</h5>
-    <Form.Group className="text-align-left">
+    <Form.Group>
       <Field
         name="periods"
         valueField='period'
