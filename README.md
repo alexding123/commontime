@@ -1,4 +1,4 @@
-# Quote of the Week
+# Commontime
 
 This is the source code of [Commonwealth School](https://www.commschool.org/)'s scheduling app/website.
 
