@@ -2,15 +2,15 @@ import React from 'react'
 import { Alert, Button, Container } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { isEmpty } from 'react-redux-firebase'
-import { Redirect, withRouter } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import { withLastLocation } from 'react-router-last-location'
 import { compose } from 'recompose'
 import { login } from '../actions/authActions'
 
 const LoginPage = ({ login, auth, lastLocation, error}) => {
   if (!isEmpty(auth)) {
-    console.log(lastLocation)
-    return <Redirect to={lastLocation}/>
+    const redirectPath = lastLocation ? lastLocation : "/"
+    return <Redirect to={redirectPath}/>
   }
 
   return (

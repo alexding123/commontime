@@ -119,6 +119,7 @@ const parseMembersFile = (data, groupsData, dispatch) => {
 
 export const uploadGroupsMeetingsMembersForm = (values) => {
   return (dispatch, getState, {getFirebase}) => {
+    dispatch(uploadGroupsMeetingsMembersFormError(null))
     const { groupsFile, meetingsFile, membersFile } = values
     if (!groupsFile || !meetingsFile || !membersFile) {
       dispatch(uploadGroupsMeetingsMembersFormError("One or more file is not found."))
@@ -168,7 +169,7 @@ export const uploadGroupsMeetingsMembersForm = (values) => {
               })
             } catch (e) {
               console.error(e)
-              dispatch(uploadGroupsMeetingsMembersFormError("Error while parsing the uploaded members file. Please check that its formatting is correct"))
+              dispatch(uploadGroupsMeetingsMembersFormError("Error while parsing the uploaded meetings file. Please check that its formatting is correct"))
               return false
             }
           }

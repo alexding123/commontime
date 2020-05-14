@@ -17,36 +17,24 @@ const RecurringInvitationDeclined = lazy(() => import('./RecurringInvitationDecl
 const RelinquishAdmin = lazy(() => import('./RelinquishAdmin'))
 
 const Notifications = ({current}) => {
-  switch (current) {
-    case 'bookOneOffInviteSuccess':
-      return <BookOneOffInviteSuccess/>
-    case 'bookOneOffNotifySuccess':
-      return <BookOneOffNotifySuccess/>
-    case 'bookRecurringInviteSuccess':
-      return <BookRecurringInviteSuccess/>
-    case 'bookRecurringNotifySuccess':
-      return <BookRecurringNotifySuccess/>
-    case 'bookRoomSuccess':
-      return <BookRoomSuccess/>
-    case 'confirmAddAdmin':
-      return <ConfirmAddAdmin/>
-    case 'coursesPopulated':
-      return <CoursesPopulated/>
-    case 'firstTimeLogin':
-      return <FirstTimeLogin/>
-    case 'invitationAccepted':
-      return <InvitationAccepted/>
-    case 'invitationDeclined':
-      return <InvitationDeclined/>
-    case 'recurringInvitationAccepted':
-      return <RecurringInvitationAccepted/>
-    case 'recurringInvitationDeclined':
-      return <RecurringInvitationDeclined/>
-    case 'relinquishAdmin':
-      return <RelinquishAdmin/>
-    default:
-      return null
-  }
+  console.log(current)
+  return (
+    <div id="notifications">
+    {current === 'bookOneOffInviteSuccess' && <BookOneOffInviteSuccess/>}
+    {current === 'bookOneOffNotifySuccess' && <BookOneOffNotifySuccess/>}
+    {current === 'bookRecurringInviteSuccess' && <BookRecurringInviteSuccess/>}
+    {current === 'bookRecurringNotifySuccess' && <BookRecurringNotifySuccess/>}
+    {current === 'bookRoomSuccess' && <BookRoomSuccess/>}
+    {current === 'confirmAddAdmin' && <ConfirmAddAdmin/>}
+    {current === 'coursesPopulated' && <CoursesPopulated/>}
+    {current === 'firstTimeLogin' && <FirstTimeLogin/>}
+    {current === 'invitationAccepted' && <InvitationAccepted/>}
+    {current === 'invitationDeclined' && <InvitationDeclined/>}
+    {current === 'recurringInvitationAccepted' && <RecurringInvitationAccepted/>}
+    {current === 'recurringInvitationDeclined' && <RecurringInvitationDeclined/>}
+    {current === 'relinquishAdmin' && <RelinquishAdmin/>}
+    </div>
+  )
 }
 
 const enhance = compose(
