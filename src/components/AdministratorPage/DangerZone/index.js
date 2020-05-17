@@ -5,6 +5,7 @@ import { Alert } from 'react-bootstrap'
 
 import PeriodsEditor from './PeriodsEditor'
 import RoomsEditor from './RoomsEditor'
+import ErrorBoundary from '../../ErrorBoundary'
 
 const DangerZone = ({annualBoard}) => {
   return (<div className="main">
@@ -21,7 +22,9 @@ const DangerZone = ({annualBoard}) => {
         {annualBoard.periods.message}
       </Alert> : null
     }
+    <ErrorBoundary>
     <PeriodsEditor/>
+    </ErrorBoundary>
     <hr/>
     <h5>Rooms</h5>
     {annualBoard.rooms.error ? 
@@ -32,7 +35,9 @@ const DangerZone = ({annualBoard}) => {
         {annualBoard.rooms.message}
       </Alert> : null
     }
+    <ErrorBoundary>
     <RoomsEditor/>
+    </ErrorBoundary>
   </div>)
 }
 

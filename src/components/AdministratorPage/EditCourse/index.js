@@ -7,6 +7,7 @@ import NotFoundPage from '../../NotFoundPage'
 import EditCourseForm from '../../forms/EditCourseForm'
 import { withRouter } from 'react-router-dom'
 import { editCourse } from '../../../actions/administratorActions'
+import ErrorBoundary from '../../ErrorBoundary'
 
 const EditCourse = ({course, courses, periods, rooms, users, handleSubmit}) => {
   if (!isLoaded(course) || !isLoaded(courses) || !courses || !isLoaded(periods) || !isLoaded(rooms) || !isLoaded(users)) {
@@ -19,7 +20,9 @@ const EditCourse = ({course, courses, periods, rooms, users, handleSubmit}) => {
     <h3>Edit Course</h3>
     <div className="divider"/>
     <div className="mt-1">
+    <ErrorBoundary>
     <EditCourseForm course={course} onSubmit={handleSubmit}/>
+    </ErrorBoundary>
     </div>
   </div>)
 }

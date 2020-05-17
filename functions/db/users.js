@@ -1,11 +1,13 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
+const sentry = require("@sentry/node")
 const db = admin.firestore()
 const { applyPreset, initializeNewUser } = require('../utils/preset')
 const { sendEmail } = require('../utils/email')
 const { getUserPresetByEmail } = require('../utils/db')
 
 exports.onCreate = functions.firestore.document('users/{id}').onCreate(async (snap, context) => {
+  try {
   if (snap.data().email.split('@')[1] !== 'commschool.org') {
     await db.collection('users').doc(context.params.id).delete()
     return
@@ -22,4 +24,8 @@ exports.onCreate = functions.firestore.document('users/{id}').onCreate(async (sn
   await sendEmail(snap.data().email, 'welcome', {
     name: userPreset.name,
   })
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
 })

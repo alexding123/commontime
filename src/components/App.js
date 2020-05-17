@@ -9,6 +9,7 @@ import PrivateRoute from '../utils/PrivateRoute'
 import Navbar from './Navbar'
 import Notifications from './Notifications'
 import SplashScreen from './SplashScreen'
+import ErrorBoundary from './ErrorBoundary'
 const AdministratorPage = lazy(() => import('./AdministratorPage'))
 const BookPage = lazy(() => import('./BookPage'))
 const DevTools = lazy(() => import('./DevTools'))
@@ -23,12 +24,15 @@ const RoomPage = lazy(() => import('./RoomPage'))
 const App = () => (
   <Suspense fallback={<SplashScreen/>}>
     <AuthIsLoaded>
+    <ErrorBoundary>
     <Notifications/>
+    </ErrorBoundary>
     <Switch>
       <Route path="/Login"><LoginPage/></Route>
       <Route path="*">
         <Navbar/>
         <Container fluid id="wrapper">
+          <ErrorBoundary>
           <Switch>
             <Route exact path="/"><HomePage/></Route>
             <Route path="/Room/:id"><RoomPage/></Route>
@@ -39,6 +43,7 @@ const App = () => (
             <AdministratorRoute path="/Administrator"><AdministratorPage/></AdministratorRoute>
             <Route path="*"><NotFoundPage/></Route>
           </Switch>
+          </ErrorBoundary>
         </Container>
       </Route>
     </Switch>

@@ -6,6 +6,7 @@ import { Redirect, Route, Switch } from 'react-router-dom'
 import { compose } from 'recompose'
 import SplashScreen from '../SplashScreen'
 import Sidebar from './Sidebar'
+import ErrorBoundary from '../ErrorBoundary'
 
 const Settings = lazy(() => import('./Settings'))
 const Meetings = lazy(() => import('./Meetings'))
@@ -18,11 +19,13 @@ const ProfilePage = ({ profile }) => {
     <Row style={{height: '100%'}}>
       <Sidebar/>
       <Col className="ml-auto px-4 pt-3">
+        <ErrorBoundary>
         <Switch>
           <Route exact path="/Profile/Settings"><Settings/></Route>
           <Route exact path="/Profile/Meetings"><Meetings/></Route>
           <Route path="/Profile*"><Redirect from="*" to="/Profile/Meetings"/></Route>
         </Switch>
+        </ErrorBoundary>
       </Col>
     </Row>
   )

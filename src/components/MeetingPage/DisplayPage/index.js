@@ -9,6 +9,7 @@ import { pageSet } from '../../../actions/meetingPageActions'
 import { filterDuplicate } from '../../../utils'
 import SplashScreen from '../../SplashScreen'
 import Display from './Display'
+import ErrorBoundary from '../../ErrorBoundary'
 
 const DisplayPage = ({goPeoplePage, goFrequencyPage, goPeriodsPage, restart, data, periods}) => {
   if (!isLoaded(periods)) {
@@ -53,7 +54,9 @@ const DisplayPage = ({goPeoplePage, goFrequencyPage, goPeriodsPage, restart, dat
         }
       </p>
     </div>
+    <ErrorBoundary>
     <Display/>
+    </ErrorBoundary>
     <ButtonGroup>
       <Button onClick={goPeriodsPage}>Previous</Button>
       <Button onClick={restart}>Reset</Button>

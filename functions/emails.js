@@ -2,10 +2,12 @@ const functions = require('firebase-functions')
 const { sendEmail } = require('./utils/email')
 const { dayMap } = require('./utils/constants')
 const admin = require('firebase-admin')
+const sentry = require("@sentry/node")
 const date = require('date-and-time')
 const db = admin.firestore()
 
 exports.roomRebooked = functions.https.onCall((data, context) => {
+  try {
   if (!context.auth.token.admin || !context.auth.token.teacher) {
     throw new functions.https.HttpsError('permission-denied', 'Only admins and teachers can rebook rooms')
   }
@@ -65,9 +67,14 @@ exports.roomRebooked = functions.https.onCall((data, context) => {
       byName: byUser.name,
     })
   })
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
 })
 
 exports.meetingScheduled = functions.https.onCall((data, context) => {
+  try {
   if (!context.auth.token.admin || !context.auth.token.teacher) {
     throw new functions.https.HttpsError('permission-denied', 'Only admins and teachers can notify meetings')
   }
@@ -144,9 +151,14 @@ exports.meetingScheduled = functions.https.onCall((data, context) => {
       name: instance.name,
     })
   })
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
 })
 
 exports.recurringMeetingScheduled = functions.https.onCall(async (data, context) => {
+  try {
   if (!context.auth.token.admin || !context.auth.token.teacher) {
     throw new functions.https.HttpsError('permission-denied', 'Only admins and teachers can notify meetings')
   }
@@ -211,4 +223,8 @@ exports.recurringMeetingScheduled = functions.https.onCall(async (data, context)
     roomName: roomName,
     name: recurring.name,
   })
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
 })

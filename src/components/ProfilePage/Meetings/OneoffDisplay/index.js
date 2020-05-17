@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { firestoreConnect, isLoaded } from 'react-redux-firebase'
 import SplashScreen from '../../../SplashScreen'
 import InstanceDisplay from './InstanceDisplay'
+import ErrorBoundary from '../../../ErrorBoundary'
 
 const OneoffDisplay = ({instances}) => {
   if (!isLoaded(instances)) {
@@ -15,9 +16,11 @@ const OneoffDisplay = ({instances}) => {
     </div>
   }
   return (<div className="mt-2">
+    <ErrorBoundary>
     { Object.entries(instances).filter(([key, instance]) => instance).map(([key, instance]) => 
       <InstanceDisplay instance={instance} instanceID={key} key={key}/>
     )}
+    </ErrorBoundary>
   </div>)
 }
 

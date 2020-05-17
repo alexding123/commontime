@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { firestoreConnect, isLoaded } from 'react-redux-firebase'
 import SplashScreen from '../../../SplashScreen'
 import InstanceDisplay from './InstanceDisplay'
+import ErrorBoundary from '../../../ErrorBoundary'
 
 const RecurringDisplay = ({recurrings}) => {
   if (!isLoaded(recurrings)) {
@@ -15,9 +16,11 @@ const RecurringDisplay = ({recurrings}) => {
     </div>
   }
   return (<div className="mt-2">
+    <ErrorBoundary>
     { Object.entries(recurrings).filter(([key, recurring]) => recurring).map(([key, recurring]) => 
       <InstanceDisplay recurring={recurring} recurringID={key} key={key}/>
     )}
+    </ErrorBoundary>
   </div>)
 }
 

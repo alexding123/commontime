@@ -6,6 +6,7 @@ import SplashScreen from '../../SplashScreen'
 import { Alert } from 'react-bootstrap'
 import { addUser } from '../../../actions/administratorActions'
 import AddUserForm from '../../forms/AddUserForm'
+import ErrorBoundary from '../../ErrorBoundary'
 
 const AddUser = ({users, error, handleSubmit}) => {
   if (!isLoaded(users)) {
@@ -18,7 +19,9 @@ const AddUser = ({users, error, handleSubmit}) => {
     <div className="divider"/>
     {error ? <Alert variant="danger">{error}</Alert> : null}
     <div>
+      <ErrorBoundary>
       <AddUserForm onSubmit={handleSubmit(users)}/>
+      </ErrorBoundary>
     </div>
   </div>)
 }

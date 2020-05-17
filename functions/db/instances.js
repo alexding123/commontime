@@ -3,12 +3,14 @@
 
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
+const sentry = require("@sentry/node")
 const db = admin.firestore()
 const date = require('date-and-time')
 const { addInstance, insert, calendar, auth, getAuth, list, listEvents, delete_, deleteEvent } = require('../utils/calendar')
 const { getUserByID, deleteInstanceInvitations } = require('../utils/db')
 
 const onCreateFunc = async (snap, context) => {
+  try {
   const instanceID = context.params.instanceID
   const members = snap.data().members
   for (let member of members) {
@@ -20,6 +22,10 @@ const onCreateFunc = async (snap, context) => {
     const setup = await addInstance(calendarID, data, auth, instanceID)
     await insert(setup)
   }
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
 }
 
 exports.onCreateFunc = onCreateFunc
@@ -27,6 +33,7 @@ exports.onCreateFunc = onCreateFunc
 exports.onCreate = functions.firestore.document('instances/{instanceID}').onCreate(onCreateFunc)
 
 const onDeleteFunc = async (snap, context) => {
+  try {
   // delete invitations
   const instanceID = context.params.instanceID
   await deleteInstanceInvitations(instanceID)
@@ -47,12 +54,17 @@ const onDeleteFunc = async (snap, context) => {
       await delete_(setup)
     }
   }
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
 }
 exports.onDeleteFunc = onDeleteFunc
 
 exports.onDelete = functions.firestore.document('instances/{instanceID}').onDelete(onDeleteFunc)
 
 const onUpdateFunc = async (snap, context) => {
+  try {
   const instanceID = context.params.instanceID
   const deleteMember = async (member) => {
     const calendarID = (await getUserByID(member)).calendar
@@ -94,6 +106,10 @@ const onUpdateFunc = async (snap, context) => {
     for (let member of diff) {
       await addMember(member)
     }
+  }
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
   }
 }
 

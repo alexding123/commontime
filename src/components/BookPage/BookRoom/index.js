@@ -8,6 +8,7 @@ import { toggleShowFilters } from '../../../actions/bookPageActions'
 import { firestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase'
 import SplashScreen from '../../SplashScreen'
 import date from 'date-and-time'
+import ErrorBoundary from '../../ErrorBoundary'
 
 const BookRoom = ({showFilters, toggleShowFilters, rooms, periods, profile, instances, users, data}) => {
   if (!isLoaded(rooms) || !isLoaded(periods) || !isLoaded(profile) || !isLoaded(instances) || !isLoaded(users) || !data) {
@@ -20,12 +21,16 @@ const BookRoom = ({showFilters, toggleShowFilters, rooms, periods, profile, inst
     </div>
     <div className="d-flex filters-display-container">
       <div className={"search-filters " + (showFilters ? '' : 'show-when-big')}>
+        <ErrorBoundary>
         <Filters/>
+        </ErrorBoundary>
       </div>
       <div className="search-display flex-grow-1 pb-2">
         { isEmpty(profile) ? 
           <Alert variant="danger">Currently, we display a list of free rooms for each period. You must log in to book these rooms. </Alert> : null }
+        <ErrorBoundary>
         <Display/>
+        </ErrorBoundary>
       </div>
     </div>
   </div>)

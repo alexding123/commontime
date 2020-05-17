@@ -4,6 +4,7 @@ const { calendar, auth, getAuth, insert, addInstance, addRecurring, addCourse, l
 const { getUserByID, getUserPresetByEmail } = require('./utils/db')
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
+const sentry = require("@sentry/node")
 const db = admin.firestore()
 
 const populateCalendarInstances = async (instances, calendarId, userAuth) => {
@@ -154,6 +155,7 @@ const populateCalendar = async (user, calendarId, token) => {
 const runtimeOpts = { timeoutSeconds: 540, memory: '1GB' }
 
 exports.populateCourses = functions.runWith(runtimeOpts).https.onCall(async (data, context) => {
+  try {
   const user = (await db.collection('users').doc(context.auth.uid).get()).data()
   const calendarID = user.calendar
 
@@ -170,9 +172,14 @@ exports.populateCourses = functions.runWith(runtimeOpts).https.onCall(async (dat
   const courses = (await db.collection('courses').where('members', 'array-contains', userID).get()).docs
   const userAuth = getAuth(data.token)
   await populateCalendarCourses(courses, calendarId, userAuth)
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
 })
 
 exports.create = functions.runWith(runtimeOpts).https.onCall(async (data, context)=> {
+  try {
   const userAuth = getAuth(data.token)
 
   const user = await db.collection('users').doc(context.auth.token.uid).get().then(doc => doc.data())
@@ -256,6 +263,8 @@ exports.create = functions.runWith(runtimeOpts).https.onCall(async (data, contex
   })
 
   await populateCalendar(userPreset, newCalendar.id, data.token)
-
-  return null
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
 })

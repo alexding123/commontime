@@ -12,6 +12,7 @@ import { bookRoom, rebookRoom } from '../../actions/roomActions'
 import NotFoundPage from '../NotFoundPage'
 import SplashScreen from '../SplashScreen'
 import { Box, Header } from './Box'
+import ErrorBoundary from '../ErrorBoundary'
 
 const date = require('date-and-time')
 
@@ -44,6 +45,7 @@ const RoomPage = ({rooms, periods, instances, profile, roomID, users, startDate,
         <ArrowForwardIcon/>
       </Button>
     </div>
+    <ErrorBoundary>
     <div className="d-flex flex-row">
       { [1,2,3,4,5].map((day) => {
         const periodsOnDay = periodsArray.filter(period => period.day === day)
@@ -74,6 +76,7 @@ const RoomPage = ({rooms, periods, instances, profile, roomID, users, startDate,
         </div>)
       })}
     </div>
+    </ErrorBoundary>
     </div>
   </div>
   )

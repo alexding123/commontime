@@ -5,6 +5,7 @@ import { compose } from 'recompose'
 import { uploadUsersForm, uploadGroupsMeetingsMembersForm } from '../../../actions/administratorActions'
 import UploadGroupsMeetingsMembersForm from '../../forms/UploadGroupsMeetingsMembersForm'
 import { Alert } from 'react-bootstrap'
+import ErrorBoundary from '../../ErrorBoundary'
 
 const AnnualBoard = ({handleUsersSubmit, uploadGroupsMeetingsMembersSubmit, annualBoard}) => {
   return (<div>
@@ -28,7 +29,9 @@ const AnnualBoard = ({handleUsersSubmit, uploadGroupsMeetingsMembersSubmit, annu
       </Alert> : null
     }
     <h5>Users</h5>
+    <ErrorBoundary>
     <UploadUsersForm onSubmit={handleUsersSubmit}/>
+    </ErrorBoundary>
     <hr/>
     <h5>Courses</h5>
     {annualBoard.courses.error ? 
@@ -39,7 +42,9 @@ const AnnualBoard = ({handleUsersSubmit, uploadGroupsMeetingsMembersSubmit, annu
         {annualBoard.courses.message}
       </Alert> : null
     }
+    <ErrorBoundary>
     <UploadGroupsMeetingsMembersForm onSubmit={uploadGroupsMeetingsMembersSubmit}/>
+    </ErrorBoundary>
   </div>)
 }
 

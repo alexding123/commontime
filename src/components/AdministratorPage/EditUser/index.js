@@ -7,6 +7,7 @@ import NotFoundPage from '../../NotFoundPage'
 import { withRouter } from 'react-router-dom'
 import { editUser } from '../../../actions/administratorActions'
 import EditUserForm from '../../forms/EditUserForm'
+import ErrorBoundary from '../../ErrorBoundary'
 
 const EditUser = ({user, users, handleSubmit}) => {
   if (!isLoaded(user) || !isLoaded(users)) {
@@ -19,7 +20,9 @@ const EditUser = ({user, users, handleSubmit}) => {
     <h3>Edit User</h3>
     <div className="divider"/>
     <div className="mt-1">
+    <ErrorBoundary>
     <EditUserForm user={user} onSubmit={handleSubmit}/>
+    </ErrorBoundary>
     </div>
   </div>)
 }

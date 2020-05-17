@@ -1,10 +1,12 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
+const sentry = require("@sentry/node")
 const db = admin.firestore()
 const { calendar, auth } = require('./utils/calendar')
 const { getUserPresetByEmail } = require('./utils/db')
 
 exports.onCreate = functions.auth.user().onCreate(async (user, context) => {
+  try {
   if (user.email.split('@')[1] !== 'commschool.org') {
     await admin.auth().deleteUser(user.uid)
     throw new functions.https.HttpsError('invalid-argument', 'User email must be under the commschool.org domain.')
@@ -21,9 +23,14 @@ exports.onCreate = functions.auth.user().onCreate(async (user, context) => {
     admin: false,
   }
   await admin.auth().setCustomUserClaims(user.uid, {...user.customClaims, ...customClaims})
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
 })
 
 exports.onDelete = functions.auth.user().onDelete(async (user, context) => {
+  try {
   const profile = await db.collection('users').doc(user.uid).get()
   if (!profile.data().calendar) return
   
@@ -41,9 +48,14 @@ exports.onDelete = functions.auth.user().onDelete(async (user, context) => {
   }).catch(console.error)
   await deleteCalendarPromise
   await db.collection('users').doc(user.uid).delete()
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
 })
 
 exports.listAdmins = functions.https.onCall(async (data, context) => {
+  try {
   if (!context.auth.token.admin) {
     throw new functions.https.HttpsError('permission-denied', 'Only admins can list all admins.')
   }
@@ -56,9 +68,14 @@ exports.listAdmins = functions.https.onCall(async (data, context) => {
     id: user.uid,
     name: user.displayName,
   }))
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
 })
 
 exports.addAdmin = functions.https.onCall(async (data, context) => {
+  try {
   if (!context.auth.token.admin) {
     throw new functions.https.HttpsError('permission-denied', 'Only admins can add new admins.')
   }
@@ -86,9 +103,14 @@ exports.addAdmin = functions.https.onCall(async (data, context) => {
     admin: true
   })
   return
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
 })
 
 exports.relinquishAdmin = functions.https.onCall(async (data, context) => {
+  try {
   if (!context.auth.token.admin) {
     throw new functions.https.HttpsError('permission-denied', 'Only admins can relinquish their own privileges.')
   }
@@ -99,4 +121,8 @@ exports.relinquishAdmin = functions.https.onCall(async (data, context) => {
     admin: false
   })
   return
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
 })

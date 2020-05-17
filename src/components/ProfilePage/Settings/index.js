@@ -6,6 +6,7 @@ import SplashScreen from '../../SplashScreen'
 import { connect } from 'react-redux'
 import { updateSettings } from '../../../actions/profilePageActions'
 import AddCalendar from './AddCalendar'
+import ErrorBoundary from '../../ErrorBoundary'
 
 const Settings = ({auth, profile, handleSubmit}) => {
   if (!isLoaded(auth) || !isLoaded(profile)) {
@@ -14,11 +15,15 @@ const Settings = ({auth, profile, handleSubmit}) => {
   return (<div>
     <h3 className="tabs-heading">Settings</h3>
     <div className="divider"/>
+    <ErrorBoundary>
     <ProfileForm initialValues={{
       email: profile.allowEmail,
     }} onSubmit={handleSubmit(auth.uid)}/>
     <hr/>
+    </ErrorBoundary>
+    <ErrorBoundary>
     <AddCalendar/>
+    </ErrorBoundary>
   </div>)
 }
 

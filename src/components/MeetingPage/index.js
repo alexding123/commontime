@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { firestoreConnect } from 'react-redux-firebase'
 import { compose } from 'recompose'
 import { scheduleMeetingSetupSaved } from '../../actions/meetingPageActions'
+import ErrorBoundary from '../ErrorBoundary'
 
 const DisplayPage = lazy(() => import('./DisplayPage'))
 const BookOneOffPage = lazy(() => import('./BookOneOffPage'))
@@ -13,10 +14,12 @@ const MeetingPage = ({stage, handleSetupSubmit}) => {
   return (
     <div className="main">
       <h3>Schedule a Meeting</h3>
+      <ErrorBoundary>
       { !['DISPLAY', 'BOOK_ONEOFF', 'BOOK_RECURRING'].includes(stage) && <ScheduleMeetingSetupForm onSubmit={handleSetupSubmit}/>}
       { stage === 'DISPLAY' && <DisplayPage/> }
       { stage === 'BOOK_ONEOFF' && <BookOneOffPage/> }
       { stage === 'BOOK_RECURRING' && <BookRecurringPage/>}
+      </ErrorBoundary>
     </div>
   )
 }

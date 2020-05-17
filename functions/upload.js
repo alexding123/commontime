@@ -2,6 +2,7 @@
 /* eslint-disable no-loop-func */
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
+const sentry = require("@sentry/node")
 const db = admin.firestore()
 
 const sleep = async (time) => {
@@ -116,7 +117,7 @@ exports.courses = functions.https.onCall(async (data, context) => {
     })
     return Promise.all(promises)
   })
-
+  
   // set meta
   const handleDate = (d) => {
     const newD = new Date(Date.parse(d))

@@ -3,6 +3,7 @@
 
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
+const sentry = require("@sentry/node")
 const db = admin.firestore()
 const date = require('date-and-time')
 const { firstDayFromDay, dateInBetween, addInstance, insert, calendar, auth, list, listEvents, delete_, deleteEvent, addCourse } = require('../utils/calendar')
@@ -68,6 +69,7 @@ const createInstancesForTerm = (startDate, endDate, data, courseID, periods, day
 }
 
 exports.onCreate = functions.firestore.document('courses/{id}').onCreate(async (snap, context) => {
+  try {
   // first thing to do: determine whether this is an upload
   const isUploading = (await db.collection('meta').doc('internal').get()).data().isUploadingCourses
 
@@ -110,11 +112,16 @@ exports.onCreate = functions.firestore.document('courses/{id}').onCreate(async (
       await insert(setup).catch(console.error)
     }
   }
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
 })
 
 
 
 exports.onDelete = functions.firestore.document('courses/{id}').onDelete(async (snap, context) => {
+  try {
   // first thing to do: determine whether this is an upload
   const isUploading = (await db.collection('meta').doc('internal').get()).data().isUploadingCourses
 
@@ -150,9 +157,14 @@ exports.onDelete = functions.firestore.document('courses/{id}').onDelete(async (
       await delete_(setup)
     }
   }
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
 })
 
 exports.onUpdate = functions.firestore.document('courses/{id}').onUpdate(async (snap, context) => {
+  try {
   // first thing to do: determine whether this is an upload
   const isUploading = (await db.collection('meta').doc('internal').get()).data().isUploadingCourses
 
@@ -219,5 +231,8 @@ exports.onUpdate = functions.firestore.document('courses/{id}').onUpdate(async (
       await insert(setup).catch(console.error)
     }
   }
-
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
 })

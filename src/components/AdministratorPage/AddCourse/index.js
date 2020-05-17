@@ -6,6 +6,7 @@ import SplashScreen from '../../SplashScreen'
 import AddCourseForm from '../../forms/AddCourseForm'
 import { Alert } from 'react-bootstrap'
 import { addCourse } from '../../../actions/administratorActions'
+import ErrorBoundary from '../../ErrorBoundary'
 
 const AddCourse = ({courses, periods, rooms, users, error, handleSubmit}) => {
   if (!isLoaded(courses) || !courses || !isLoaded(periods) || !isLoaded(rooms) || !isLoaded(users)) {
@@ -17,7 +18,9 @@ const AddCourse = ({courses, periods, rooms, users, error, handleSubmit}) => {
     <div className="divider"/>
     {error ? <Alert variant="danger">{error}</Alert> : null}
     <div>
+      <ErrorBoundary>
       <AddCourseForm onSubmit={handleSubmit(courses)}/>
+      </ErrorBoundary>
     </div>
   </div>)
 }

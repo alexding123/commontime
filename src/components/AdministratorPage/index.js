@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import Sidebar from './Sidebar'
 import { Switch, Route, Redirect } from 'react-router-dom'
+import ErrorBoundary from '../ErrorBoundary'
 const AnnualBoard = lazy(() => import('./AnnualBoard'))
 const NotFoundPage = lazy(() => import('../NotFoundPage'))
 const DangerZone = lazy(() => import('./DangerZone'))
@@ -26,6 +27,7 @@ const AdministratorPage = ({ profile }) => {
       <Row style={{height: '100%'}}>
         <Sidebar/>
         <Col className="ml-auto px-4 pt-3">
+          <ErrorBoundary>
           <Switch>
             <Route exact path="/Administrator/Dashboard"><Dashboard/></Route>
             <Route exact path="/Administrator/Annual"><AnnualBoard/></Route>
@@ -37,6 +39,7 @@ const AdministratorPage = ({ profile }) => {
             <Route exact path="/Administrator/AddUser"><AddUser/></Route>
             <Route path="*"><Redirect from="*" to="/Administrator/Dashboard"/></Route>
           </Switch>
+          </ErrorBoundary>
         </Col>
       </Row>
     </Route>

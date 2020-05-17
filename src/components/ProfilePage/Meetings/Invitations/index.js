@@ -5,6 +5,7 @@ import { firestoreConnect, isLoaded } from 'react-redux-firebase'
 import SplashScreen from '../../../SplashScreen'
 import InstanceDisplay from './InstanceDisplay'
 import RecurringDisplay from './RecurringDisplay'
+import ErrorBoundary from '../../../ErrorBoundary'
 
 const Invitations = ({invitations}) => {
   if (!isLoaded(invitations)) {
@@ -19,11 +20,13 @@ const Invitations = ({invitations}) => {
     </div>
   }
   return (<div className="mt-2">
+    <ErrorBoundary>
     { filteredInvitations.map(([key, invitation]) => 
       invitation.type === 'recurring' ?
       <RecurringDisplay invitation={invitation} invitationID={key} key={key}/> :
       <InstanceDisplay invitation={invitation} invitationID={key} key={key}/>
     )}
+    </ErrorBoundary>
   </div>)
 }
 

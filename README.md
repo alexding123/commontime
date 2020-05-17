@@ -2,7 +2,7 @@
 
 This is the source code of [Commonwealth School](https://www.commschool.org/)'s scheduling app/website.
 
-It is built using React.js and Redux with a Google Firebase backend.
+It is built using [React.js](https://reactjs.org/) and [Redux](https://redux.js.org/) with a Google Firebase backend. Error analytics is handled using [sentry.io](https://sentry.io/).
 
 ## Getting Started
 

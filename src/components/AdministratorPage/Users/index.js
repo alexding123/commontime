@@ -5,6 +5,7 @@ import { firestoreConnect, isLoaded } from 'react-redux-firebase'
 import SplashScreen from '../../SplashScreen'
 import UserDisplay from './UserDisplay'
 import { Button } from 'react-bootstrap'
+import ErrorBoundary from '../../ErrorBoundary'
 
 const Users = ({users}) => {
   if (!isLoaded(users) || !users) {
@@ -15,6 +16,7 @@ const Users = ({users}) => {
     <div className="divider"/>
     <Button href="/Administrator/AddUser">Add User</Button>
     <div className="mt-1">
+      <ErrorBoundary>
       {
         users ?
         Object.entries(users).filter(([key, user]) => user).map(([key, user]) => 
@@ -22,7 +24,7 @@ const Users = ({users}) => {
         ) :
         "No user found. Upload a users file?"
       }
-      
+      </ErrorBoundary>
     </div>
   </div>)
 }

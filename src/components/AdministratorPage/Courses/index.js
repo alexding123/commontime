@@ -5,6 +5,7 @@ import { firestoreConnect, isLoaded } from 'react-redux-firebase'
 import SplashScreen from '../../SplashScreen'
 import CourseDisplay from './CourseDisplay'
 import { Button } from 'react-bootstrap'
+import ErrorBoundary from '../../ErrorBoundary'
 
 const Courses = ({courses, periods, rooms, users}) => {
   if (!isLoaded(courses) || !courses || !isLoaded(periods) || !isLoaded(rooms) || !isLoaded(users)) {
@@ -15,9 +16,11 @@ const Courses = ({courses, periods, rooms, users}) => {
     <div className="divider"/>
     <Button href="/Administrator/AddCourse">Add Course</Button>
     <div className="mt-1">
+      <ErrorBoundary>
       { Object.entries(courses).filter(([key, course]) => course).map(([key, course]) => 
         <CourseDisplay key={key} id={key} course={course}/>
       )}
+      </ErrorBoundary>
     </div>
   </div>)
 }

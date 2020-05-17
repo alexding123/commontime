@@ -6,6 +6,7 @@ import { compose } from 'recompose'
 import { getCurrentPeriod } from '../../utils'
 import SplashScreen from '../SplashScreen'
 import CurrentStatus from './CurrentStatus'
+import ErrorBoundary from '../ErrorBoundary'
 const FreeRooms = lazy(() => import('./FreeRooms'))
 const Meetings = lazy(() => import('./Meetings'))
 
@@ -19,21 +20,26 @@ const HomePage = ({meta, periods}) => {
   return (
     <div className="main">
       <h3>Home</h3>
+      <ErrorBoundary>
       <CurrentStatus state={currentPeriod.state} period={currentPeriod.period} currentDate={currentDate}/>
+      </ErrorBoundary>
       <Row className='d-flex flex-wrap pt-1'>
         
         <Col xs={12} sm={6}>
-          
+          <ErrorBoundary>
           { currentPeriod.period ? 
             <FreeRooms date={currentDate} period={currentPeriod.period}/> :
             null
           }
+          </ErrorBoundary>
         </Col>
         <Col className="ml-auto" xs={12} sm={6}>
+          <ErrorBoundary>
           { currentPeriod.period ?
             <Meetings date={currentDate} period={currentPeriod.period}/> :
             null
           }
+          </ErrorBoundary>
         </Col>
       </Row>
     </div>

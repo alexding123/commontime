@@ -2,6 +2,7 @@
 /* eslint-disable no-loop-func */
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
+const sentry = require("@sentry/node")
 const db = admin.firestore()
 const date = require('date-and-time')
 const { firstDayFromDay, dateInBetween, auth, insert, addRecurring, listEvents, list, delete_, deleteEvent } = require('../utils/calendar')
@@ -74,6 +75,7 @@ const createInstancesForTerm = (targetDate, startDate, endDate, snap, context, p
 }
 
 exports.onCreate = functions.firestore.document('recurrings/{id}').onCreate(async (snap, context) => {
+  try {
   await deleteRecurringInstances(context.params.id)
 
   const periods = await getPeriods()
@@ -96,9 +98,14 @@ exports.onCreate = functions.firestore.document('recurrings/{id}').onCreate(asyn
       await insert(setup)
     }
   }
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
 })
 
 exports.onDelete = functions.firestore.document('recurrings/{id}').onDelete(async (snap, context) => {
+  try {
   await deleteRecurringInstances(context.params.id)
   await deleteRecurringInvitations(context.params.id)
   for (let member of snap.data().members) {
@@ -110,9 +117,14 @@ exports.onDelete = functions.firestore.document('recurrings/{id}').onDelete(asyn
       await insert(setup)
     }
   }
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
 })
 
 exports.onUpdate = functions.firestore.document('recurrings/{id}').onUpdate(async (snap, context) => {
+  try {
   const recurringID = context.params.id
   const deleteMember = async (member) => {
     const calendarID = (await getUserByID(member)).calendar
@@ -157,5 +169,9 @@ exports.onUpdate = functions.firestore.document('recurrings/{id}').onUpdate(asyn
     for (let member of diff) {
       await addMember(member)
     }
+  }
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
   }
 })
