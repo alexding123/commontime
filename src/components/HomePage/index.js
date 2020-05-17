@@ -13,7 +13,7 @@ const HomePage = ({meta, periods}) => {
   if (!isLoaded(meta) || !meta.terms || !isLoaded(periods) || !periods) {
     return <SplashScreen/>
   }
-  const currentDate = new Date(2019, 8, 2, 10, 0)
+  const currentDate = new Date()
   const currentPeriod = getCurrentPeriod(periods, meta.terms, currentDate)
 
   return (

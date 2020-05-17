@@ -17,7 +17,7 @@ const Box = ({users, profile, period, instance, instanceID, room, isTeacher, han
   const duration = date.subtract(endTime, startTime).toMinutes() + 5
   const height = duration * 1.5
   let creator = instance ? Object.values(users).filter(user => user && user.id === instance.creator)[0] : null
-  creator = creator ? creator : { displayName: 'Loading' }
+  creator = creator ? creator : { name: 'Loading' }
   return (
   <div className={className} style={{height: `${height}px`}}>
     <div>
@@ -33,7 +33,7 @@ const Box = ({users, profile, period, instance, instanceID, room, isTeacher, han
         ( instance.type === 'event' ? 
           ( instance.creator && instance.creator === profile.id ?
             <div className='d-flex justify-content-center'>
-              {`${instance.name} - ${creator.displayName}`}
+              {`${instance.name} - ${creator.name}`}
               <Button variant="link" className="p-0 d-flex-inline justify-content-center align-items-center" onClick={() => handleCancel(instanceID)}>     
                 <DeleteOutlineIcon/>
               </Button>
@@ -48,9 +48,9 @@ const Box = ({users, profile, period, instance, instanceID, room, isTeacher, han
                   <Button variant='link' className='p-0 d-flex-inline justify-content-center align-items-center'>
                     { instance.private ? 
                       <div>
-                      <Badge variant="info">Private</Badge>{` - ${creator.displayName}`}
+                      <Badge variant="info">Private</Badge>{` - ${creator.name}`}
                       </div> :
-                      `${instance.name} - ${creator.displayName}`}
+                      `${instance.name} - ${creator.name}`}
                   </Button>
                 </OverlayTrigger>
                 <Button variant="link" className="p-0 d-flex-inline justify-content-center align-items-center" onClick={() => handleCancel(instanceID)}>     
@@ -61,9 +61,9 @@ const Box = ({users, profile, period, instance, instanceID, room, isTeacher, han
                 { 
                   instance.private ? 
                   <div>
-                  <Badge variant="info">Private</Badge>{` - ${creator.displayName}`}
+                  <Badge variant="info">Private</Badge>{` - ${creator.name}`}
                   </div> :
-                  `${instance.name} - ${creator.displayName}`
+                  `${instance.name} - ${creator.name}`
                 }
               </div>
             )

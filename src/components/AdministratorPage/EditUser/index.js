@@ -1,0 +1,44 @@
+import React from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'recompose'
+import { firestoreConnect, isLoaded } from 'react-redux-firebase'
+import SplashScreen from '../../SplashScreen'
+import NotFoundPage from '../../NotFoundPage'
+import { withRouter } from 'react-router-dom'
+import { editUser } from '../../../actions/administratorActions'
+import EditUserForm from '../../forms/EditUserForm'
+
+const EditUser = ({user, users, handleSubmit}) => {
+  if (!isLoaded(user) || !isLoaded(users)) {
+    return <SplashScreen/>
+  }
+  if (!user) {
+    return <NotFoundPage/>
+  }
+  return (<div>
+    <h3>Edit User</h3>
+    <div className="divider"/>
+    <div className="mt-1">
+    <EditUserForm user={user} onSubmit={handleSubmit}/>
+    </div>
+  </div>)
+}
+
+const enhance = compose(
+  withRouter,
+  firestoreConnect(props => [{
+    collection: 'userPreset',
+  }, {
+    collection: 'userPreset',
+    doc: props.match.params.id,
+    storeAs: `userPreset${props.match.params.id}`
+  }]),
+  connect((state, props) => ({
+    users: state.firestore.data.userPreset,
+    user: state.firestore.data[`userPreset${props.match.params.id}`],
+  }), (dispatch, props) => ({
+    handleSubmit: (values) => dispatch(editUser(props.match.params.id, values))
+  }))
+)
+
+export default enhance(EditUser)

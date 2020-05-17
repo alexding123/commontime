@@ -1,7 +1,8 @@
 import { push } from "connected-react-router"
-import { reset } from "redux-form"
+import { reset, startSubmit, stopSubmit } from "redux-form"
 import { getPeriodTimes } from "../selectors"
 import { notificationSet } from "./notificationsActions"
+import date from 'date-and-time'
 
 export const PAGE_SET = 'PAGE_SET'
 export const pageSet = (value) => {
@@ -37,9 +38,10 @@ export const periodSelected = (period) => ({
 
 export const addInstanceAndInvite = (instance, values) => { 
   return (dispatch, getState, {getFirebase, getFirestore}) => {
+    dispatch(startSubmit(`bookOneOff${instance.period}${instance.date}Form`))
     const state = getState()
     const profile = state.firebase.profile
-    const { startDate, endDate } = getPeriodTimes(state, new Date(instance.date), instance.period)
+    const { startDate, endDate } = getPeriodTimes(state, date.parse(instance.date, 'MM/DD/YYYY'), instance.period)
     const db = getFirestore()
     db.collection('instances').add({
       creator: profile.id,
@@ -77,16 +79,18 @@ export const addInstanceAndInvite = (instance, values) => {
       dispatch(reset("scheduleMeetingSetupForm"))
       dispatch(pageSet("PEOPLE"))
       dispatch(push("/Meet"))
+      dispatch(stopSubmit(`bookOneOff${instance.period}${instance.date}Form`))
     })
   }
 }
 
 export const addInstanceAndNotify = (instance, people, values) => { 
   return (dispatch, getState, {getFirebase, getFirestore}) => {
+    dispatch(startSubmit(`bookOneOff${instance.period}${instance.date}Form`))
     const firebase = getFirebase()
     const state = getState()
     const profile = state.firebase.profile
-    const { startDate, endDate } = getPeriodTimes(state, instance.date, instance.period)
+    const { startDate, endDate } = getPeriodTimes(state, date.parse(instance.date, 'MM/DD/YYYY'), instance.period)
     const db = getFirestore()
     db.collection('instances').add({
       creator: profile.id,
@@ -123,12 +127,14 @@ export const addInstanceAndNotify = (instance, people, values) => {
       dispatch(reset("scheduleMeetingSetupForm"))
       dispatch(pageSet("PEOPLE"))
       dispatch(push("/Meet"))
+      dispatch(stopSubmit(`bookOneOff${instance.period}${instance.date}Form`))
     })
   }
 }
 
 export const addRecurringAndInvite = (period, values) => { 
   return (dispatch, getState, {getFirebase, getFirestore}) => {
+    dispatch(startSubmit(`bookRecurring${period}Form`))
     const state = getState()
     const profile = state.firebase.profile
     const db = getFirestore()
@@ -163,12 +169,14 @@ export const addRecurringAndInvite = (period, values) => {
       dispatch(reset("scheduleMeetingSetupForm"))
       dispatch(pageSet("PEOPLE"))
       dispatch(push("/Meet"))
+      dispatch(stopSubmit(`bookRecurring${period}Form`))
     })
   }
 }
 
 export const addRecurringAndNotify = (period, people, values) => { 
   return (dispatch, getState, {getFirebase, getFirestore}) => {
+    dispatch(startSubmit(`bookRecurring${period}Form`))
     const firebase = getFirebase()
     const state = getState()
     const profile = state.firebase.profile
@@ -203,6 +211,7 @@ export const addRecurringAndNotify = (period, people, values) => {
       dispatch(reset("scheduleMeetingSetupForm"))
       dispatch(pageSet("PEOPLE"))
       dispatch(push("/Meet"))
+      dispatch(stopSubmit(`bookRecurring${period}Form`))
     })
   }
 }
@@ -225,17 +234,23 @@ export const deleteOneOffMeeting = (id, userID) => {
 
 export const notifyOneOffMeeting = (values, instanceID) => { 
   return (dispatch, getState, {getFirebase, getFirestore}) => {
+    const form = `oneoff${instanceID}InviteForm`
+    dispatch(startSubmit(form))
     const db = getFirestore()
     const ids = values.people.map(person => person.id)
     
     db.collection('instances').doc(instanceID).update({
       members: ids,
+    }).then(() => {
+      dispatch(stopSubmit(form))
     })
   }
 }
 
 export const inviteOneOffMeeting = (values, instance, instanceID, userID) => { 
   return (dispatch, getState, {getFirebase, getFirestore}) => {
+    const form = `oneoff${instanceID}NotifyForm`
+    dispatch(startSubmit(form))
     const db = getFirestore()
     const ids = values.people.map(person => person.id).filter(id => !instance.members.includes(id))
     
@@ -247,6 +262,7 @@ export const inviteOneOffMeeting = (values, instance, instanceID, userID) => {
         invitee: id,
       })
     })
+    dispatch(stopSubmit(form))
   }
 }
 
@@ -268,17 +284,23 @@ export const deleteRecurringMeeting = (id, userID) => {
 
 export const notifyRecurringMeeting = (values, recurringID) => { 
   return (dispatch, getState, {getFirebase, getFirestore}) => {
+    const form = `recurring${recurringID}NotifyForm`
+    dispatch(startSubmit(form))
     const db = getFirestore()
     const ids = values.people.map(person => person.id)
     
     db.collection('recurrings').doc(recurringID).update({
       members: ids,
+    }).then(() => {
+      dispatch(stopSubmit(form))
     })
   }
 }
 
 export const inviteRecurringMeeting = (values, recurring, recurringID, userID) => { 
   return (dispatch, getState, {getFirebase, getFirestore}) => {
+    const form = `recurring${recurringID}InviteForm`
+    dispatch(startSubmit(form))
     const db = getFirestore()
     const ids = values.people.map(person => person.id).filter(id => !recurring.members.includes(id))
     
@@ -290,6 +312,7 @@ export const inviteRecurringMeeting = (values, recurring, recurringID, userID) =
         invitee: id,
       })
     })
+    dispatch(stopSubmit(form))
   }
 }
 

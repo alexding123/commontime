@@ -89,7 +89,7 @@ const BookOneOffForm = ({pristine, submitting, validated, isInvite, rooms, insta
       }
     </p>
     <ButtonGroup>
-      <Button disabled={!validated} type='submit'>Submit</Button>
+      <Button disabled={pristine || submitting || !validated} type='submit'>Submit</Button>
       <Button onClick={goDisplayPage}>Return</Button>
     </ButtonGroup>
   </Form>

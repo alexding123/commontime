@@ -1,21 +1,8 @@
 const functions = require('firebase-functions')
-const { sendEmail } = require('./utils/email')
 const admin = require('firebase-admin')
 const db = admin.firestore()
 const { calendar, auth } = require('./utils/calendar')
 const { getUserPresetByEmail } = require('./utils/db')
-const sendWelcomeEmail = (user) => {
-  return sendEmail(user.email, 'welcome', {
-    name: user.displayName,
-  })
-}
-
-const createClaim = (user) => {
-  const customClaims = {
-    admin: false,
-  }
-  return admin.auth().setCustomUserClaims(user.uid, {...user.customClaims, ...customClaims})
-}
 
 exports.onCreate = functions.auth.user().onCreate(async (user, context) => {
   if (user.email.split('@')[1] !== 'commschool.org') {
@@ -25,13 +12,15 @@ exports.onCreate = functions.auth.user().onCreate(async (user, context) => {
 
   const userPreset = await 
   getUserPresetByEmail(user.email)
-  if (!userPreset.name) {
+  if (Object.keys(userPreset).length === 0 && userPreset.constructor === Object) {
     await admin.auth().deleteUser(user.uid)
     throw new functions.https.HttpsError('not-found', 'User with this email not found in the uploaded users file.')
   }
 
-  await createClaim(user)
-  await sendWelcomeEmail(user)
+  const customClaims = {
+    admin: false,
+  }
+  await admin.auth().setCustomUserClaims(user.uid, {...user.customClaims, ...customClaims})
 })
 
 exports.onDelete = functions.auth.user().onDelete(async (user, context) => {
@@ -65,7 +54,7 @@ exports.listAdmins = functions.https.onCall(async (data, context) => {
   return adminUsers.map(user => ({
     email: user.email,
     id: user.uid,
-    name: user.displayName
+    name: user.displayName,
   }))
 })
 

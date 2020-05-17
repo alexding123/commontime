@@ -47,7 +47,7 @@ const OurNavbar = ({profile, location, redirect, logout}) => {
     </Nav>
     <Nav className="ml-auto">
       {isLoggedIn ? 
-        <NavDropdown title={profile.displayName ? profile.displayName : "Loading name..."}>
+        <NavDropdown title={profile.name ? profile.name : "Loading name..."}>
           <NavDropdown.Item href="/Profile">
             Profile
           </NavDropdown.Item>

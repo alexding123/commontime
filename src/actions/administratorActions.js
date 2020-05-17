@@ -2,6 +2,7 @@ import Papa from 'papaparse'
 import date from 'date-and-time'
 import { notificationSet, notificationClosed } from './notificationsActions'
 import { push } from 'connected-react-router'
+import { reset, startSubmit, stopSubmit } from 'redux-form'
 
 export const UPLOAD_USERS_FORM_SUCCESS = 'UPLOAD_USERS_FORM_SUCCESS'
 export const uploadUsersFormSuccess = () => ({
@@ -15,14 +16,23 @@ export const uploadUsersFormError = (msg) => ({
 
 export const uploadUsersForm = (values) => {
   return (dispatch, getState, {getFirebase}) => {
+    dispatch(startSubmit('uploadUsersForm'))
     const file = values.file
     if (!file) {
       dispatch(uploadUsersFormError("No file is found."))
+      dispatch(stopSubmit('uploadUsersForm'))
+      return
     }
     try {
     Papa.parse(file, {
       header: true,
       complete: (r) => {
+        const expectedFields = ['User ID', 'Email ID', 'Role(s)', 'Grade Level', 'First Name', 'Last Name']
+        if (expectedFields.some(field => !r.meta.fields.includes(field))) {
+          dispatch(uploadUsersFormError(`Error with groups file: expected fields ${expectedFields.join(', ')} not found.`))
+          dispatch(stopSubmit('uploadUsersForm'))
+        }
+
         try {
           const data = r.data.slice(1).map(datum => ({
             id: datum['User ID'],
@@ -37,19 +47,25 @@ export const uploadUsersForm = (values) => {
           const uploadUsers = firebase.functions().httpsCallable('upload-users')
           uploadUsers({data}).then(() => {
             dispatch(uploadUsersFormSuccess())
+            dispatch(stopSubmit('uploadUsersForm'))
           }).catch(e => {
             dispatch(uploadUsersFormError(`Error: ${e.message}`))
+            dispatch(stopSubmit('uploadUsersForm'))
           })
         } catch (e) {
           console.error(e)
           dispatch(uploadUsersFormError("Error while parsing the uploaded file. Please check that its format is correct."))
+          dispatch(stopSubmit('uploadUsersForm'))
+          return
         }  
       }
     })
-    return true
+    return
     } catch (e) {
       console.error(e)
       dispatch(uploadUsersFormError("Error while parsing the uploaded file. Please check that its format is correct."))
+      dispatch(stopSubmit('uploadUsersForm'))
+      return
     }
   }
 }
@@ -119,30 +135,49 @@ const parseMembersFile = (data, groupsData, dispatch) => {
 
 export const uploadGroupsMeetingsMembersForm = (values) => {
   return (dispatch, getState, {getFirebase}) => {
+    dispatch(startSubmit('uploadGroupsMeetingsMembersForm'))
     dispatch(uploadGroupsMeetingsMembersFormError(null))
     const { groupsFile, meetingsFile, membersFile } = values
     if (!groupsFile || !meetingsFile || !membersFile) {
       dispatch(uploadGroupsMeetingsMembersFormError("One or more file is not found."))
+      dispatch(stopSubmit('uploadGroupsMeetingsMembersForm'))
+      return
     }
     try {
     Papa.parse(groupsFile, {
       header: true,
       complete: (r) => {
+        const expectedFields = ['Group ID', 'Course #', 'Section #', 'Course Name', 'Department', 'Term']
+        if (expectedFields.some(field => !r.meta.fields.includes(field))) {
+          dispatch(uploadGroupsMeetingsMembersFormError(`Error with groups file: expected fields ${expectedFields.join(', ')} not found.`))
+          dispatch(stopSubmit('uploadGroupsMeetingsMembersForm'))
+        }
         try {
         let groupsData = parseGroupsFile(r.data, dispatch)
         Papa.parse(meetingsFile, {
           header: true,
           complete: (r) => {
+            const expectedFields = ['CourseSectionNumber', 'Room_D01', 'Room_D02', 'Room_D03', 'Room_D04', 'Room_D05', 'zz_Slots_T1']
+            if (expectedFields.some(field => !r.meta.fields.includes(field))) {
+              dispatch(uploadGroupsMeetingsMembersFormError(`Error with meetings file: expected fields ${expectedFields.join(', ')} not found.`))
+              dispatch(stopSubmit('uploadGroupsMeetingsMembersForm'))
+            }
             try {
               parseMeetingsFile(r.data, groupsData, dispatch)
               Papa.parse(membersFile, {
                 header: true,
                 complete: (r) => {
+                  const expectedFields = ['Group ID', 'Role(s)', 'User ID']
+                  if (expectedFields.some(field => !r.meta.fields.includes(field))) {
+                    dispatch(uploadGroupsMeetingsMembersFormError(`Error with members file: expected fields ${expectedFields.join(', ')} not found.`))
+                    dispatch(stopSubmit('uploadGroupsMeetingsMembersForm'))
+                  }
                   try {
                   parseMembersFile(r.data, groupsData, dispatch)                    
                   } catch (e) {
                     console.error(e)
                     dispatch(uploadGroupsMeetingsMembersFormError("Error while parsing the uploaded members file. Please check that its formatting is correct"))
+                    dispatch(stopSubmit('uploadGroupsMeetingsMembersForm'))
                     return false
                   }
                   const firebase = getFirebase()
@@ -161,8 +196,10 @@ export const uploadGroupsMeetingsMembersForm = (values) => {
                     },
                   }).then(() => {
                     dispatch(uploadGroupsMeetingsMembersFormSuccess())
+                    dispatch(stopSubmit('uploadGroupsMeetingsMembersForm'))
                   }).catch(e => {
                     dispatch(uploadGroupsMeetingsMembersFormError(`Error: ${e.message}`))
+                    dispatch(stopSubmit('uploadGroupsMeetingsMembersForm'))
                     return false
                   })
                 }
@@ -170,6 +207,7 @@ export const uploadGroupsMeetingsMembersForm = (values) => {
             } catch (e) {
               console.error(e)
               dispatch(uploadGroupsMeetingsMembersFormError("Error while parsing the uploaded meetings file. Please check that its formatting is correct"))
+              dispatch(stopSubmit('uploadGroupsMeetingsMembersForm'))
               return false
             }
           }
@@ -177,6 +215,7 @@ export const uploadGroupsMeetingsMembersForm = (values) => {
         } catch (e) {
           console.error(e)
           dispatch(uploadGroupsMeetingsMembersFormError("Error while parsing the uploaded meetings file. Please check that its formatting is correct"))
+          dispatch(stopSubmit('uploadGroupsMeetingsMembersForm'))
           return false
         }
       }
@@ -185,6 +224,7 @@ export const uploadGroupsMeetingsMembersForm = (values) => {
     } catch (e) {
       console.error(e)
       dispatch(uploadGroupsMeetingsMembersFormError("Error while parsing the uploaded groups file. Please check that its formatting is correct"))
+      dispatch(stopSubmit('uploadGroupsMeetingsMembersForm'))
     }
   }
 }
@@ -417,9 +457,11 @@ export const addAdminFormError = (msg) => ({
 
 export const initiateAddAdmin = (values) => {
   return (dispatch, getState) => {
+    dispatch(startSubmit('addAdminForm'))
     dispatch(notificationSet('confirmAddAdmin', {
       email: values.email
     }))
+    dispatch(stopSubmit('addAdminForm'))
   }
 }
 
@@ -466,6 +508,138 @@ export const relinquishAdmin = () => {
     const relinquishAdmin = firebase.functions().httpsCallable('auth-relinquishAdmin')
     relinquishAdmin().then(() => {
       dispatch(push('/'))
+    })
+  }
+}
+
+export const SET_ADD_COURSE_ERROR = 'SET_ADD_COURSE_ERROR'
+export const setAddCourseError = (value) => ({
+  type: SET_ADD_COURSE_ERROR,
+  data: value,
+})
+
+export const addCourse = (courses, values) => {
+  return (dispatch, getState, {getFirestore}) => {
+    dispatch(startSubmit('addCourseForm'))
+    const db = getFirestore()
+    const id = `${values.course}-${values.section.padStart(2, '0')}`
+    // if another course with the same ID exists
+    if (courses.filter(course => course.id === id).length > 0) {
+      dispatch(setAddCourseError(`Course with ID ${values.course} and section ${values.section} already exists. Please edit that course instead.`))
+      dispatch(stopSubmit('addCourseForm'))
+      return
+    }
+    dispatch(setAddCourseError(null))
+    const members = values.members.map(member => member.id)
+    const times = values.times.map(time => ({
+      day: time.period.day,
+      period: time.period.period,
+      room: time.room.id,
+    }))
+    db.collection('courses').doc(id).set({
+      course: values.course,
+      department: values.department,
+      fallTerm: values.fallTerm,
+      id,
+      members,
+      name: values.name,
+      section: values.section,
+      springTerm: values.springTerm,
+      teacher: values.teacher.id,
+      times,
+      winterTerm: values.winterTerm,
+    }).then(() => {
+      dispatch(push('/Administrator/Courses'))
+      dispatch(reset('addCourseForm'))
+      dispatch(stopSubmit('addCourseForm'))
+    })
+  }
+}
+
+export const deleteCourse = (id) => {
+  return (dispatch, getState, {getFirestore}) => {
+    const db = getFirestore()
+    db.collection('courses').doc(id).delete()
+  }
+}
+
+export const editCourse = (id, values) => {
+  return (dispatch, getState, {getFirestore}) => {
+    dispatch(startSubmit('editCourseForm'))
+    const db = getFirestore()
+    const members = values.members.map(member => member.id)
+    const times = values.times.map(time => ({
+      day: time.period.day,
+      period: time.period.period,
+      room: time.room.id,
+    }))
+    db.collection('courses').doc(id).update({
+      department: values.department,
+      fallTerm: values.fallTerm,
+      members,
+      name: values.name,
+      springTerm: values.springTerm,
+      teacher: values.teacher.id,
+      times,
+      winterTerm: values.winterTerm,
+    }).then(() => {
+      dispatch(push("/Administrator/Courses"))
+      dispatch(startSubmit('editCourseForm'))
+    })
+  }
+}
+
+export const SET_ADD_USER_ERROR = 'SET_ADD_USER_ERROR'
+export const setAddUserError = (value) => ({
+  type: SET_ADD_USER_ERROR,
+  data: value,
+})
+
+export const addUser = (users, values) => {
+  return (dispatch, getState, {getFirestore}) => {
+    dispatch(startSubmit('addUserForm'))
+    const db = getFirestore()
+    // if another user with the same ID exists
+    if (users.filter(user => user.id === values.id).length > 0) {
+      dispatch(setAddUserError(`User with ID ${values.id} already exists. Please edit that user instead.`))
+      dispatch(stopSubmit('addUserForm'))
+      return
+    }
+    dispatch(setAddUserError(null))
+    const name = `${values.firstName} ${values.lastName}`
+    db.collection('userPreset').doc(values.id).set({
+      ...values,
+      name,
+    }).then(() => {
+      dispatch(push('/Administrator/Users'))
+      dispatch(reset('addUserForm'))
+      dispatch(stopSubmit('addUserForm'))
+    })
+  }
+}
+
+export const deleteUser = (id) => {
+  return (dispatch, getState, {getFirestore}) => {
+    const db = getFirestore()
+    db.collection('userPreset').doc(id).delete()
+  }
+}
+
+export const editUser = (id, values) => {
+  return (dispatch, getState, {getFirestore}) => {
+    dispatch(startSubmit('editUserForm'))
+    const db = getFirestore()
+    const name = `${values.firstName} ${values.lastName}`
+    db.collection('userPreset').doc(id).update({
+      email: values.email,
+      firstName: values.firstName,
+      grade: values.grade,
+      lastName: values.lastName,
+      name,
+      teacher: values.teacher,
+    }).then(() => {
+      dispatch(push("/Administrator/Users"))
+      dispatch(stopSubmit('editUserForm'))
     })
   }
 }

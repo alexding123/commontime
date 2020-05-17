@@ -204,11 +204,13 @@ export const getCommonRecurringPeriods = (coursesDict, recurringsDict, periodsDi
     courses.forEach(course => {
       if (!course || !course.members.includes(person.id) || !course.times) return
       course.times.forEach(time => {
+        if (!retMap[`${time.day}-${time.period}`]) return
         retMap[`${time.day}-${time.period}`].ok = false
       })
     })
     recurrings.forEach(recurring => {
       if (!recurring.members.includes(person.id)) return
+      if (!retMap[recurring.period]) return
       retMap[recurring.period].ok = false
       retMap[recurring.period].conflicts.push({
         ...recurring,

@@ -27,8 +27,8 @@ const InstanceDisplay = ({instance, users, profile, bookRoom, rebookRoom, cancel
         <OverlayTrigger trigger={['hover', 'click']} placement='right' overlay={
           <Tooltip>
             {instance.instance.private ? 
-              <div><Badge variant='info'>Private</Badge>{` - ${creator.displayName}`}</div> : 
-              <div>{`${instance.instance.name} - ${creator.displayName}`}</div>}
+              <div><Badge variant='info'>Private</Badge>{` - ${creator.name}`}</div> : 
+              <div>{`${instance.instance.name} - ${creator.name}`}</div>}
           </Tooltip>
         }>
           <Badge variant='info'>Booked</Badge>

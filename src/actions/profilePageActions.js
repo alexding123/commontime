@@ -1,3 +1,4 @@
+import { startSubmit, stopSubmit } from "redux-form"
 
 export const PROFILE_MEETINGS_TAB_SET = 'PROFILE_MEETINGS_TAB_SET'
 export const profileMeetingsTabSet = (tab) => ({
@@ -12,9 +13,12 @@ export const profileCollapseToggled = () => ({
 
 export const updateSettings = (id, values) => {
   return (dispatch, getState, {getFirebase, getFirestore}) => {
+    dispatch(startSubmit('profileForm'))
     const db = getFirestore()
     db.collection('users').doc(id).update({
       allowEmail: values.email,
+    }).then(() => {
+      dispatch(stopSubmit('profileForm'))
     })
   }
 }

@@ -10,8 +10,12 @@ const DangerZone = lazy(() => import('./DangerZone'))
 const Dashboard = lazy(() => import('./Dashboard'))
 const Courses = lazy(() => import('./Courses'))
 const AddCourse = lazy(() => import('./AddCourse'))
+const EditCourse = lazy(() => import('./EditCourse'))
+const Users = lazy(() => import('./Users'))
+const AddUser = lazy(() => import('./AddUser'))
+const EditUser = lazy(() => import('./EditUser'))
 
-const AdministratorPage = ({ profile, auth }) => {
+const AdministratorPage = ({ profile }) => {
   if (!profile.token.claims.admin) {
     return <NotFoundPage/>
   }
@@ -26,7 +30,11 @@ const AdministratorPage = ({ profile, auth }) => {
             <Route exact path="/Administrator/Dashboard"><Dashboard/></Route>
             <Route exact path="/Administrator/Annual"><AnnualBoard/></Route>
             <Route exact path="/Administrator/Courses"><Courses/></Route>
+            <Route exact path="/Administrator/Courses/:id"><EditCourse/></Route>
             <Route exact path="/Administrator/AddCourse"><AddCourse/></Route>
+            <Route exact path="/Administrator/Users"><Users/></Route>
+            <Route exact path="/Administrator/Users/:id"><EditUser/></Route>
+            <Route exact path="/Administrator/AddUser"><AddUser/></Route>
             <Route path="*"><Redirect from="*" to="/Administrator/Dashboard"/></Route>
           </Switch>
         </Col>

@@ -25,7 +25,7 @@ const BookedRoom = ({instance, users, profile, rooms, handleSubmit, handleCancel
         null}
       </Col>
       <Col xs={5}>
-        {`${instance.name}${creator ? ` - ${creator.displayName}`: ''}` }
+        {`${instance.name}${creator ? ` - ${creator.name}`: ''}` }
       </Col>
       { 
         !isEmpty(profile) ?

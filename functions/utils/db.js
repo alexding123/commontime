@@ -54,6 +54,16 @@ exports.getRecurring = (id) => {
 
 exports.getTerms = () => db.collection('meta').doc('terms').get().then(snap => snap.data())
 
+exports.getUsers = () => {
+  return db.collection('users').get().then(docs => {
+    const map = {}
+    docs.forEach(snap => {
+      map[snap.id] = snap.data()
+    })
+    return map
+  })
+}
+
 exports.getUserByID = (id) => {
   if (!id) return Promise.resolve({})
   return db.collection('users').where('id', '==', id).get().then(docs => {

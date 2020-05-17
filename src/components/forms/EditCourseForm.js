@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Button, OverlayTrigger, Tooltip, InputGroup } from 'react-bootstrap'
+import { Button, OverlayTrigger, Tooltip, InputGroup, ButtonGroup } from 'react-bootstrap'
 import Form from 'react-bootstrap/Form'
 import { Field, formValueSelector, reduxForm, FieldArray } from 'redux-form'
 import { compose } from 'redux'
@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import Check from './components/Check'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline'
 import HybridSelect from './components/HybridSelect'
-import { dayMap } from '../../utils'
+import { dayMap, getUserByID } from '../../utils'
 
 const renderMeetingTimes = ({ fields, periods, rooms }) => {
   return (<div>
@@ -86,7 +86,7 @@ const renderMembers = ({ fields, users }) => {
   </div>)
 }
 
-const AddCourseForm = ({periods, rooms, users, pristine, submitting, validated, handleSubmit}) => {
+const EditCourseForm = ({periods, rooms, users, pristine, submitting, validated, handleSubmit}) => {
   users = users ? Object.values(users) : []
   users.sort((a, b) => a.name < b.name ? -1 : (a.name === b.name ? 0 : 1))
   periods = periods ? Object.values(periods) : []
@@ -117,7 +117,7 @@ const AddCourseForm = ({periods, rooms, users, pristine, submitting, validated, 
           <Button variant="link" className="inline-icon ml-1"><HelpOutlineIcon fontSize="small"/></Button>
         </OverlayTrigger>
       </Form.Label>
-      <Field name="course" component={Control}/>
+      <Field name="course" component={Control} disabled={true}/>
     </Form.Group>
     <Form.Group>
       <Form.Label>
@@ -133,7 +133,7 @@ const AddCourseForm = ({periods, rooms, users, pristine, submitting, validated, 
           <Button variant="link" className="inline-icon ml-1"><HelpOutlineIcon fontSize="small"/></Button>
         </OverlayTrigger>
       </Form.Label>
-      <Field name="section" component={Control}/>
+      <Field name="section" component={Control} disabled={true}/>
     </Form.Group>
     <Form.Group>
       <Form.Label>Department (optional)</Form.Label>
@@ -164,8 +164,10 @@ const AddCourseForm = ({periods, rooms, users, pristine, submitting, validated, 
       <FieldArray name="members" component={renderMembers} users={users}/>
     </Form.Group>
     
-    
-    <Button variant="primary" type="submit" disabled={pristine || submitting || !validated}>Add Course</Button>
+    <ButtonGroup>
+      <Button variant="primary" type="submit" disabled={pristine || submitting || !validated}>Save</Button>
+      <Button variant="primary" href="/Administrator/Courses">Cancel</Button>
+    </ButtonGroup>
   </Form>
   )
 }
@@ -180,30 +182,40 @@ const validate = (selector) => {
 }
 
 const enhance = compose(
-  connect(state => {
-    const form = `addCourseForm`
+  connect((state, props) => {
+    const form = `editCourseForm`
     const selector = (...field) => formValueSelector(form)(state, ...field)
     const validated = validate(selector)
+    const users = state.firestore.data.userPreset
+    const periods = state.firestore.data.periods
+    const rooms = state.firestore.data.rooms
+    const times = props.course.times.map(time => {
+      const period = periods[`${time.day}-${time.period}`]
+      return {
+        period: {
+          ...period,
+          fullName: `${dayMap[period.day]} ${period.name}`,
+        },
+        room: rooms[time.room],
+      }
+    })
+    const members = props.course.members.map(member => getUserByID(users, member))
+    const teacher = getUserByID(users, props.course.teacher)
     return {
       form,
       validated,
-      periods: state.firestore.data.periods,
-      rooms: state.firestore.data.rooms,
-      users: state.firestore.data.userPreset,
+      periods,
+      rooms,
+      users,
       initialValues: {
-        name: "",
-        course: "",
-        section: "",
-        department: "",
-        fallTerm: true,
-        winterTerm: true,
-        springTerm: true,
-        members: [],
-        times: [],
+        ...props.course,
+        teacher,
+        times,
+        members,
       }
     }
   }),
   reduxForm(),
 )
 
-export default enhance(AddCourseForm)
+export default enhance(EditCourseForm)

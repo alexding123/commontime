@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-loop-func */
 const { calendar, auth, getAuth, insert, addInstance, addRecurring, addCourse, listEvents, list } = require('./utils/calendar')
-
+const { getUserByID, getUserPresetByEmail } = require('./utils/db')
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const db = admin.firestore()
@@ -134,7 +134,7 @@ const populateCalendarCourses = async (courses, calendarId, userAuth) => {
 }
 
 const populateCalendar = async (user, calendarId, token) => {
-  const userID = await db.collection('userPreset').doc(user.email.toLowerCase()).get().then(doc => {
+  const userID = await db.collection('userPreset').doc(user.id).get().then(doc => {
     if (!doc.exists) {
       throw new Error(`Email ${user.email} not found in uploaded user file`)
     }
@@ -154,18 +154,16 @@ const populateCalendar = async (user, calendarId, token) => {
 const runtimeOpts = { timeoutSeconds: 540, memory: '1GB' }
 
 exports.populateCourses = functions.runWith(runtimeOpts).https.onCall(async (data, context) => {
-  const user = context.auth.token
-
-  const calendarId = (await db.collection('users').doc(context.auth.uid).get()).data().calendar
-
+  const user = (await db.collection('users').doc(context.auth.uid).get()).data()
+  const calendarID = user.calendar
 
   if (!calendarId) {
     throw new functions.https.HttpsError('invalid-argument', `User ${context.auth.uid} has no calendar associated`)
   }
 
-  const userID = await db.collection('userPreset').doc(user.email.toLowerCase()).get().then(doc => {
+  const userID = await db.collection('userPreset').doc(user.id).get().then(doc => {
     if (!doc.exists) {
-      throw new Error(`Email ${user.email} not found in uploaded user file`)
+      throw new Error(`Email ${context.auth.token.email} not found in uploaded user file`)
     }
     return doc.data().id
   })
@@ -175,16 +173,14 @@ exports.populateCourses = functions.runWith(runtimeOpts).https.onCall(async (dat
 })
 
 exports.create = functions.runWith(runtimeOpts).https.onCall(async (data, context)=> {
-  const user = context.auth.token
   const userAuth = getAuth(data.token)
 
-  await db.collection('users').doc(context.auth.uid).get().then(doc => {
-    if (doc.data().calendar) {
-      throw new functions.https.HttpsError('invalid-argument', 'User already has a calendar associated')
-    }
-    return null
-  })
-  
+  const user = await db.collection('users').doc(context.auth.token.uid).get().then(doc => doc.data())
+  const userPreset = await getUserPresetByEmail(user.email)
+  if (user.calendar) {
+    throw new functions.https.HttpsError('invalid-argument', 'User already has a calendar associated')
+  }
+
   const newCalendar = await (new Promise((resolve, reject) => {
     calendar.calendars.insert({
       auth: userAuth,
@@ -201,7 +197,7 @@ exports.create = functions.runWith(runtimeOpts).https.onCall(async (data, contex
     })
   }))
 
-  await db.collection('users').doc(user.uid).set({
+  await db.collection('users').doc(context.auth.token.uid).set({
     calendar: newCalendar.id,
   }, {
     merge: true,
@@ -259,7 +255,7 @@ exports.create = functions.runWith(runtimeOpts).https.onCall(async (data, contex
     })
   })
 
-  await populateCalendar(user, newCalendar.id, data.token)
+  await populateCalendar(userPreset, newCalendar.id, data.token)
 
   return null
 })

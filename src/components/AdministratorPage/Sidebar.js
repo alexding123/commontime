@@ -10,6 +10,7 @@ import DashboardIcon from '@material-ui/icons/Dashboard'
 import BuildIcon from '@material-ui/icons/Build'
 import WarningIcon from '@material-ui/icons/Warning'
 import MenuBookIcon from '@material-ui/icons/MenuBook'
+import PeopleIcon from '@material-ui/icons/People'
 
 const Sidebar = ({location, collapsed, toggleCollapsed}) => {
   const pathname = location.pathname.replace("/Administrator", "")
@@ -31,7 +32,14 @@ const Sidebar = ({location, collapsed, toggleCollapsed}) => {
             <MenuBookIcon fontSize="small"/>
             Courses
           </span>
-          
+        </Nav.Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Nav.Link href="/Administrator/Users" eventKey="/Users">
+          <span className="sidebar-link-icon">
+            <PeopleIcon fontSize="small"/>
+            Users
+          </span>
         </Nav.Link>
       </Nav.Item>
       <div className="sidebar-divider"/>

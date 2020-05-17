@@ -38,7 +38,7 @@ let MeetingForm = ({pristine, instance, instances, submitting, rooms, handleSubm
           />
         </div>
         <div className="col-2 d-flex justify-content-center align-items-center">
-          <Button variant="link" type="submit" disabled={submitting || !validated} className="p-0 d-flex justify-content-center align-items-center">     
+          <Button variant="link" type="submit" disabled={pristine || submitting || !validated} className="p-0 d-flex justify-content-center align-items-center">     
             <CheckIcon/>
           </Button>
           <Button variant="link" onClick={cancelForm} className="p-0 d-flex justify-content-center align-items-center">     

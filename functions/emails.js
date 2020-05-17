@@ -62,7 +62,7 @@ exports.roomRebooked = functions.https.onCall((data, context) => {
       roomName: room.name,
       periodName: period.name,
       date: instance.date,
-      byName: byUser.displayName
+      byName: byUser.name,
     })
   })
 })
@@ -146,7 +146,7 @@ exports.meetingScheduled = functions.https.onCall((data, context) => {
   })
 })
 
-exports.recurringMeetingScheduled = functions.https.onCall((data, context) => {
+exports.recurringMeetingScheduled = functions.https.onCall(async (data, context) => {
   if (!context.auth.token.admin || !context.auth.token.teacher) {
     throw new functions.https.HttpsError('permission-denied', 'Only admins and teachers can notify meetings')
   }
@@ -157,69 +157,58 @@ exports.recurringMeetingScheduled = functions.https.onCall((data, context) => {
     recurringID = data.recurringID
     person = data.person
   } catch (e) {
-    throw new functions.https.HttpsError('invalid-argument', "Must supply recurringID and person arguments")
+    throw new functions.https.HttpsError('invalid-argument', "Must supply recurringID and person arguments.")
   }
 
-  const getRecurring = db.collection('recurrings').doc(recurringID).get().then(doc => {
+  const recurring = await db.collection('recurrings').doc(recurringID).get().then(doc => {
     if (!doc.exists) {
-      throw new functions.https.HttpsError('invalid-argument', `Recurring ${recurringID} not found`)
+      throw new functions.https.HttpsError('invalid-argument', `Recurring ${recurringID} not found.`)
     }
     return doc.data()
   })
 
-  const getParticipant = db.collection('userPreset').where('id', '==', person).get().then(doc => {
+  const participant = await db.collection('userPreset').where('id', '==', person).get().then(doc => {
     if (doc.empty) {
-      throw new functions.https.HttpsError('invalid-argument', `Person ${person} not found`)
+      throw new functions.https.HttpsError('invalid-argument', `Person ${person} not found.`)
     }
     if (doc.size > 1) {
-      throw new Error("Database has multiple users with the same ID")
+      throw new functions.https.HttpsError('internal', "Database has multiple users with the same ID.")
     }
     const data = doc.docs[0].data()
     return data
   })
 
-  const getCreator = getRecurring.then(recurring => {
-    return db.collection('userPreset').where('id', '==', recurring.creator).get().then(doc => {
-      if (doc.empty) {
-        throw new functions.https.HttpsError('invalid-argument', `Instance creator, ${recurring.creator}, does not exist`)
-      }
-      if (doc.size > 1) {
-        throw new Error("Database has multiple users with the same ID")
-      }
-      const data = doc.docs[0].data()
-      return data
-    })
+  const creator = await db.collection('userPreset').where('id', '==', recurring.creator).get().then(doc => {
+    if (doc.empty) {
+      throw new functions.https.HttpsError('invalid-argument', `Instance creator, ${recurring.creator}, does not exist.`)
+    }
+    if (doc.size > 1) {
+      throw new functions.https.HttpsError('internal', "Database has multiple users with the same ID.")
+    }
+    const data = doc.docs[0].data()
+    return data
   })
   
-  const getPeriod = getRecurring.then(recurring => {
-    return db.collection('periods').doc(recurring.period).get().then(doc => {
-      if (!doc.exists) {
-        throw new Error("Period not found")
-      }
-      return doc.data()
-    })
-  })
-
-  const getRoomName = getRecurring.then(recurring => {
-    if (recurring.room) {
-      return db.collection('rooms').doc(recurring.room).get().then(doc => {
-        if (!doc.exists) {
-          throw new Error("Room not found")
-        }
-        return doc.data().name
-      })
-    } else {
-      return recurring.roomName
+  const period = await db.collection('periods').doc(recurring.period).get().then(doc => {
+    if (!doc.exists) {
+      throw new functions.https.HttpsError('internal', "Period pointed by recurring event not found.")
     }
+    return doc.data()
   })
 
-  return Promise.all([getRecurring, getCreator, getParticipant, getPeriod, getRoomName]).then(([recurring, creator, participant, period, roomName]) => {
-    return sendEmail(participant.email, 'recurringMeetingNotify', {
-      creatorName: creator.name,
-      dayName: dayMap[period.day],
-      periodName: period.name,
-      roomName: roomName,
-      name: recurring.name,
-    })
+  const roomName = recurring.room ?
+    await db.collection('rooms').doc(recurring.room).get().then(doc => {
+      if (!doc.exists) {
+        throw new functions.https.HttpsError('internal', "Room pointed by recurring event not found.")
+      }
+      return doc.data().name
+    }) : recurring.roomName
+
+  return sendEmail(participant.email, 'recurringMeetingNotify', {
+    creatorName: creator.name,
+    dayName: dayMap[period.day],
+    periodName: period.name,
+    roomName: roomName,
+    name: recurring.name,
   })
 })

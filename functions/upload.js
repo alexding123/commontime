@@ -1,47 +1,46 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-loop-func */
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
 const db = admin.firestore()
-const { applyPreset } = require('./utils/preset') 
 
-const applyUsers = (data) => {
-  let dataMap = {}
-  data.forEach(datum => {
-    dataMap[datum.email] = datum
-  })
-  return db.collection('users').get().then((docs) => {
-    const promises = docs.docs.map(doc => {
-      const data = doc.data()
-      const presetData = dataMap[data.email]
-      if (presetData) {
-        return applyPreset(doc, presetData)
-      } else {
-        return Promise.resolve()
-      }
-    })
-    return Promise.all(promises)
-  })
+const sleep = async (time) => {
+  await new Promise(resolve => setTimeout(resolve, time))
 }
 
-exports.users = functions.https.onCall((data, context) => {
+exports.users = functions.https.onCall(async (data, context) => {
   if (!context.auth.token.admin) {
     throw new functions.https.HttpsError('permission-denied', 'Only admins can upload assets')
   }
-  const deletePromise = db.collection('userPreset').get().then(docs => {
+
+  // mark that an upload is happening
+  await db.collection('meta').doc('internal').update({
+    isUploadingUsers: true,
+  })
+
+  // delete current userPresets
+  await db.collection('userPreset').get().then(docs => {
     const promises = docs.docs.map(doc => {
       return doc.ref.delete()
     })
     return Promise.all(promises)
   })
   
-  return deletePromise.then(() => {
-    const userData = data.data
-    const promises = userData.map(data => {
-      return db.collection('userPreset').doc(data.email.toLowerCase()).set(data)
-    })
-    return Promise.all(promises).then(() => {
-      return applyUsers(userData)
-    }).catch(e => {throw e})
-  }).catch(e => {throw e})
+  // set new userPresets
+  const userData = data.data
+  for (let datum of userData) {
+    datum = {
+      ...datum,
+      email: datum.email.toLowerCase(),
+    }
+    await db.collection('userPreset').doc(datum.id).set(datum)
+  }
+
+  await sleep(1000 * 15)
+
+  await db.collection('meta').doc('internal').update({
+    isUploadingUsers: false,
+  })
 })
 
 exports.periods = functions.https.onCall((data, context) => {
@@ -102,13 +101,18 @@ exports.courses = functions.https.onCall(async (data, context) => {
 
   // mark that an upload is happening
   await db.collection('meta').doc('internal').update({
-    isUploading: true,
+    isUploadingCourses: true,
   })
 
   // delete all existing courses
   await db.collection('courses').get().then(docs => {
-    const promises = docs.docs.map(doc => {
-      return doc.ref.delete()
+    const promises = docs.docs.map(async doc => {
+      docs = await db.collection('courses').doc(doc.id).collection('instances').get()
+      for (let subdoc of docs.docs) {
+        await doc.ref.delete()
+      }
+
+      await doc.ref.delete()
     })
     return Promise.all(promises)
   })
@@ -145,13 +149,9 @@ exports.courses = functions.https.onCall(async (data, context) => {
     return Promise.all(promises)
   })
 
-  const sleep = async (time) => {
-    await new Promise(resolve => setTimeout(resolve, time))
-  }
-
   await sleep(1000 * 15)
 
   await db.collection('meta').doc('internal').update({
-    isUploading: false,
+    isUploadingCourses: false,
   })
 })

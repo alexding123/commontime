@@ -1,5 +1,5 @@
 import { combineReducers } from "redux"
-import { ADD_ADMIN_FORM_ERROR, ADD_ADMIN_FORM_SUCCESS, ADMINISTRATOR_SIDEBAR_COLLAPSED_TOGGLED, LIST_ADMINS_SUCCESS, PERIODS_ADD_PERIOD, PERIODS_DELETE_PERIOD, PERIODS_RESET, PERIODS_RETRIEVED, PERIODS_UPDATE_FIELD, PERIODS_UPLOAD_ERROR, PERIODS_UPLOAD_SUCCESS, ROOMS_ADD_ROOM, ROOMS_DELETE_ROOM, ROOMS_RESET, ROOMS_RETRIEVED, ROOMS_UPDATE_FIELD, ROOMS_UPLOAD_ERROR, ROOMS_UPLOAD_SUCCESS, UPLOAD_GROUPS_MEETINGS_MEMBERS_FORM_ERROR, UPLOAD_GROUPS_MEETINGS_MEMBERS_FORM_SUCCESS, UPLOAD_USERS_FORM_ERROR, UPLOAD_USERS_FORM_SUCCESS } from "../actions/administratorActions"
+import { ADD_ADMIN_FORM_ERROR, ADD_ADMIN_FORM_SUCCESS, ADMINISTRATOR_SIDEBAR_COLLAPSED_TOGGLED, LIST_ADMINS_SUCCESS, PERIODS_ADD_PERIOD, PERIODS_DELETE_PERIOD, PERIODS_RESET, PERIODS_RETRIEVED, PERIODS_UPDATE_FIELD, PERIODS_UPLOAD_ERROR, PERIODS_UPLOAD_SUCCESS, ROOMS_ADD_ROOM, ROOMS_DELETE_ROOM, ROOMS_RESET, ROOMS_RETRIEVED, ROOMS_UPDATE_FIELD, ROOMS_UPLOAD_ERROR, ROOMS_UPLOAD_SUCCESS, UPLOAD_GROUPS_MEETINGS_MEMBERS_FORM_ERROR, UPLOAD_GROUPS_MEETINGS_MEMBERS_FORM_SUCCESS, UPLOAD_USERS_FORM_ERROR, UPLOAD_USERS_FORM_SUCCESS, SET_ADD_COURSE_ERROR, SET_ADD_USER_ERROR } from "../actions/administratorActions"
 
 const initialState = {
   error: null,
@@ -209,9 +209,30 @@ const dashboardReducer = combineReducers({
   admins: adminsReducer,
 })
 
+
+const addCourseReducer = (state=null, action) => {
+  switch (action.type) {
+    case SET_ADD_COURSE_ERROR:
+      return action.data
+    default:
+      return state
+  }
+}
+
+const addUserReducer = (state=null, action) => {
+  switch (action.type) {
+    case SET_ADD_USER_ERROR:
+      return action.data
+    default:
+      return state
+  }
+}
+
 const administratorPageReducer = combineReducers({
   annualBoard: annualBoardReducer,
   sidebarCollapsed: sidebarCollapsedReducer,
   dashboard: dashboardReducer,
+  addCourse: addCourseReducer,
+  addUser: addUserReducer,
 })
 export default administratorPageReducer

@@ -1,6 +1,7 @@
 import React, { lazy } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
+import { Suspense } from 'react'
 
 const BookOneOffInviteSuccess = lazy(() => import('./BookOneOffInviteSuccess'))
 const BookOneOffNotifySuccess = lazy(() => import('./BookOneOffNotifySuccess'))
@@ -8,6 +9,8 @@ const BookRecurringInviteSuccess = lazy(() => import('./BookRecurringInviteSucce
 const BookRecurringNotifySuccess = lazy(() => import('./BookRecurringNotifySuccess'))
 const BookRoomSuccess = lazy(() => import('./BookRoomSuccess'))
 const ConfirmAddAdmin = lazy(() => import('./ConfirmAddAdmin'))
+const ConfirmDeleteCourse = lazy(() => import('./ConfirmDeleteCourse'))
+const ConfirmDeleteUser = lazy(() => import('./ConfirmDeleteUser'))
 const CoursesPopulated = lazy(() => import('./CoursesPopulated'))
 const FirstTimeLogin = lazy(() => import('./FirstTimeLogin'))
 const InvitationAccepted = lazy(() => import('./InvitationAccepted'))
@@ -17,8 +20,8 @@ const RecurringInvitationDeclined = lazy(() => import('./RecurringInvitationDecl
 const RelinquishAdmin = lazy(() => import('./RelinquishAdmin'))
 
 const Notifications = ({current}) => {
-  console.log(current)
   return (
+    <Suspense fallback={<div/>}>
     <div id="notifications">
     {current === 'bookOneOffInviteSuccess' && <BookOneOffInviteSuccess/>}
     {current === 'bookOneOffNotifySuccess' && <BookOneOffNotifySuccess/>}
@@ -26,6 +29,8 @@ const Notifications = ({current}) => {
     {current === 'bookRecurringNotifySuccess' && <BookRecurringNotifySuccess/>}
     {current === 'bookRoomSuccess' && <BookRoomSuccess/>}
     {current === 'confirmAddAdmin' && <ConfirmAddAdmin/>}
+    {current === 'confirmDeleteCourse' && <ConfirmDeleteCourse/>}
+    {current === 'confirmDeleteUser' && <ConfirmDeleteUser/>}
     {current === 'coursesPopulated' && <CoursesPopulated/>}
     {current === 'firstTimeLogin' && <FirstTimeLogin/>}
     {current === 'invitationAccepted' && <InvitationAccepted/>}
@@ -34,6 +39,7 @@ const Notifications = ({current}) => {
     {current === 'recurringInvitationDeclined' && <RecurringInvitationDeclined/>}
     {current === 'relinquishAdmin' && <RelinquishAdmin/>}
     </div>
+    </Suspense>
   )
 }
 

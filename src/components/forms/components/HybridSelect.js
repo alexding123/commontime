@@ -8,6 +8,7 @@ const HybridSelect = ({defaultMode, onBlur, onChange, value, ...props }) => {
     return <DropdownList
       className="text-align-left"
       onChange={onChange}
+      value={(Object.keys(value).length === 0 && value.constructor === Object) ? null : value}
       {...props}
     />
   } else {

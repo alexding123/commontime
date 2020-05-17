@@ -1,8 +1,11 @@
 import { getPeriodTimes } from "../selectors"
 import date from 'date-and-time'
+import { startSubmit, stopSubmit } from "redux-form"
 
 export const bookRoom = (period, d, room, values) => {
   return (dispatch, getState, {getFirebase, getFirestore}) => {
+    const form = `bookRoom${room.id}${d ? date.format(d, 'MM/DD/YYYY') : ''}Form`
+    dispatch(startSubmit(form))
     const db = getFirestore()
     const state = getState()
 
@@ -10,7 +13,7 @@ export const bookRoom = (period, d, room, values) => {
     const dFormatted = date.format(d, 'MM/DD/YYYY')
     const periodID = `${period.day}-${period.period}`
     const _private = Object.keys(values).includes('private') ? values.private : false
-    const { startDate, endDate } = getPeriodTimes(state, dFormatted, periodID)
+    const { startDate, endDate } = getPeriodTimes(state, d, periodID)
     db.collection('instances').add({
       date: dFormatted,
       period: periodID,
@@ -22,12 +25,16 @@ export const bookRoom = (period, d, room, values) => {
       private: _private,
       startDate,
       endDate
+    }).then(() => {
+      dispatch(stopSubmit(form))
     })
   }
 }
 
 export const rebookRoom = (instance, instanceID, values) => {
   return (dispatch, getState, {getFirebase, getFirestore}) => {
+    const form = `rebookRoom${instance.room.id}${instance.date}Form`
+    dispatch(startSubmit(form))
     const db = getFirestore()
     const state = getState()
 
@@ -57,6 +64,8 @@ export const rebookRoom = (instance, instanceID, values) => {
     sendEmail({
       instance: instance,
       by: userID,
+    }).then(() => {
+      dispatch(stopSubmit(form))
     })
   }
 }

@@ -11,7 +11,7 @@ import { setupFB } from "./firebase"
 import configureStore from './store/configureStore'
 import { ConnectedRouter } from 'connected-react-router'
 import { LastLocationProvider } from 'react-router-last-location'
-import { BrowserRouter } from 'react-router-dom'
+import { Router } from 'react-router-dom'
 import history from './store/history'
 import * as serviceWorker from './serviceWorker'
 
@@ -20,13 +20,13 @@ const render = (Component) => {
   ReactDOM.render(
     <Provider store={store}>
       <ConnectedRouter history={history}>
-      <BrowserRouter>
+      <Router history={history}>
         <ReactReduxFirebaseProvider {...setupFB(store)}>
           <LastLocationProvider>
             <Component/>
           </LastLocationProvider>
         </ReactReduxFirebaseProvider>
-      </BrowserRouter>
+      </Router>
       </ConnectedRouter>
     </Provider>,
     document.getElementById('root')
