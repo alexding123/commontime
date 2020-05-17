@@ -15,7 +15,9 @@ import { Router } from 'react-router-dom'
 import history from './store/history'
 import * as serviceWorker from './serviceWorker'
 import * as Sentry from '@sentry/browser'
-Sentry.init({dsn: "https://4157fd3daadc4f778f480e05f1e1c33e@o394172.ingest.sentry.io/5243982"})
+
+const dsn = process.env.NODE_ENV === 'development' ? null : "https://4157fd3daadc4f778f480e05f1e1c33e@o394172.ingest.sentry.io/5243982" 
+Sentry.init({dsn})
 
 const store = configureStore()
 const render = (Component) => {

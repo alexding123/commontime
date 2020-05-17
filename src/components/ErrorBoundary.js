@@ -13,24 +13,30 @@ class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    Sentry.withScope((scope) => {
-      scope.setExtras(errorInfo)
-      const eventId = Sentry.captureException(error)
-      this.setState({eventId})
-    })
+    if (process.env.NODE_ENV !== 'development') {
+      Sentry.withScope((scope) => {
+        scope.setExtras(errorInfo)
+        const eventId = Sentry.captureException(error)
+        this.setState({eventId})
+      })
+    }   
   }
 
   render() {
     if (this.state.hasError) {
       // render fallback component
-      return (<Alert variant="danger">
-        <p>Something went wrong!</p>
-        <Button onClick={() => Sentry.showReportDialog({ eventId: this.state.eventId })}>
-          Report feedback
-        </Button>
-      </Alert>
-      
-      )
+      if (process.env.NODE_ENV === 'development') {
+        return (<Alert variant="danger">
+          <p>Something went wrong!</p>
+        </Alert>)
+      } else {
+        return (<Alert variant="danger">
+          <p>Something went wrong!</p>
+          <Button onClick={() => Sentry.showReportDialog({ eventId: this.state.eventId })}>
+            Report feedback
+          </Button>
+        </Alert>)
+      }
     }
 
     // when there's not an error, render children untouched
