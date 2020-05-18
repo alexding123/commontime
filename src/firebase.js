@@ -28,7 +28,7 @@ firebase.functions()
 if (process.env.NODE_ENV !== "production") {
   firebase.functions().useFunctionsEmulator("http://localhost:5001")
 }
-const db = firebase.firestore()
+firebase.firestore()
 /*if (process.env.NODE_ENV !== "production") {
   db.settings({
     host: "localhost:8080",

@@ -2,7 +2,6 @@ import { push } from "connected-react-router"
 import { reset, startSubmit, stopSubmit } from "redux-form"
 import { getPeriodTimes } from "../selectors"
 import { notificationSet } from "./notificationsActions"
-import date from 'date-and-time'
 
 export const PAGE_SET = 'PAGE_SET'
 export const pageSet = (value) => {

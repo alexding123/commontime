@@ -9,7 +9,7 @@ if (functions.config().sentry && functions.config().sentry.dsn) {
 } else {
   console.warn(
     "/!\\ sentry.dsn environment variable not found. Skipping setting up Sentry..."
-  );
+  )
 }
 
 const admin = require('firebase-admin')
