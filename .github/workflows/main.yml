@@ -13,8 +13,6 @@ jobs:
         uses: actions/checkout@master
       - name: Install Dependencies
         run: npm install
-      - name: Install Firebase-Functions Dependencies
-        run: npm --prefix ./functions install ./functions
       - name: Build Frontend
         run: npm run build
       - name: Archive Production Artifact
