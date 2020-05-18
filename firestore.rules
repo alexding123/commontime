@@ -1,7 +1,144 @@
+rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /{document=**} {
-      allow read, write: if true;
+    	
+      function getByPath(collection, document) {
+        return get(/databases/$(database)/documents/$(collection)/$(document));
+      }
+      function getID(uid) {
+        return getByPath('users', uid).data.id;
+      }
+      function isSame(field) {
+        return request.resource.data[field] == resource.data[field];
+      }
+      function isAddOrRemoveUser(id) {
+       // returns if the only change to the data.members array is the provided id
+      	return request.resource.data.members.toSet().difference(resource.data.members.toSet())
+            == [id].toSet()
+            || resource.data.members.toSet().difference(request.resource.data.members.toSet())
+            == [id].toSet();
+      }
+      function isLoggedIn() {
+       return request.auth.uid != null;
+      }
+      function isAdmin() {
+        return isLoggedIn() && 'admin' in request.auth.token && request.auth.token.admin == true;
+      }
+      function isTeacher() {
+        return isLoggedIn() && 'teacher' in request.auth.token && getByPath('users', request.auth.uid).data.teacher == true
+      }    
+      
+      
+      match /courses/{courseID} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+      match /courses/{courseID}/instances/{instanceID} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+      match /periods/{periodID} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+      match /rooms/{roomID} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+      match /users/{userID} {
+        allow read: if isLoggedIn();
+        allow create: if isLoggedIn();
+        allow update: if isAdmin()
+                      || (request.auth.uid == resource.id
+                      && isSame('avatarUrl')
+                      && isSame('calendar')
+                      && isSame('displayName')
+                      && isSame('email')
+                      && isSame('firstName')
+                      && isSame('grade')
+                      && isSame('id')
+                      && isSame('lastName')
+                      && isSame('name')
+                      && isSame('teacher')
+                      && isSame('uid'));
+        allow delete: if isAdmin()
+                      || (isLoggedIn()
+                       && request.auth.uid == userID);
+      }
+      match /userPreset/{id} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+      match /meta/terms {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+      match /meta/internal {
+        allow read: if isAdmin();
+        allow write: if isAdmin();
+      }
+      match /invitations/{invitationID} {
+        allow read: if isLoggedIn();
+        allow create: if isAdmin() 
+                      || isTeacher()
+                      || (isLoggedIn()
+                      && ((request.resource.data.type == 'recurring'
+                        && getID(request.auth.uid) == 
+                           getByPath('recurrings', request.resource.data.recurringID).data.creator)
+                       || (request.resource.data.type == 'oneOff'
+                        && getID(request.auth.uid) == 
+                           getByPath('instances', request.resource.data.instanceID).data.creator)));
+        allow update: if isAdmin();
+        allow delete: if isAdmin()
+                      || isTeacher()
+                      || (isLoggedIn()
+                      && (resource.data.invitee == getID(request.auth.uid)
+                       || resource.data.creator == getID(request.auth.uid)));
+      }
+      
+      match /instances/{instanceID} {
+      	allow read: if true;
+        allow create: if isAdmin() 
+                      || (isLoggedIn()
+                      && request.resource.data.creator == getID(request.auth.uid)
+                      && getByPath('periods', request.resource.data.period).id == request.resource.data.period
+                      && (('room' in request.resource.data && request.resource.data != ''
+                        && getByPath('rooms', request.resource.data.room).id == request.resource.data.room)
+                       || 'roomName' in request.resource.data)
+                      && request.resource.data.startDate is timestamp
+                      && request.resource.data.endDate is timestamp
+                      && (request.resource.data.endDate.toMillis() - request.resource.data.startDate.toMillis()) > 0
+                      && 'members' in request.resource.data)
+        allow update: if isAdmin() 
+                      || isTeacher()
+        				 		  || isAddOrRemoveUser(getID(request.auth.uid));
+        allow delete: if isAdmin()
+                      || isTeacher()
+                      || getID(request.auth.uid) == resource.data.creator;
+      }
+      
+      match /recurrings/{recurringID} {
+      	allow read: if true;
+        allow create: if isAdmin() 
+                      || (isLoggedIn()
+                      && request.resource.data.creator == getID(request.auth.uid)
+                      && getByPath('periods', request.resource.data.period).id == request.resource.data.period
+                      && (('room' in request.resource.data && request.resource.data != ''
+                       && getByPath('rooms', request.resource.data.room).id == request.resource.data.room)
+                       || 'roomName' in request.resource.data)
+                      && 'members' in request.resource.data)
+        allow update: if isAdmin() 
+                      || isTeacher()
+        				 		  || isAddOrRemoveUser(getID(request.auth.uid));
+        allow delete: if isAdmin()
+                      || isTeacher()
+                      || getID(request.auth.uid) == resource.data.creator;
+      }
+      match /recurrings/{recurringID}/instances/{instanceID} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
     }
   }
 }

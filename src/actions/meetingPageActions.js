@@ -41,7 +41,7 @@ export const addInstanceAndInvite = (instance, values) => {
     dispatch(startSubmit(`bookOneOff${instance.period}${instance.date}Form`))
     const state = getState()
     const profile = state.firebase.profile
-    const { startDate, endDate } = getPeriodTimes(state, date.parse(instance.date, 'MM/DD/YYYY'), instance.period)
+    const { startDate, endDate } = getPeriodTimes(state, instance.date, instance.period)
     const db = getFirestore()
     db.collection('instances').add({
       creator: profile.id,
@@ -90,7 +90,7 @@ export const addInstanceAndNotify = (instance, people, values) => {
     const firebase = getFirebase()
     const state = getState()
     const profile = state.firebase.profile
-    const { startDate, endDate } = getPeriodTimes(state, date.parse(instance.date, 'MM/DD/YYYY'), instance.period)
+    const { startDate, endDate } = getPeriodTimes(state, instance.date, instance.period)
     const db = getFirestore()
     db.collection('instances').add({
       creator: profile.id,

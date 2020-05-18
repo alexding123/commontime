@@ -59,7 +59,7 @@ const enhance = compose(
   connect((state, props) => {
     const form = `recurring${props.instanceID}InviteForm`
     const selector = (...field) => formValueSelector(form)(state, ...field)
-    const invitationIDs = state.firestore.data[`${props.instanceID}Invitations`] ? Object.values(state.firestore.data[`${props.instanceID}Invitations`]).map(invitation => invitation.invitee) : []
+    const invitationIDs = state.firestore.data[`${props.instanceID}Invitations`] ? Object.values(state.firestore.data[`${props.instanceID}Invitations`]).filter(invitation => invitation).map(invitation => invitation.invitee) : []
 
     return {
       form,

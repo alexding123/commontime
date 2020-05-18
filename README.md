@@ -36,9 +36,11 @@ Now that you're in the `functions` directory, run
 
 to clone the environmental variables set on the cloud to your local machine for development.
 
+`cd` back to the project root directory. 
+
 ### Local Development
 
-My preferred setup is to have two shells open to the root directory of the project. On one, run `npm start` for the React development server. On another, run `firebase emulators:start --only functions` to start the Firebase function emulators.
+My preferred setup is to have two shells open to the root directory of the project. On one, run `npm start` for the React development server. On another, run `npm run emulate` to start the Firebase function emulators.
 
 You may access the [Firebase cloud console](https://console.firebase.google.com/) to play with the database.
 

@@ -1,7 +1,6 @@
+import { startSubmit, stopSubmit } from 'redux-form'
 import { getPeriodTimes } from '../selectors'
 import { notificationSet } from './notificationsActions'
-import { startSubmit, stopSubmit } from 'redux-form'
-import date from 'date-and-time'
 
 export const updateMeeting = (instanceID) => (values) => {
   return (dispatch, getState, {getFirestore}) => {
@@ -50,7 +49,7 @@ export const addMeeting = (date, day, time) => (values) => {
     const db = getFirestore()
     const state = getState()
     const userID = state.firebase.profile.id
-    const {startDate, endDate } = getPeriodTimes(state, date, `${day}-${time}`)
+    const { startDate, endDate } = getPeriodTimes(state, date, `${day}-${time}`)
     db.collection('instances').add({
       date: date,
       period: `${day}-${time}`,
@@ -70,6 +69,7 @@ export const addMeeting = (date, day, time) => (values) => {
 
 export const bookRoom = (d, period, room) => (values) => {
   return (dispatch, getState, {getFirebase, getFirestore}) => {
+    console.log(d)
     const form = `bookRoom${room.id}${d}Form`
     dispatch(startSubmit(form))
     const db = getFirestore()
@@ -77,8 +77,7 @@ export const bookRoom = (d, period, room) => (values) => {
 
     const userID = state.firebase.profile.id
     const _private = Object.keys(values).includes('private') ? values.private : false
-    const dateObj = date.parse(d, 'MM/DD/YYYY')
-    const { startDate, endDate } = getPeriodTimes(state, dateObj, period)
+    const { startDate, endDate } = getPeriodTimes(state, d, period)
     db.collection('instances').add({
       date: d,
       period: period,

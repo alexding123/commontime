@@ -13,7 +13,7 @@ export const bookRoom = (period, d, room, values) => {
     const dFormatted = date.format(d, 'MM/DD/YYYY')
     const periodID = `${period.day}-${period.period}`
     const _private = Object.keys(values).includes('private') ? values.private : false
-    const { startDate, endDate } = getPeriodTimes(state, d, periodID)
+    const { startDate, endDate } = getPeriodTimes(state, dFormatted, periodID)
     db.collection('instances').add({
       date: dFormatted,
       period: periodID,

@@ -14,7 +14,7 @@ const sortInstances = (instances) => {
   return [...bookedInstances, ...freeInstances]
 }
 
-const Display = ({profile, instances, periods, users, data}) => {
+const Display = ({profile, instances, periods, data}) => {
   const freeInstances = getFreeInstances(instances, periods, data)
   const userBookedRooms = isEmpty(profile) || data.allowRebook ? [] : freeInstances.filter(instance => instance.instance && instance.instance.creator === profile.id)
   const canRebook = !isEmpty(profile) && profile.token.claims.teacher ? data.allowRebook : false
@@ -24,7 +24,7 @@ const Display = ({profile, instances, periods, users, data}) => {
   return allInstancesToDisplay.length ? 
     <ListGroup>
       {allInstancesToDisplay.map((instance, index) => 
-        <InstanceDisplay key={index} instance={instance} canRebook={canRebook} users={users}/>
+        <InstanceDisplay key={index} instance={instance} canRebook={canRebook}/>
       )}
     </ListGroup> :
     <ListGroup>
@@ -45,7 +45,6 @@ const enhance = compose(
     instances: state.firestore.data.instancesScheduleRoom,
     periods: state.firestore.data.periods,
     profile: state.firebase.profile,
-    users: state.firestore.data.users,
   })),
 )
 

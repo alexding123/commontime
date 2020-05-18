@@ -11,13 +11,13 @@ import BookedRoom from './BookedRoom'
 import bookRoomFunc from './bookRoom'
 
 
-const FreeRooms = ({rooms, instances, period, profile, users, handleSubmit}) => {
-  if (!isLoaded(rooms) || !isLoaded(instances) || !isLoaded(users)) {
+const FreeRooms = ({rooms, instances, period, profile, handleSubmit}) => {
+  if (!isLoaded(instances)) {
     return <SplashScreen/>
   }
 
   const freeRooms = getFreeRooms(rooms, instances)
-  const isTeacher = !isEmpty(profile) && (profile.token.claims.teacher || profile.token.claims.admin)
+  const isTeacher = !isEmpty(profile) && profile.token.claims.teacher
   const bookedInstances = instances ? Object.entries(instances).filter(([key, instance]) => 
     instance && instance.type === 'event' && instance.room &&
     (!instance.private || instance.creator === profile.id)
@@ -34,6 +34,7 @@ const FreeRooms = ({rooms, instances, period, profile, users, handleSubmit}) => 
                 <Col>
                   <Button className="p-0" variant="link" href={`/Room/${room.id}`}>{room.name}</Button>
                 </Col>
+                { isTeacher ?
                 <Col className='ml-auto d-flex justify-content-end' xs={2}>
                   <OverlayTrigger
                     rootClose={true}
@@ -45,7 +46,8 @@ const FreeRooms = ({rooms, instances, period, profile, users, handleSubmit}) => 
                     </Button>
                   </OverlayTrigger>
                     
-                </Col>
+                </Col> : null
+                }
               </Row>
               
             </ListGroup.Item>
@@ -59,7 +61,7 @@ const FreeRooms = ({rooms, instances, period, profile, users, handleSubmit}) => 
       <Card.Body className='pt-0 pl-0 pr-0 pb-1'>
         <ListGroup variant="flush" >
           {bookedInstances.map(([key, instance]) => 
-            <BookedRoom id={key} key={key} instance={instance} users={users} profile={profile} rooms={rooms}/>
+            <BookedRoom id={key} key={key} instance={instance}/>
           )}
         </ListGroup>
       </Card.Body>
@@ -84,7 +86,7 @@ const enhance = compose(
   connect(state => ({
     rooms: state.firestore.data.rooms,
     instances: state.firestore.data.instancesFreeRooms,
-    users: state.firestore.data.users,
+    users: state.firestore.data.userPreset,
     profile: state.firebase.profile,
   }), (dispatch, props) => ({
     handleSubmit: (room) => (values) => dispatch(bookRoom(props.date, `${props.period.day}-${props.period.period}`, room)(values)),

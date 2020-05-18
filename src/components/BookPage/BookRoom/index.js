@@ -43,7 +43,7 @@ const enhance = compose(
     profile: state.firebase.profile,
     data: state.bookPage.data,
     instances: state.firestore.data.instancesScheduleRoom,
-    users: state.firestore.data.users,
+    users: state.firestore.data.userPreset,
     showFilters: state.bookPage.showFilters,
   }), dispatch => ({
     toggleShowFilters: () => dispatch(toggleShowFilters()),
@@ -61,7 +61,7 @@ const enhance = compose(
   }, {
     collection: 'periods',
   }, {
-    collection: 'users',
+    collection: 'userPreset',
   }, {
     collectionGroup: 'instances',
     where: [

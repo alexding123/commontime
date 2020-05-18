@@ -3,6 +3,7 @@ import { Col, Row } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { firestoreConnect, isLoaded } from 'react-redux-firebase'
 import { compose } from 'recompose'
+import date from 'date-and-time'
 import { getCurrentPeriod } from '../../utils'
 import SplashScreen from '../SplashScreen'
 import CurrentStatus from './CurrentStatus'
@@ -10,11 +11,12 @@ import ErrorBoundary from '../ErrorBoundary'
 const FreeRooms = lazy(() => import('./FreeRooms'))
 const Meetings = lazy(() => import('./Meetings'))
 
-const HomePage = ({meta, periods}) => {
-  if (!isLoaded(meta) || !meta.terms || !isLoaded(periods) || !periods) {
+const HomePage = ({meta, periods, rooms, users}) => {
+  if (!isLoaded(meta) || !meta.terms || !isLoaded(periods) || !periods || !isLoaded(rooms) || !rooms || !isLoaded(users)) {
     return <SplashScreen/>
   }
   const currentDate = new Date()
+  const currentDateStr = date.format(currentDate, 'MM/DD/YYYY')
   const currentPeriod = getCurrentPeriod(periods, meta.terms, currentDate)
 
   return (
@@ -28,7 +30,7 @@ const HomePage = ({meta, periods}) => {
         <Col xs={12} sm={6}>
           <ErrorBoundary>
           { currentPeriod.period ? 
-            <FreeRooms date={currentDate} period={currentPeriod.period}/> :
+            <FreeRooms date={currentDateStr} period={currentPeriod.period}/> :
             null
           }
           </ErrorBoundary>
@@ -36,7 +38,7 @@ const HomePage = ({meta, periods}) => {
         <Col className="ml-auto" xs={12} sm={6}>
           <ErrorBoundary>
           { currentPeriod.period ?
-            <Meetings date={currentDate} period={currentPeriod.period}/> :
+            <Meetings date={currentDateStr} period={currentPeriod.period}/> :
             null
           }
           </ErrorBoundary>
@@ -59,12 +61,14 @@ const enhance = compose(
       collection: 'rooms',
     },
     {
-      collection: 'users',
+      collection: 'userPreset',
     },
   ]),
   connect(state => ({
     periods: state.firestore.data.periods,
+    rooms: state.firestore.data.rooms,
     meta: state.firestore.data.meta,
+    users: state.firestore.data.userPreset,
   })),
 )
 

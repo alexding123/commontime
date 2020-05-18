@@ -12,7 +12,7 @@ import inviteFunc from './inviteFunc'
 import notifyFunc from './notifyFunc'
 
 const InstanceDisplay = ({profile, recurring, recurringID, periods, rooms, invitations, unsubscribe, deleteMeeting, handleNotifySubmit, handleInviteSubmit}) => {
-  if (!isLoaded(invitations)) {
+  if (recurring.creator === profile.id && !isLoaded(invitations)) {
     return <SplashScreen/>
   }
   const periodName = periods[recurring.period].name
@@ -66,11 +66,6 @@ const InstanceDisplay = ({profile, recurring, recurringID, periods, rooms, invit
 }
 
 const enhance = compose(
-  firestoreConnect(props => [{
-    collection: 'invitations',
-    where: [['recurringID', '==', props.recurringID]],
-    storeAs: `${props.recurringID}Invitations`
-  }]),
   connect((state, props) => ({
     periods: state.firestore.data.periods,
     rooms: state.firestore.data.rooms,
@@ -87,7 +82,17 @@ const enhance = compose(
       dispatch(inviteRecurringMeeting(values, recurring, recurringID, userID))
       document.body.click()
     }
-  }))
+  })),
+  firestoreConnect(props => {
+    if (props.recurring.creator === props.profile.id) {
+      return [{
+        collection: 'invitations',
+        where: [['recurringID', '==', props.recurringID]],
+        storeAs: `${props.recurringID}Invitations`
+      }]
+    }
+    return []
+  }),
 )
 
 export default enhance(InstanceDisplay)

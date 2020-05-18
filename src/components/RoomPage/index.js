@@ -110,7 +110,7 @@ const enhance = compose(
   firestoreConnect(props => [
     { collection: 'rooms' }, 
     { collection: 'periods' },
-    { collection: 'users' },
+    { collection: 'userPreset' },
     {
       collectionGroup: 'instances',
       where: [
@@ -126,7 +126,7 @@ const enhance = compose(
     roomID: props.match.params.id,
     instances: state.firestore.data[`room${props.match.params.id}Instances`],
     periods: state.firestore.data.periods,
-    users: state.firestore.data.users,
+    users: state.firestore.data.userPreset,
     profile: state.firebase.profile,
   }), dispatch => ({
     redirect: (path) => dispatch(push(path)),

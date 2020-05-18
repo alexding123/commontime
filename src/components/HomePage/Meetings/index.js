@@ -12,12 +12,14 @@ const Meetings = ({instancesLunch, instancesAfter, rooms, profile, isAddLunch, s
     return <SplashScreen/>
   }
 
-  const hasAccess = !isEmpty(profile) && (profile.token.claims.admin || profile.token.claims.teacher)
+  const hasAccess = !isEmpty(profile) && profile.token.claims.admin
   return (
     <Card>
       <Card.Header>Meetings</Card.Header>
       <Card.Body className='pt-1 pl-1 pr-1 pb-1'>
         <ListGroup variant="flush">
+          { instancesLunch ?
+          <React.Fragment>
           <ListGroup.Item>Lunch</ListGroup.Item>
           {instancesLunch ? Object.entries(instancesLunch).filter(([key, instance]) => instance.room !== '').map(([key, instance]) => (
             <Meeting key={key} id={key} instance={instance} instances={instancesLunch} rooms={rooms} editable={hasAccess} />
@@ -25,9 +27,14 @@ const Meetings = ({instancesLunch, instancesAfter, rooms, profile, isAddLunch, s
           { hasAccess ?
             <AddMeeting date={date} day={period.day} instances={instancesLunch} isAdd={isAddLunch} setIsAdd={setIsAddLunch} rooms={rooms} time="Lunch"/> :
             null
+          } 
+          </React.Fragment> :
+          <ListGroup.Item>No Lunch Meeting!</ListGroup.Item>
           }
         </ListGroup>
         <ListGroup variant="flush">
+          { instancesAfter ? 
+          <React.Fragment>
           <ListGroup.Item>After School</ListGroup.Item>
           {instancesAfter ? Object.entries(instancesAfter).filter(([key, instance]) => instance.room !== '').map(([key, instance]) => (
             <Meeting key={key} id={key} instance={instance} instances={instancesAfter} rooms={rooms} editable={!isEmpty(profile) && (profile.token.claims.admin || profile.token.claims.teacher)} />
@@ -35,6 +42,9 @@ const Meetings = ({instancesLunch, instancesAfter, rooms, profile, isAddLunch, s
           { hasAccess ? 
             <AddMeeting date={date} day={period.day} instances={instancesAfter} isAdd={isAddAfter} setIsAdd={setIsAddAfter} rooms={rooms} time="After School"/> :
             null
+          }
+          </React.Fragment> : 
+          <ListGroup.Item>No After School Meeting!</ListGroup.Item>
           }
         </ListGroup>
       </Card.Body>

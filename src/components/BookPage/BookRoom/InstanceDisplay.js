@@ -41,6 +41,7 @@ const InstanceDisplay = ({instance, users, profile, bookRoom, rebookRoom, cancel
     </Col>
     { !isEmpty(profile) ?
     <Col xs={2} className="d-flex flex-row justify-content-end pr-0 ml-auto">
+      { !(instance.instance && instance.instance.creator === profile.id) ? 
       <OverlayTrigger
         rootClose={true}
         overlay={
@@ -64,7 +65,8 @@ const InstanceDisplay = ({instance, users, profile, bookRoom, rebookRoom, cancel
         <Button variant='link' className='p-0 d-flex justify-content-center align-items-center'>
           <LibraryBooksIcon/>
         </Button>
-      </OverlayTrigger>
+      </OverlayTrigger> : null
+      }
       { instance.instance ?
         <Button variant="link" className="p-0 d-flex justify-content-center align-items-center" onClick={cancelBooking(instance.instance.key)}>     
           <DeleteOutlineIcon/>
@@ -82,7 +84,7 @@ const InstanceDisplay = ({instance, users, profile, bookRoom, rebookRoom, cancel
 
 const enhance = compose(
   connect(state => ({
-    users: state.firestore.data.users,
+    users: state.firestore.data.userPreset,
     profile: state.firebase.profile,
   }), dispatch => ({
     bookRoom: (date, period, room) => (values) => dispatch(bookRoom(date, period, room)(values)),

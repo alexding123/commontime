@@ -11,7 +11,10 @@ const DangerZone = ({annualBoard}) => {
   return (<div className="main">
     <h3>Danger Zone</h3>
     <div className="divider"/>
-    <Alert variant="danger">BE CAREFUL! The editors on this page control the website's underlying representation of the school's periods and rooms. One careless edit can break the system. If you do have to edit them (say, if the school revised its schedule, or if new rooms have been made), DO IT DURING SUMMER BREAK. Never change anything here while the system is under active use.</Alert>
+    <Alert variant="danger">BE CAREFUL! The editors on this page control the website's underlying representation of the school's periods and rooms. One careless edit can break the system. If you do have to edit them (say, if the school revised its schedule, or if new rooms have been made), DO IT DURING SUMMER BREAK. Never change anything here while the system is under active use.
+
+    Note: the code for the periods editor is pretty broken. Let's avoid using this for now.
+    </Alert>
     <hr/>
     <h5>Periods</h5>
     {annualBoard.periods.error ? 

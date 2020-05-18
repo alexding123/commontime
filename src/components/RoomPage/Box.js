@@ -16,7 +16,7 @@ const Box = ({users, profile, period, instance, instanceID, room, isTeacher, han
   const endTime = date.parse(period.endTime, 'HH:mm')
   const duration = date.subtract(endTime, startTime).toMinutes() + 5
   const height = duration * 1.5
-  let creator = instance ? Object.values(users).filter(user => user && user.id === instance.creator)[0] : null
+  let creator = instance && users ? Object.values(users).filter(user => user && user.id === instance.creator)[0] : null
   creator = creator ? creator : { name: 'Loading' }
   return (
   <div className={className} style={{height: `${height}px`}}>

@@ -14,7 +14,7 @@
     "bootstrap": "^4.4.1",
     "connected-react-router": "^6.8.0",
     "date-and-time": "^0.13.1",
-    "firebase": "^7.14.3",
+    "firebase": "^7.14.4",
     "history": "^4.10.1",
     "moment": "^2.24.0",
     "node-sass": "^4.14.1",
@@ -44,6 +44,7 @@
   },
   "scripts": {
     "start": "craco start",
+    "emulate": "firebase emulators:start --only functions",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject"
@@ -64,6 +65,7 @@
     ]
   },
   "devDependencies": {
+    "@crapougnax/firestore-export-import": "^0.3.0",
     "redux-devtools": "^3.5.0",
     "redux-devtools-dock-monitor": "^1.1.3",
     "redux-devtools-log-monitor": "^1.4.0",

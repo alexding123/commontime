@@ -13,7 +13,7 @@ import inviteFunc from './inviteFunc'
 import notifyFunc from './notifyFunc'
 
 const InstanceDisplay = ({profile, instance, instanceID, periods, rooms, invitations, unsubscribe, deleteMeeting, handleNotifySubmit, handleInviteSubmit}) => {
-  if (!isLoaded(invitations)) {
+  if (instance.creator === profile.id && !isLoaded(invitations)) {
     return <SplashScreen/>
   }
   const periodName = periods[instance.period].name
@@ -70,11 +70,6 @@ const InstanceDisplay = ({profile, instance, instanceID, periods, rooms, invitat
 }
 
 const enhance = compose(
-  firestoreConnect(props => [{
-    collection: 'invitations',
-    where: [['instanceID', '==', props.instanceID]],
-    storeAs: `${props.instanceID}Invitations`
-  }]),
   connect((state, props) => ({
     periods: state.firestore.data.periods,
     rooms: state.firestore.data.rooms,
@@ -91,7 +86,17 @@ const enhance = compose(
       dispatch(inviteOneOffMeeting(values, instance, instanceID, userID))
       document.body.click()
     }
-  }))
+  })),
+  firestoreConnect(props => {
+    if (props.instance.creator === props.profile.id) {
+      return [{
+        collection: 'invitations',
+        where: [['instanceID', '==', props.instanceID]],
+        storeAs: `${props.instanceID}Invitations`
+      }]
+    }
+    return []
+  }),
 )
 
 export default enhance(InstanceDisplay)

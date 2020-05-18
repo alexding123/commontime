@@ -13,8 +13,9 @@ import rebookRoomFunc from './rebookRoom'
 
 
 const BookedRoom = ({instance, users, profile, rooms, handleSubmit, handleCancel, handleAttend, handleUnattend}) => {
-  const creator = Object.values(users).filter(user => user && user.id === instance.creator)[0]
-  const room = rooms[instance.room]
+  users = users ? Object.values(users) : [] 
+  const creator = users.filter(user => user && user.id === instance.creator)[0]
+  const room = rooms[instance.room] ? rooms[instance.room] : {}
   return (<ListGroup.Item key={instance.room}>
     <Row>
       <Col xs={5}>
@@ -64,7 +65,11 @@ const BookedRoom = ({instance, users, profile, rooms, handleSubmit, handleCancel
 }
 
 const enhance = compose(
-  connect(null, (dispatch, props) => ({
+  connect(state => ({
+    rooms: state.firestore.data.rooms,
+    users: state.firestore.data.userPreset,
+    profile: state.firebase.profile,
+  }), (dispatch, props) => ({
     handleSubmit: (instance) => (values) => dispatch(rebookRoom(instance, props.id)(values)),
     handleCancel: () => dispatch(cancelBooking(props.id)),
     handleAttend: () => dispatch(attendMeeting(props.id)),
