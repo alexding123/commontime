@@ -1,5 +1,7 @@
 # Commontime
 
+![Build and Deploy](https://github.com/alexding123/commontime/workflows/Build%20and%20Deploy/badge.svg)
+
 This is the source code of [Commonwealth School](https://www.commschool.org/)'s scheduling app/website.
 
 It is built using [React.js](https://reactjs.org/) and [Redux](https://redux.js.org/) with a Google Firebase backend. Error analytics is handled using [sentry.io](https://sentry.io/).
