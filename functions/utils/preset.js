@@ -6,7 +6,7 @@ exports.applyPreset = (userID, presetData) => {
     teacher: presetData.teacher,
   }
   const authPromise = admin.auth().getUser(userID).then(user => {
-    return admin.auth().setCustomUserClaims(userID, {...user.customClaims, ...customClaims})
+    return admin.auth().setCustomUserClaims(userID, {...customClaims, ...user.customClaims})
   })
   const updatePromise = db.collection('users').doc(userID).update({
     grade: presetData.grade,
