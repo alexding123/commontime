@@ -56,8 +56,7 @@ export const login = () => {
         )
       })
     }).then((r) => {
-      const meta = r.user.metadata
-      if (meta.lastSignInTime === meta.creationTime) {
+      if (r.additionalUserInfo.isNewUser) {
         dispatch(createCalendar())
         dispatch(notificationSet('firstTimeLogin'))
       }
