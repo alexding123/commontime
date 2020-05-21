@@ -4,12 +4,25 @@ const functions = require('firebase-functions')
 const { getUserByEmail } = require('./db')
 
 const mailTransport = nodemailer.createTransport({
-  service: "gmail",
+  host: "in-v3.mailjet.com",
+  port: 587,
   auth: {
-    user: functions.config().mail.email,
+    user: functions.config().mail.username,
     pass: functions.config().mail.password,
   }
 })
+
+// verify mail connection
+try {
+mailTransport.verify((error, success) => {
+  if (error) {
+    throw error
+  }
+})
+} catch (error) {
+  if (!error.code) sentry.captureException(error)
+  throw error
+}
 
 const email = new Email({
   message: {

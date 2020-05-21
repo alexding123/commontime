@@ -4,7 +4,7 @@
 
 This is the source code of [Commonwealth School](https://www.commschool.org/)'s scheduling app/website.
 
-It is built using [React.js](https://reactjs.org/) and [Redux](https://redux.js.org/) with a Google Firebase backend. Error analytics is handled using [sentry.io](https://sentry.io/).
+It is built using [React.js](https://reactjs.org/) and [Redux](https://redux.js.org/) with a Google Firebase backend. Email service is provided by [Mailjet](https://app.mailjet.com/). Error analytics is handled using [sentry.io](https://sentry.io/).
 
 ## Getting Started
 
@@ -30,13 +30,13 @@ Clone this repository and cd into it. Install the npm packages for both the root
 
 ```npm install && cd functions && npm install```
 
-Now that you're in the `functions` directory, run
-
-```firebase functions:config:get > .runtimeconfig.json```
-
+`cd` back to the root directory and run
+```npm run sync-config```
 to clone the environmental variables set on the cloud to your local machine for development.
 
-`cd` back to the project root directory. 
+**Note**: use `firebase functions:config:set key.subkey=value` to config additional variables. Every time you make changes to the config variables, you must rerun `npm run sync-config` to update your local emulator to use the latest variables.
+
+`cd` back to the project root directory.
 
 ### Local Development
 
