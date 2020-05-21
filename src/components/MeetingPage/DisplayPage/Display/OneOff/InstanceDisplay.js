@@ -31,7 +31,7 @@ const InstanceDisplay = ({instance, periods,goBookRoom}) => {
       }
     </Col>
     <Col xs={2} className="d-flex flex-row justify-content-end pr-0 ml-auto">
-      <Button onClick={goBookRoom} variant='link' className='p-0 d-flex justify-content-center align-items-center'>
+      <Button onClick={goBookRoom} variant='link' className='center-button'>
         <LibraryBooksIcon/>
       </Button>    
     </Col>

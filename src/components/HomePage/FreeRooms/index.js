@@ -32,22 +32,20 @@ const FreeRooms = ({rooms, instances, period, profile, handleSubmit}) => {
             <ListGroup.Item key={room.id}>
               <Row>
                 <Col>
-                  <Button className="p-0" variant="link" href={`/Room/${room.id}`}>{room.name}</Button>
+                  <Button className="inline-link" variant="link" href={`/Room/${room.id}`}>{room.name}</Button>
                 </Col>
-                { isTeacher ?
                 <Col className='ml-auto d-flex justify-content-end' xs={2}>
                   <OverlayTrigger
                     rootClose={true}
                     overlay={bookRoomFunc(room, isTeacher, handleSubmit)}
                     trigger='click'
                   >
-                    <Button variant='link' className='p-0 d-flex justify-content-center align-items-center'>
+                    <Button variant='link' className='center-button'>
                       <LibraryBooksIcon/>
                     </Button>
                   </OverlayTrigger>
                     
-                </Col> : null
-                }
+                </Col>
               </Row>
               
             </ListGroup.Item>

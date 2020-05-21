@@ -19,7 +19,7 @@ const BookedRoom = ({instance, users, profile, rooms, handleSubmit, handleCancel
   return (<ListGroup.Item key={instance.room}>
     <Row>
       <Col xs={5}>
-        <Button variant="link" className="p-0" href={`/Room/${instance.room}`}>{room.name}</Button>
+        <Button variant="link" className="inline-link" href={`/Room/${instance.room}`}>{room.name}</Button>
         &nbsp;
         {instance.private ? 
          <Badge variant="info">Private</Badge> :
@@ -33,27 +33,32 @@ const BookedRoom = ({instance, users, profile, rooms, handleSubmit, handleCancel
         <Col className='ml-auto d-flex justify-content-end'>
           {
             instance.members.includes(profile.id) ?
-            <Button variant="link" className="p-0 d-flex justify-content-center align-items-center" onClick={handleUnattend} disabled={instance.creator === profile.id}>
+            <Button variant="link" className="center-button" onClick={handleUnattend} disabled={instance.creator === profile.id}>
               <CheckBoxOutlinedIcon/>
             </Button> :
-            <Button variant="link" className="p-0 d-flex justify-content-center align-items-center" onClick={handleAttend}>
+            <Button variant="link" className="center-button" onClick={handleAttend}>
               <CheckBoxOutlineBlankIcon/>
             </Button>
           }
           { instance.creator === profile.id ?
-            <Button variant='link' className='p-0 d-flex justify-content-center align-items-center' onClick={handleCancel}>
+            <Button variant='link' className='center-button' onClick={handleCancel}>
               <DeleteOutlineIcon/>
             </Button> :
             profile.token.claims.teacher ? 
+            <React.Fragment>
             <OverlayTrigger
               rootClose={true}
-              overlay={rebookRoomFunc(instance, handleSubmit)}
+              overlay={rebookRoomFunc(room, instance, handleSubmit)}
               trigger='click'
             >
-            <Button variant='link' className='p-0 d-flex justify-content-center align-items-center'>
+            <Button variant='link' className='center-button'>
               <LibraryBooksIcon/>
             </Button>
-            </OverlayTrigger> :
+            </OverlayTrigger>
+            <Button variant='link' className='center-button' onClick={handleCancel}>
+              <DeleteOutlineIcon/>
+            </Button>
+            </React.Fragment> :
             null
           }
         </Col> :

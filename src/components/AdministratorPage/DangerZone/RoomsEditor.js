@@ -61,7 +61,7 @@ class Row extends React.Component {
         <td><ContentEditable tagName="span" html={this.state.id} onChange={this.handleIDOnChange} onBlur={this.handleIDOnBlur}/></td>
         <td><ContentEditable tagName="span" html={this.state.name} onChange={this.handleNameOnChange} onBlur={this.handleNameOnBlur}/></td>
         <td><ContentEditable tagName="span" html={`${this.state.floor}`} onChange={this.handleFloorOnChange} onBlur={this.handleFloorOnBlur}/></td>
-        <td><Button variant="link" className='mx-0 p-0 d-flex justify-content-center align-items-center' style={{lineHeight: '0 !important'}} onClick={this.props.delete}><CloseIcon/></Button></td>
+        <td><Button variant="link" className='mx-0 center-button' style={{lineHeight: '0 !important'}} onClick={this.props.delete}><CloseIcon/></Button></td>
       </tr>
     )
   }

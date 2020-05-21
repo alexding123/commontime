@@ -9,7 +9,7 @@ import { addMeeting } from '../../../actions/homeActions'
 const AddMeeting = ({isAdd, setIsAdd, time, instances, rooms, handleSubmit}) => {
   if (!isAdd) {
     return <ListGroup.Item>
-      <Button variant="link" className="p-0 d-flex justify-content-center align-items-center mx-auto"  onClick={() => setIsAdd(true)}>
+      <Button variant="link" className="center-button mx-auto"  onClick={() => setIsAdd(true)}>
         <AddIcon/>
       </Button>
     </ListGroup.Item>

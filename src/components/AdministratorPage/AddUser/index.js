@@ -12,7 +12,7 @@ const AddUser = ({users, error, handleSubmit}) => {
   if (!isLoaded(users)) {
     return <SplashScreen/>
   }
-  users = users ? Object.values(users).filter(user => user) : []
+  const filteredUsers = users ? Object.values(users).filter(user => user) : []
 
   return (<div>
     <h3>Add an User</h3>
@@ -20,7 +20,7 @@ const AddUser = ({users, error, handleSubmit}) => {
     {error ? <Alert variant="danger">{error}</Alert> : null}
     <div>
       <ErrorBoundary>
-      <AddUserForm onSubmit={handleSubmit(users)}/>
+      <AddUserForm onSubmit={handleSubmit(filteredUsers)}/>
       </ErrorBoundary>
     </div>
   </div>)

@@ -10,10 +10,13 @@ import { compose } from 'recompose'
 import { Field, formValueSelector, reduxForm } from 'redux-form'
 import Control from './components/Control'
 import Toggle from './components/Toggle'
+import Exception from './components/Exception'
 
-let RebookRoomForm = ({pristine, submitting, handleSubmit, selector, cancelForm, validated}) => {
+let RebookRoomForm = ({pristine, submitting, handleSubmit, selector, cancelForm, validated, exceptions, exceptionKey}) => {
+  const exception = exceptions ? exceptions[exceptionKey] : null
   return (
   <Form onSubmit={handleSubmit}>
+    { exception ? <Exception exception={exception}/> : null }
     <Form.Group>
       <Field 
         name="name"
@@ -63,6 +66,8 @@ const enhance = compose(
 
     return {
       form,
+      exceptionKey: props.date ? date.format(props.date, 'MM-DD-YYYY') : null,
+      exceptions: state.firestore.data.exceptions,
       selector,
       validated: validate(selector),
       initialValues: {

@@ -76,11 +76,11 @@ const Box = ({users, profile, period, instance, instanceID, room, isTeacher, han
             overlay={bookRoom(room, isTeacher, handleSubmit(period, instanceDate))}
             trigger='click'
           >
-            <Button variant='link' className='p-0 d-flex justify-content-center align-items-center'>
+            <Button variant='link' className='center-button'>
               Free
             </Button>
           </OverlayTrigger> :
-          <div className='p-0 d-flex justify-content-center align-items-center'>Free</div>
+          <div className='center-button'>Free</div>
         )
       }
       </span>

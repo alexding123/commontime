@@ -6,8 +6,8 @@ import SplashScreen from '../../../SplashScreen'
 import InstanceDisplay from './InstanceDisplay'
 import ErrorBoundary from '../../../ErrorBoundary'
 
-const OneoffDisplay = ({instances}) => {
-  if (!isLoaded(instances)) {
+const OneoffDisplay = ({instances, exceptions}) => {
+  if (!isLoaded(instances) || !isLoaded(exceptions)) {
     return <SplashScreen/>
   }
   if (!instances) {
@@ -34,6 +34,7 @@ const enhance = compose(
   }]),
   connect(state => ({
     instances: state.firestore.data.instances,
+    exceptions: state.firestore.data.exceptions,
   })),
 )
 

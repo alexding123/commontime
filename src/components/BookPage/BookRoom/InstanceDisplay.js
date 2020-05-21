@@ -37,7 +37,7 @@ const InstanceDisplay = ({instance, users, profile, bookRoom, rebookRoom, cancel
       }
     </Col>
     <Col xs={3}>
-      <Button className="p-0" variant="link" href={`/Room/${instance.room.id}`}>{instance.room.name}</Button>
+      <Button className="inline-link" variant="link" href={`/Room/${instance.room.id}`}>{instance.room.name}</Button>
     </Col>
     { !isEmpty(profile) ?
     <Col xs={2} className="d-flex flex-row justify-content-end pr-0 ml-auto">
@@ -62,13 +62,13 @@ const InstanceDisplay = ({instance, users, profile, bookRoom, rebookRoom, cancel
         }
         trigger='click'
       >
-        <Button variant='link' className='p-0 d-flex justify-content-center align-items-center'>
+        <Button variant='link' className='center-button'>
           <LibraryBooksIcon/>
         </Button>
       </OverlayTrigger> : null
       }
       { instance.instance ?
-        <Button variant="link" className="p-0 d-flex justify-content-center align-items-center" onClick={cancelBooking(instance.instance.key)}>     
+        <Button variant="link" className="center-button" onClick={cancelBooking(instance.instance.key)}>     
           <DeleteOutlineIcon/>
         </Button> :
         null

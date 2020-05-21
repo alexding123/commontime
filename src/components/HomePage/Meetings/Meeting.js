@@ -24,14 +24,14 @@ const Meeting = ({isEdit, setIsEdit, key, editable, instance, profile, rooms, ha
   return <ListGroup.Item>
     <div className="row">
       <div className="col-5">{instance.name}</div>
-      <div className="col-5"><Button variant="link" className="p-0" href={`/Room/${instance.room}`}>{rooms[instance.room].name}</Button></div>
+      <div className="col-5"><Button variant="link" className="inline-link" href={`/Room/${instance.room}`}>{rooms[instance.room].name}</Button></div>
       <div className="col-2 pr-0 d-flex flex-row justify-content-end">
         { !isEmpty(profile) ? 
           (instance.members.includes(profile.id) ?
-          <Button variant="link" className="p-0 d-flex justify-content-center align-items-center" onClick={handleUnattend}>
+          <Button variant="link" className="center-button" onClick={handleUnattend}>
             <CheckBoxOutlinedIcon/>
           </Button> :
-          <Button variant="link" className="p-0 d-flex justify-content-center align-items-center" onClick={handleAttend}>
+          <Button variant="link" className="center-button" onClick={handleAttend}>
             <CheckBoxOutlineBlankIcon/>
           </Button>) :
           null
@@ -39,10 +39,10 @@ const Meeting = ({isEdit, setIsEdit, key, editable, instance, profile, rooms, ha
         {
           editable ? 
           <React.Fragment>
-            <Button variant="link" className="p-0 d-flex justify-content-center align-items-center" onClick={() => {setIsEdit(true)}}>     
+            <Button variant="link" className="center-button" onClick={() => {setIsEdit(true)}}>     
               <EditIcon/>
             </Button>
-            <Button variant="link" className="p-0 d-flex justify-content-center align-items-center" onClick={handleDelete}>     
+            <Button variant="link" className="center-button" onClick={handleDelete}>     
               <DeleteOutlineIcon/>
             </Button>
           </React.Fragment>

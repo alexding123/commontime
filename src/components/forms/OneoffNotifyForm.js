@@ -1,5 +1,6 @@
 import CheckIcon from '@material-ui/icons/Check'
 import CloseIcon from '@material-ui/icons/Close'
+import date from 'date-and-time'
 import React from 'react'
 import { Button, Col, Row } from 'react-bootstrap'
 import Form from 'react-bootstrap/Form'
@@ -8,20 +9,24 @@ import { firestoreConnect, isLoaded } from 'react-redux-firebase'
 import { compose } from 'recompose'
 import { Field, formValueSelector, reduxForm } from 'redux-form'
 import SplashScreen from '../SplashScreen'
+import Exception from './components/Exception'
 import HybridSelect from './components/HybridSelect'
-const OneoffNotifyForm = ({pristine, submitting, validated, instance, invitationIDs, handleSubmit, people}) => {
+
+const OneoffNotifyForm = ({pristine, submitting, validated, instance, invitationIDs, handleSubmit, people, exceptions, exceptionKey}) => {
   if (!isLoaded(people)) {
     return <SplashScreen/>
   }
-  people = people ? Object.values(people) : []
+  const filteredPeople = people ? Object.values(people).filter(person => person) : []
+  const exception = exceptions ? exceptions[exceptionKey] : null
   return (
   <Form onSubmit={handleSubmit}>
+    { exception ? <Exception exception={exception}/> : null }
     <Form.Group>
       <Field         
         name="people"
         valueField='id'
         textField='name'
-        data={people}
+        data={filteredPeople}
         disabled={[...instance.members, ...invitationIDs]}
         defaultMode='multi'
         component={HybridSelect}
@@ -68,6 +73,8 @@ const enhance = compose(
       },
       people: state.firestore.data.userPreset,
       invitationIDs,
+      exceptions: state.firestore.data.exceptions,
+      exceptionKey: date.format(date.parse(props.instance.date, 'MM/DD/YYYY'), 'MM-DD-YYYY'),
     }
   }),
   reduxForm(),
