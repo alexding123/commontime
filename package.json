@@ -45,6 +45,7 @@
   "scripts": {
     "start": "craco start",
     "emulate": "firebase emulators:start --only functions",
+    "sync-config": "firebase deploy --only functions && firebase functions:config:get > functions/.runtimeconfig.json",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject"
