@@ -1,5 +1,6 @@
 const functions = require('firebase-functions')
 const { sendEmail } = require('./utils/email')
+const { getInstance, getUserPresetByID, getPeriod, getRoom } = require('./utils/db')
 const { dayMap } = require('./utils/constants')
 const admin = require('firebase-admin')
 const sentry = require("@sentry/node")
@@ -73,10 +74,10 @@ exports.roomRebooked = functions.https.onCall((data, context) => {
   }
 })
 
-exports.meetingScheduled = functions.https.onCall((data, context) => {
+exports.meetingScheduled = functions.https.onCall(async (data, context) => {
   try {
   if (!context.auth.token.admin || !context.auth.token.teacher) {
-    throw new functions.https.HttpsError('permission-denied', 'Only admins and teachers can notify meetings')
+    throw new functions.https.HttpsError('permission-denied', 'Only admins and teachers can notify meetings.')
   }
 
   let instanceID = null
@@ -85,71 +86,49 @@ exports.meetingScheduled = functions.https.onCall((data, context) => {
     instanceID = data.instanceID
     person = data.person
   } catch (e) {
-    throw new functions.https.HttpsError('invalid-argument', "Must supply instanceID and person arguments")
+    throw new functions.https.HttpsError('invalid-argument', "Must supply instanceID and person arguments.")
   }
 
-  const getInstance = db.collection('instances').doc(instanceID).get().then(doc => {
-    if (!doc.exists) {
-      throw new functions.https.HttpsError('invalid-argument', `Instance ${instanceID} not found`)
-    }
-    return doc.data()
-  })
+  const instance = await getInstance(instanceID) 
+  if (Object.keys(instance).length === 0 && instance.constructor === Object) {
+    throw new functions.https.HttpsError('not-found', `Instance ${instanceID} not found.`)
+  }
 
-  const getParticipant = db.collection('userPreset').where('id', '==', person).get().then(doc => {
-    if (doc.empty) {
-      throw new functions.https.HttpsError('invalid-argument', `Person ${person} not found`)
-    }
-    if (doc.size > 1) {
-      throw new Error("Database has multiple users with the same ID")
-    }
-    const data = doc.docs[0].data()
-    return data
-  })
+  const participant = await getUserPresetByID(person)
+  if (Object.keys(participant).length === 0 && participant.constructor === Object) {
+    throw new functions.https.HttpsError('not-found', `User preset ${person} not found.`)
+  }
 
-  const getCreator = getInstance.then(instance => {
-    return db.collection('userPreset').where('id', '==', instance.creator).get().then(doc => {
-      if (doc.empty) {
-        throw new functions.https.HttpsError('invalid-argument', `Instance creator, ${instance.creator}, does not exist`)
-      }
-      if (doc.size > 1) {
-        throw new Error("Database has multiple users with the same ID")
-      }
-      const data = doc.docs[0].data()
-      return data
-    })
-  })
-  
-  const getPeriod = getInstance.then(instance => {
-    return db.collection('periods').doc(instance.period).get().then(doc => {
-      if (!doc.exists) {
-        throw new Error("Period not found")
-      }
-      return doc.data()
-    })
-  })
+  const creator = await getUserPresetByID(instance.creator)
+  if (Object.keys(creator).length === 0 && creator.constructor === Object) {
+    // this shouldn't happen even if the input is malformed
+    throw new Error('not-found', `Instance creator, ${instance.creator}, not found.`)
+  }
 
-  const getRoomName = getInstance.then(instance => {
-    if (instance.room) {
-      return db.collection('rooms').doc(instance.room).get().then(doc => {
-        if (!doc.exists) {
-          throw new Error("Room not found")
-        }
-        return doc.data().name
-      })
-    } else {
-      return instance.roomName
+  const period = await getPeriod(instance.period)
+  if (Object.keys(period).length === 0 && period.constructor === Object) {
+    // this shouldn't happen even if the input is malformed
+    throw new Error(`Period ${instance.period} not found.`)
+  }
+
+  let roomName = null
+  if (instance.room) {
+    const room = await getRoom(instance.room)
+    if (Object.keys(room).length === 0 && room.constructor === Object) {
+      // this shouldn't happen even if the input is malformed
+      throw new Error(`Room ${instance.room} not found.`)
     }
-  })
-
-  return Promise.all([getInstance, getCreator, getParticipant, getPeriod, getRoomName]).then(([instance, creator, participant, period, roomName]) => {
-    return sendEmail(participant.email, 'oneoffMeetingNotify', {
-      creatorName: creator.name,
-      dayName: dayMap[period.day],
-      periodName: period.name,
-      dateName: date.format(date.parse(instance.date, 'MM/DD/YYYY'), 'MMMM DD'),
-      roomName: roomName,
-      name: instance.name,
-    })
+    roomName = room.name
+  } else {
+    roomName = instance.roomName
+  }
+  await sendEmail(participant.email, 'oneoffMeetingNotify', {
+    creatorName: creator.name,
+    dayName: dayMap[period.day],
+    periodName: period.name,
+    dateName: date.format(date.parse(instance.date, 'MM/DD/YYYY'), 'MMMM DD'),
+    roomName: roomName,
+    name: instance.name,
   })
   } catch (error) {
     if (!error.code) sentry.captureException(error)
