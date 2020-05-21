@@ -10,6 +10,7 @@ const BookRecurringNotifySuccess = lazy(() => import('./BookRecurringNotifySucce
 const BookRoomSuccess = lazy(() => import('./BookRoomSuccess'))
 const ConfirmAddAdmin = lazy(() => import('./ConfirmAddAdmin'))
 const ConfirmDeleteCourse = lazy(() => import('./ConfirmDeleteCourse'))
+const ConfirmDeleteException = lazy(() => import('./ConfirmDeleteException'))
 const ConfirmDeleteUser = lazy(() => import('./ConfirmDeleteUser'))
 const CoursesPopulated = lazy(() => import('./CoursesPopulated'))
 const FirstTimeLogin = lazy(() => import('./FirstTimeLogin'))
@@ -30,6 +31,7 @@ const Notifications = ({current}) => {
     {current === 'bookRoomSuccess' && <BookRoomSuccess/>}
     {current === 'confirmAddAdmin' && <ConfirmAddAdmin/>}
     {current === 'confirmDeleteCourse' && <ConfirmDeleteCourse/>}
+    {current === 'confirmDeleteException' && <ConfirmDeleteException/>}
     {current === 'confirmDeleteUser' && <ConfirmDeleteUser/>}
     {current === 'coursesPopulated' && <CoursesPopulated/>}
     {current === 'firstTimeLogin' && <FirstTimeLogin/>}

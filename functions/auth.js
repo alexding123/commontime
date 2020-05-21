@@ -22,7 +22,7 @@ exports.onCreate = functions.auth.user().onCreate(async (user, context) => {
   const customClaims = {
     admin: false,
   }
-  await admin.auth().setCustomUserClaims(user.uid, {...user.customClaims, ...customClaims})
+  await admin.auth().setCustomUserClaims(user.uid, {...customClaims, ...user.customClaims})
   } catch (error) {
     if (!error.code) sentry.captureException(error)
     throw error

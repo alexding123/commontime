@@ -643,3 +643,55 @@ export const editUser = (id, values) => {
     })
   }
 }
+
+export const SET_ADD_EXCEPTION_ERROR = 'SET_ADD_EXCEPTION_ERROR'
+export const setAddExceptionError = (value) => ({
+  type: SET_ADD_EXCEPTION_ERROR,
+  data: value,
+})
+
+export const addException = (exceptions, values) => {
+  return (dispatch, getState, {getFirestore}) => {
+    dispatch(startSubmit('addExceptionForm'))
+    const db = getFirestore()
+    // if there is another exception on the same day
+    if (exceptions.filter(user => user.date === values.date).length > 0) {
+      dispatch(setAddUserError(`An exception on ${date.format(values.date, 'MMMM DD, YYYY')} already exists. Please edit that exception instead.`))
+      dispatch(stopSubmit('addExceptionForm'))
+      return
+    }
+    dispatch(setAddExceptionError(null))
+    const formattedDate = date.format(values.date, 'MM/DD/YYYY')
+    // cannot use / for id
+    const formattedID = date.format(values.date, 'MM-DD-YYYY')
+    db.collection('exceptions').doc(formattedID).set({
+      ...values,
+      date: formattedDate,
+    }).then(() => {
+      dispatch(push('/Administrator/Exceptions'))
+      dispatch(reset('addExceptionForm'))
+      dispatch(stopSubmit('addExceptionForm'))
+    })
+  }
+}
+
+export const deleteException = (id) => {
+  return (dispatch, getState, {getFirestore}) => {
+    const db = getFirestore()
+    db.collection('exceptions').doc(id).delete()
+  }
+}
+
+export const editException = (id, values) => {
+  return (dispatch, getState, {getFirestore}) => {
+    dispatch(startSubmit('editExceptionForm'))
+    const db = getFirestore()
+    db.collection('exceptions').doc(id).update({
+      description: values.description,
+      summary: values.summary,
+    }).then(() => {
+      dispatch(push("/Administrator/Exceptions"))
+      dispatch(stopSubmit('editExceptionForm'))
+    })
+  }
+}

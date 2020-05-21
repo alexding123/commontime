@@ -2,7 +2,7 @@ import CheckIcon from '@material-ui/icons/Check'
 import CloseIcon from '@material-ui/icons/Close'
 import date from 'date-and-time'
 import React from 'react'
-import { Button, Col, Row } from 'react-bootstrap'
+import { Button, Col, Row, Alert } from 'react-bootstrap'
 import Form from 'react-bootstrap/Form'
 import { connect } from 'react-redux'
 import "react-toggle/style.css"
@@ -10,10 +10,15 @@ import { compose } from 'recompose'
 import { Field, formValueSelector, reduxForm } from 'redux-form'
 import Control from './components/Control'
 import Toggle from './components/Toggle'
+import Exception from './components/Exception'
 
-let BookRoomForm = ({pristine, submitting, canBookPrivate, handleSubmit, cancelForm, validated, selector}) => {
+let BookRoomForm = ({pristine, submitting, canBookPrivate, handleSubmit, cancelForm, validated, selector, exceptions, exceptionKey}) => {
+  const exception = exceptions ? exceptions[exceptionKey] : null
   return (
   <Form onSubmit={handleSubmit}>
+    { exception ? 
+      <Exception exception={exception}/> : null
+    }
     <Form.Group>
       <Field 
         name="name"
@@ -61,12 +66,15 @@ const validate = (selector) => {
 
 const enhance = compose(
   connect((state, props) => {
-    const selector = (...field) => formValueSelector(`bookRoom${props.room.id}${props.date ? date.format(props.date, 'MM/DD/YYYY') : ''}Form`)(state, ...field)
+    const form = `bookRoom${props.room.id}${props.date ? date.format(props.date, 'MM/DD/YYYY') : ''}Form`
+    const selector = (...field) => formValueSelector(form)(state, ...field)
 
     return {
-      form: `bookRoom${props.room.id}${props.date ? date.format(props.date, 'MM/DD/YYYY') : ''}Form`,
-      selector,
+      form,
+      exceptionKey: props.date ? date.format(props.date, 'MM-DD-YYYY') : null,
+      exceptions: state.firestore.data.exceptions,
       validated: validate(selector),
+      selector,
       initialValues: {
         private: false,
       }

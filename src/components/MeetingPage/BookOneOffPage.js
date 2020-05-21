@@ -7,8 +7,8 @@ import { dayMap } from '../../utils'
 import BookOneOffForm from '../forms/BookOneOffForm'
 import SplashScreen from '../SplashScreen'
 
-const BookOneOffPage = ({instance, instances, periods, profile, rooms, people, handleSubmit}) => {
-  if (!isLoaded(profile) || !isLoaded(rooms) || !isLoaded(periods) || !isLoaded(instances)) {
+const BookOneOffPage = ({instance, instances, periods, profile, rooms, people, exceptions, handleSubmit}) => {
+  if (!isLoaded(profile) || !isLoaded(rooms) || !isLoaded(periods) || !isLoaded(instances) || !isLoaded(exceptions)) {
     return <SplashScreen/>
   }
   const canBookPrivate = !isEmpty(profile) && profile.token.claims.teacher
@@ -27,7 +27,8 @@ const enhance = compose(
     people: state.meetingPage.people,
     rooms: state.firestore.data.rooms,
     periods: state.firestore.data.periods,
-    instances: `bookOneOff${state.meetingPage.oneoffInstance.period}${state.meetingPage.oneoffInstance.date}Instances`
+    exceptions: state.firestore.data.exceptions,
+    instances: `bookOneOff${state.meetingPage.oneoffInstance.period}${state.meetingPage.oneoffInstance.date}Instances`,
   }), {
     addInstanceAndInvite,
     addInstanceAndNotify,

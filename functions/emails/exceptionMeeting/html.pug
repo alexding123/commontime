@@ -1,0 +1,19 @@
+doctype html
+html(lang='en')
+  head
+    title Your meeting today may run on a different schedule
+  body
+    div
+      p 
+        | An administrator has marked that today runs on a special schedule. 
+      pre 
+        | Summary: #{summary}
+      pre 
+        | Details: #{description}
+      p 
+        | In light of this change, your meeting on #{periodName} in #{roomName} today might happen on a different time or not happen at all. If you are meeting with other people, you might want to reach out to them to decide what to do. 
+  footer
+    p 
+      | You're receiving this email because of your Commontime email settings. To change it, visit your 
+      a(href=`${baseUrl}/Profile`) profile page
+      |.

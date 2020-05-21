@@ -35,6 +35,8 @@ const enhance = compose(
     collection: 'courses',
   }, {
     collection: 'recurrings',
+  }, {
+    collection: 'exceptions',
   }]),
   connect(state => ({
     stage: state.meetingPage.stage,

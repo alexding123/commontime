@@ -1,7 +1,7 @@
 import React, { lazy } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { firestoreConnect, isLoaded } from 'react-redux-firebase'
+import { firestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase'
 import { compose } from 'recompose'
 import date from 'date-and-time'
 import { getCurrentPeriod } from '../../utils'
@@ -10,9 +10,10 @@ import CurrentStatus from './CurrentStatus'
 import ErrorBoundary from '../ErrorBoundary'
 const FreeRooms = lazy(() => import('./FreeRooms'))
 const Meetings = lazy(() => import('./Meetings'))
+const Exception = lazy(() => import('./Exception'))
 
-const HomePage = ({meta, periods, rooms, users}) => {
-  if (!isLoaded(meta) || !meta.terms || !isLoaded(periods) || !periods || !isLoaded(rooms) || !rooms || !isLoaded(users)) {
+const HomePage = ({meta, periods, rooms, users, exception}) => {
+  if (!isLoaded(meta) || !meta.terms || !isLoaded(periods) || !periods || !isLoaded(rooms) || !rooms || !isLoaded(users) || !isLoaded(exception)) {
     return <SplashScreen/>
   }
   const currentDate = new Date()
@@ -22,6 +23,9 @@ const HomePage = ({meta, periods, rooms, users}) => {
   return (
     <div className="main">
       <h3>Home</h3>
+      <ErrorBoundary>
+        { isEmpty(exception) ? null : <Exception exception={exception}/>}
+      </ErrorBoundary>
       <ErrorBoundary>
       <CurrentStatus state={currentPeriod.state} period={currentPeriod.period} currentDate={currentDate}/>
       </ErrorBoundary>
@@ -63,12 +67,21 @@ const enhance = compose(
     {
       collection: 'userPreset',
     },
+    {
+      collection: 'exceptions',
+    },
+    {
+      collection: 'exceptions',
+      doc: date.format(new Date(), 'MM-DD-YYYY'),
+      storeAs: 'exceptionToday',
+    }
   ]),
   connect(state => ({
     periods: state.firestore.data.periods,
     rooms: state.firestore.data.rooms,
     meta: state.firestore.data.meta,
     users: state.firestore.data.userPreset,
+    exception: state.firestore.data.exceptionToday,
   })),
 )
 

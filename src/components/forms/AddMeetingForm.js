@@ -38,10 +38,10 @@ let AddMeetingForm = ({submitting, rooms, handleSubmit, cancelForm, validated, i
           />
         </div>
         <div className="col-2 d-flex justify-content-center align-items-center">
-          <Button variant="link" type="submit" disabled={submitting || !validated} className="p-0 d-flex justify-content-center align-items-center">     
+          <Button variant="link" type="submit" disabled={submitting || !validated} className="center-button">     
             <CheckIcon/>
           </Button>
-          <Button variant="link" onClick={cancelForm} className="p-0 d-flex justify-content-center align-items-center">     
+          <Button variant="link" onClick={cancelForm} className="center-button">     
             <CloseIcon/>
           </Button>
         </div>

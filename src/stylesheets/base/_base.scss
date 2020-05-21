@@ -58,8 +58,10 @@ code {
 
 .inline-link {
   display: inline;
+  font-size: inherit;
   margin: 0;
   padding: 0;
+  text-align: left;
   vertical-align: baseline;
 }
 
@@ -67,5 +69,20 @@ code {
   align-items: center;
   display: inline-flex;
   margin: 0;
+  padding: 0;
+}
+
+textarea {
+  white-space: pre-line;
+}
+
+.pre-like {
+  white-space: pre-line;
+}
+
+.center-button {
+  align-items: center;
+  display: flex;
+  justify-content: center;
   padding: 0;
 }

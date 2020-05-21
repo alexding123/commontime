@@ -16,9 +16,9 @@ import ErrorBoundary from '../ErrorBoundary'
 
 const date = require('date-and-time')
 
-const RoomPage = ({rooms, periods, instances, profile, roomID, users, startDate, endDate, redirect, handleBookInstance, handleRebookInstance, handleCancelInstance}) => {
+const RoomPage = ({rooms, periods, instances, exceptions, profile, roomID, users, startDate, endDate, redirect, handleBookInstance, handleRebookInstance, handleCancelInstance}) => {
 
-  if (!isLoaded(profile) || !isLoaded(rooms) || !isLoaded(periods) || !isLoaded(instances) || !isLoaded(users)) {
+  if (!isLoaded(profile) || !isLoaded(rooms) || !isLoaded(periods) || !isLoaded(instances) || !isLoaded(users) || !isLoaded(exceptions)) {
     return <SplashScreen/>
   }
 
@@ -111,6 +111,7 @@ const enhance = compose(
     { collection: 'rooms' }, 
     { collection: 'periods' },
     { collection: 'userPreset' },
+    { collection: 'exceptions' },
     {
       collectionGroup: 'instances',
       where: [
@@ -126,6 +127,7 @@ const enhance = compose(
     roomID: props.match.params.id,
     instances: state.firestore.data[`room${props.match.params.id}Instances`],
     periods: state.firestore.data.periods,
+    exceptions: state.firestore.data.exceptions,
     users: state.firestore.data.userPreset,
     profile: state.firebase.profile,
   }), dispatch => ({

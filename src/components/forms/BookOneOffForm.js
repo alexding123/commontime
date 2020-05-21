@@ -10,8 +10,10 @@ import { defaultExcludeRooms, getFreeRooms } from '../../utils'
 import Control from './components/Control'
 import HybridSelect from './components/HybridSelect'
 import Toggle from './components/Toggle'
+import date from 'date-and-time'
+import Exception from './components/Exception'
 
-const BookOneOffForm = ({pristine, submitting, validated, isInvite, rooms, instances, canBookPrivate, selector, handleSubmit, goDisplayPage}) => {
+const BookOneOffForm = ({pristine, submitting, validated, isInvite, rooms, instances, canBookPrivate, selector, handleSubmit, goDisplayPage, exceptions, exceptionKey}) => {
   const freeRooms = getFreeRooms(rooms, instances)
   
   const roomsSorted = freeRooms.sort((a, b) => {
@@ -26,8 +28,11 @@ const BookOneOffForm = ({pristine, submitting, validated, isInvite, rooms, insta
     }
     return 0
   })
+
+  const exception = exceptions ? exceptions[exceptionKey] : null
   return (
   <Form onSubmit={handleSubmit}>
+    { exception ? <Exception exception={exception}/> : null }
     <Form.Group>
       <Field 
         name="name"
@@ -116,6 +121,8 @@ const enhance = compose(
       form,
       selector,
       validated,
+      exceptions: state.firestore.data.exceptions,
+      exceptionKey: date.format(date.parse(props.instance.date, 'MM/DD/YYYY'), 'MM-DD-YYYY'),
       rooms: state.firestore.data.rooms,
       instances: state.firestore.data[`bookOneOff${props.instance.period}${props.instance.date}Instances`],
     }

@@ -5,6 +5,9 @@ import { compose } from 'recompose'
 import Sidebar from './Sidebar'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import ErrorBoundary from '../ErrorBoundary'
+import Exceptions from './Exceptions'
+import AddException from './AddException'
+import EditException from './EditException'
 const AnnualBoard = lazy(() => import('./AnnualBoard'))
 const NotFoundPage = lazy(() => import('../NotFoundPage'))
 const DangerZone = lazy(() => import('./DangerZone'))
@@ -37,6 +40,9 @@ const AdministratorPage = ({ profile }) => {
             <Route exact path="/Administrator/Users"><Users/></Route>
             <Route exact path="/Administrator/Users/:id"><EditUser/></Route>
             <Route exact path="/Administrator/AddUser"><AddUser/></Route>
+            <Route exact path="/Administrator/Exceptions"><Exceptions/></Route>
+            <Route exact path="/Administrator/Exceptions/:id"><EditException/></Route>
+            <Route exact path="/Administrator/AddException"><AddException/></Route>
             <Route path="*"><Redirect from="*" to="/Administrator/Dashboard"/></Route>
           </Switch>
           </ErrorBoundary>

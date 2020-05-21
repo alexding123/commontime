@@ -10,8 +10,8 @@ import SplashScreen from '../../SplashScreen'
 import date from 'date-and-time'
 import ErrorBoundary from '../../ErrorBoundary'
 
-const BookRoom = ({showFilters, toggleShowFilters, rooms, periods, profile, instances, users, data}) => {
-  if (!isLoaded(rooms) || !isLoaded(periods) || !isLoaded(profile) || !isLoaded(instances) || !isLoaded(users) || !data) {
+const BookRoom = ({showFilters, toggleShowFilters, rooms, periods, profile, instances, users, exceptions, data}) => {
+  if (!isLoaded(rooms) || !isLoaded(periods) || !isLoaded(profile) || !isLoaded(instances) || !isLoaded(users) || !isLoaded(exceptions) || !data) {
     return <SplashScreen/>
   }
   return (
@@ -40,6 +40,7 @@ const enhance = compose(
   connect(state => ({
     rooms: state.firestore.data.rooms,
     periods: state.firestore.data.periods,
+    exceptions: state.firestore.data.exceptions,
     profile: state.firebase.profile,
     data: state.bookPage.data,
     instances: state.firestore.data.instancesScheduleRoom,
@@ -62,6 +63,8 @@ const enhance = compose(
     collection: 'periods',
   }, {
     collection: 'userPreset',
+  }, {
+    collection: 'exceptions'
   }, {
     collectionGroup: 'instances',
     where: [

@@ -12,14 +12,14 @@ const AddCourse = ({courses, periods, rooms, users, error, handleSubmit}) => {
   if (!isLoaded(courses) || !courses || !isLoaded(periods) || !isLoaded(rooms) || !isLoaded(users)) {
     return <SplashScreen/>
   }
-  courses = courses ? Object.values(courses).filter(course => course) : []
+  const filteredCourses = courses ? Object.values(courses).filter(course => course) : []
   return (<div>
     <h3>Add a Course</h3>
     <div className="divider"/>
     {error ? <Alert variant="danger">{error}</Alert> : null}
     <div>
       <ErrorBoundary>
-      <AddCourseForm onSubmit={handleSubmit(courses)}/>
+      <AddCourseForm onSubmit={handleSubmit(filteredCourses)}/>
       </ErrorBoundary>
     </div>
   </div>)

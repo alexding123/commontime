@@ -36,6 +36,8 @@ const enhance = compose(
     collection: 'periods',
   }, {
     collection: 'rooms',
+  }, {
+    collection: 'exceptions',
   }]),
   connect(
     (state) => ({
