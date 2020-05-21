@@ -2,15 +2,15 @@ import CheckIcon from '@material-ui/icons/Check'
 import CloseIcon from '@material-ui/icons/Close'
 import date from 'date-and-time'
 import React from 'react'
-import { Button, Col, Row, Alert } from 'react-bootstrap'
+import { Button, Col, Row } from 'react-bootstrap'
 import Form from 'react-bootstrap/Form'
 import { connect } from 'react-redux'
 import "react-toggle/style.css"
 import { compose } from 'recompose'
 import { Field, formValueSelector, reduxForm } from 'redux-form'
 import Control from './components/Control'
-import Toggle from './components/Toggle'
 import Exception from './components/Exception'
+import Toggle from './components/Toggle'
 
 let BookRoomForm = ({pristine, submitting, canBookPrivate, handleSubmit, cancelForm, validated, selector, exceptions, exceptionKey}) => {
   const exception = exceptions ? exceptions[exceptionKey] : null
