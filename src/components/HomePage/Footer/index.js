@@ -8,7 +8,6 @@ import Octicon, {MarkGithub, IssueOpened} from '@primer/octicons-react'
 const Footer = () => {
 
   return (<footer>
-    <Container className="h-100">
       <Row className="align-items-center mt-auto mb-auto h-100">
         <Col>
           Got a feature request or noticed a bug? Open an&nbsp;
@@ -24,7 +23,6 @@ const Footer = () => {
           .
         </Col>
       </Row>
-    </Container>
   </footer>)
 }
 
