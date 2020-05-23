@@ -5,7 +5,7 @@
     position: sticky;
     top: calc(56px + 1rem);
     width: 340px;
-    height: 80vh;
+    height: calc(100vh - 106px);
   }
 
   .filters-display-container {

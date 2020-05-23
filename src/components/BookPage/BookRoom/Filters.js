@@ -13,7 +13,6 @@ const Filters = ({rooms, periods, profile, handleSubmit}) => {
   const initPeriods = periods.filter(period => period && !defaultExcludePeriods.includes(period.period))
 
   return (
-    <div>
     <ScheduleRoomForm 
       onSubmit={handleSubmit}
       initialValues={{
@@ -27,7 +26,6 @@ const Filters = ({rooms, periods, profile, handleSubmit}) => {
       }} rooms={rooms} periods={periods}
       canRebook={!isEmpty(profile) && profile.token.claims.teacher}
     />
-    </div>
   )
 }
 

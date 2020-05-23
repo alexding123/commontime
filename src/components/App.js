@@ -31,7 +31,7 @@ const App = () => (
       <Route path="/Login"><LoginPage/></Route>
       <Route path="*">
         <Navbar/>
-        <Container fluid id="wrapper">
+        <Container role="main" fluid>
           <ErrorBoundary>
           <Switch>
             <Route exact path="/"><HomePage/></Route>
