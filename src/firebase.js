@@ -35,7 +35,9 @@ firebase.firestore()
     ssl: false,
   })
 }*/
-firebase.performance()
+if (process.env.NODE_ENV === "production") {
+  firebase.performance()
+}
 
 const rfConfig = {}
 
