@@ -1,9 +1,8 @@
+import Octicon, { IssueOpened, MarkGithub } from '@primer/octicons-react'
 import React from 'react'
-import Container from 'react-bootstrap/Container'
 import Button from 'react-bootstrap/Button'
-import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import Octicon, {MarkGithub, IssueOpened} from '@primer/octicons-react'
+import Row from 'react-bootstrap/Row'
 
 const Footer = () => {
 
