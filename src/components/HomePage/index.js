@@ -8,6 +8,7 @@ import { getCurrentPeriod } from '../../utils'
 import SplashScreen from '../SplashScreen'
 import CurrentStatus from './CurrentStatus'
 import ErrorBoundary from '../ErrorBoundary'
+import Footer from './Footer'
 const FreeRooms = lazy(() => import('./FreeRooms'))
 const Meetings = lazy(() => import('./Meetings'))
 const Exception = lazy(() => import('./Exception'))
@@ -21,7 +22,8 @@ const HomePage = ({meta, periods, rooms, users, exception}) => {
   const currentPeriod = getCurrentPeriod(periods, meta.terms, currentDate)
 
   return (
-    <div className="main">
+    <div className="main home-main">
+      <div>
       <h3>Home</h3>
       <ErrorBoundary>
         { isEmpty(exception) ? null : <Exception exception={exception}/>}
@@ -48,6 +50,8 @@ const HomePage = ({meta, periods, rooms, users, exception}) => {
           </ErrorBoundary>
         </Col>
       </Row>
+      </div>
+      <Footer/>
     </div>
   )
 }

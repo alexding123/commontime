@@ -1,3 +1,15 @@
 // -----------------------------------------------------------------------------
 // This file contains styles that are specific to the home page.
 // -----------------------------------------------------------------------------
+
+.home-main {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 56px);
+  justify-content: flex-start;
+
+  div {
+    flex-grow: 1;
+  }
+}
+

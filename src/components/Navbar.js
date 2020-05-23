@@ -18,8 +18,7 @@ const OurNavbar = ({profile, location, redirect, logout}) => {
   const pathname = location.pathname
   let admin = isLoggedIn ? profile.token.claims.admin : null
   return (
-  <div style={{position: 'sticky', top: 0, zIndex: 1000}}>
-  <Navbar expand="sm" variant="dark">
+  <Navbar className="main-navbar" expand="sm" variant="dark">
   <Navbar.Brand href="/">
     Commontime
   </Navbar.Brand>
@@ -75,7 +74,6 @@ const OurNavbar = ({profile, location, redirect, logout}) => {
     </Nav>
   </Navbar.Collapse>
   </Navbar>
-  </div>
 )}
 
 
