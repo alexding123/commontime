@@ -102,6 +102,7 @@ exports.onCreate = functions.firestore.document('courses/{id}').onCreate(async (
 
   // if this is an upload, then add course to members' calendars
   const members = data.members
+  if (!members) return
   for (let member of members) {
     const calendarID = (await getUserByID(member)).calendar
     if (!calendarID) {
@@ -145,6 +146,7 @@ exports.onDelete = functions.firestore.document('courses/{id}').onDelete(async (
   
   // if this is not an upload, then remove course from members' calendars
   const members = snap.data().members
+  if (!members) return
   for (let member of members) {
     const calendarID = (await getUserByID(member)).calendar
     if (!calendarID) {
