@@ -3,7 +3,7 @@ import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined'
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks'
 import React from 'react'
-import { Badge, Button, Col, ListGroup, OverlayTrigger, Row } from 'react-bootstrap'
+import { Badge, Button, Col, ListGroup, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { isEmpty } from 'react-redux-firebase'
 import { compose } from 'recompose'
@@ -33,17 +33,44 @@ const BookedRoom = ({instance, users, profile, rooms, handleSubmit, handleCancel
         <Col className='ml-auto d-flex justify-content-end'>
           {
             instance.members.includes(profile.id) ?
+            <OverlayTrigger
+              placement="top-start"
+              overlay={
+                <Tooltip>
+                  Remove from Calendar
+                </Tooltip>
+              }
+            >
             <Button variant="link" className="center-button" onClick={handleUnattend} disabled={instance.creator === profile.id}>
               <CheckBoxOutlinedIcon/>
-            </Button> :
+            </Button>
+            </OverlayTrigger> :
+            <OverlayTrigger
+              placement="top-start"
+              overlay={
+                <Tooltip>
+                  Add to Calendar
+                </Tooltip>
+              }
+            >
             <Button variant="link" className="center-button" onClick={handleAttend}>
               <CheckBoxOutlineBlankIcon/>
             </Button>
+            </OverlayTrigger>
           }
           { instance.creator === profile.id ?
+            <OverlayTrigger
+              placement="top-start"
+              overlay={
+                <Tooltip>
+                  Delete Booking
+                </Tooltip>
+              }
+            >
             <Button variant='link' className='center-button' onClick={handleCancel}>
               <DeleteOutlineIcon/>
-            </Button> :
+            </Button>
+            </OverlayTrigger> :
             profile.token.claims.teacher ? 
             <React.Fragment>
             <OverlayTrigger
@@ -55,9 +82,18 @@ const BookedRoom = ({instance, users, profile, rooms, handleSubmit, handleCancel
               <LibraryBooksIcon/>
             </Button>
             </OverlayTrigger>
+            <OverlayTrigger
+              placement="top-start"
+              overlay={
+                <Tooltip>
+                  Delete Someone Else's Booking
+                </Tooltip>
+              }
+            >
             <Button variant='link' className='center-button' onClick={handleCancel}>
               <DeleteOutlineIcon/>
             </Button>
+            </OverlayTrigger>
             </React.Fragment> :
             null
           }
