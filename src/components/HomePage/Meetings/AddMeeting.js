@@ -1,5 +1,5 @@
 import React from 'react'
-import { ListGroup, Button } from 'react-bootstrap'
+import { ListGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import AddIcon from '@material-ui/icons/Add'
 import AddMeetingForm from '../../forms/AddMeetingForm'
 import { compose } from 'recompose'
@@ -9,9 +9,18 @@ import { addMeeting } from '../../../actions/homeActions'
 const AddMeeting = ({isAdd, setIsAdd, time, instances, rooms, handleSubmit}) => {
   if (!isAdd) {
     return <ListGroup.Item>
+      <OverlayTrigger
+        placement="top-start"
+        overlay={
+          <Tooltip>
+            Add Meeting
+          </Tooltip>
+        }
+      >
       <Button variant="link" className="center-button mx-auto"  onClick={() => setIsAdd(true)}>
         <AddIcon/>
       </Button>
+      </OverlayTrigger>
     </ListGroup.Item>
   }
 

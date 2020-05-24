@@ -8,7 +8,7 @@
   height: calc(100vh - 56px);
   justify-content: flex-start;
 
-  div {
+  >div {
     flex-grow: 1;
   }
 }
