@@ -46,13 +46,23 @@ export const login = () => {
   return (dispatch, getState, {getFirebase, getFirestore}) => {
     window.gapi.auth2.getAuthInstance().signIn().then(user => {
       if (user.getHostedDomain() !== "commschool.org") {
-        dispatch(loginError("You must log in with a @commschool.org email"))
-        return
+        throw new Error("You must log in with a @commschool.org email")
+      }
+      const email = user.getBasicProfile().getEmail().toLowerCase()
+      const idToken = user.getAuthResponse().id_token
+      const db = getFirestore()
+      const getPromise = db.collection('userPreset').where('email', '==', email).get()
+      const idTokenPromise = Promise.resolve(idToken)
+
+      return Promise.all([getPromise, idTokenPromise])
+    }).then(([docs, idToken]) => {
+      if (docs.empty) {
+        throw new Error("Your email was not found on the uploaded roster. Make sure you're logging in with the email of a student or teacher.")
       }
       const firebase = getFirebase()
       return firebase.login({
         credential: firebase.auth.GoogleAuthProvider.credential(
-          user.getAuthResponse().id_token,
+          idToken,
         )
       })
     }).then((r) => {
@@ -76,7 +86,7 @@ export const login = () => {
           dispatch(loginError("You must log in with a @commschool.org email"))
           return
         default:
-          console.error(err)
+          dispatch(loginError(err.message))
       }
     })
   }
