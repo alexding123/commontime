@@ -13,7 +13,7 @@ const PeriodDisplay = ({period, periods, goBookRoom}) => {
       {`${dayMap[periods[period.period].day]} ${periods[period.period].name}`}&nbsp;
       {
         period.conflicts.length ?
-        <OverlayTrigger trigger={['hover', 'click']} placement='right' overlay={
+        <OverlayTrigger trigger={['hover', 'click']} placement='top-start' overlay={
           <Tooltip>
             { period.conflicts.map((conflict, index) => {
               const personName = conflict.person.name

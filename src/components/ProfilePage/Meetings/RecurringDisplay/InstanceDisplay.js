@@ -1,7 +1,7 @@
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
 import PersonAddIcon from '@material-ui/icons/PersonAdd'
 import React from 'react'
-import { Button, Card, Col, OverlayTrigger, Row } from 'react-bootstrap'
+import { Button, Card, Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { firestoreConnect, isEmpty, isLoaded } from 'react-redux-firebase'
 import { compose } from 'recompose'
@@ -49,6 +49,14 @@ const InstanceDisplay = ({profile, recurring, recurringID, periods, rooms, invit
             </Button>
           </OverlayTrigger> : null
         }
+        <OverlayTrigger
+          placement="top-start"
+          overlay={
+            <Tooltip>
+              Delete
+            </Tooltip>
+          }
+        >
         <Button variant="link" className='p-0' style={{lineHeight: '0 !important'}} onClick={() => {
           if (isCreator) {
             deleteMeeting()
@@ -59,6 +67,7 @@ const InstanceDisplay = ({profile, recurring, recurringID, periods, rooms, invit
         }}>
           <DeleteOutlineIcon/>
         </Button>
+        </OverlayTrigger>
       </Col>
       </Row>
     </Card.Body>

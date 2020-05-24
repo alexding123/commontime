@@ -3,7 +3,7 @@ import CheckBoxOutlinedIcon from '@material-ui/icons/CheckBoxOutlined'
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
 import EditIcon from '@material-ui/icons/Edit'
 import React from 'react'
-import { Button, ListGroup } from 'react-bootstrap'
+import { Button, ListGroup, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { isEmpty } from 'react-redux-firebase'
 import { compose, withState } from 'recompose'
@@ -39,12 +39,30 @@ const Meeting = ({isEdit, setIsEdit, key, editable, instance, profile, rooms, ha
         {
           editable ? 
           <React.Fragment>
+            <OverlayTrigger
+              placement="top-start"
+              overlay={
+                <Tooltip>
+                  Edit
+                </Tooltip>
+              }
+            >
             <Button variant="link" className="center-button" onClick={() => {setIsEdit(true)}}>     
               <EditIcon/>
             </Button>
+            </OverlayTrigger>
+            <OverlayTrigger
+              placement="top-start"
+              overlay={
+                <Tooltip>
+                  Delete
+                </Tooltip>
+              }
+            >
             <Button variant="link" className="center-button" onClick={handleDelete}>     
               <DeleteOutlineIcon/>
             </Button>
+            </OverlayTrigger>
           </React.Fragment>
           : null
         }

@@ -13,7 +13,7 @@ const InstanceDisplay = ({instance, periods,goBookRoom}) => {
       {`${dayMap[periods[instance.period].day]} ${periods[instance.period].name}`}&nbsp;
       {
         instance.instances ?
-        <OverlayTrigger trigger={['hover', 'click']} placement='right' overlay={
+        <OverlayTrigger trigger={['hover', 'click']} placement='top-start' overlay={
           <Tooltip>
             { instance.instances.map((instance, index) => {
               const personName = instance.person.name

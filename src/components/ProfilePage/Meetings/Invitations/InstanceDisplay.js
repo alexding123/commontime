@@ -2,7 +2,7 @@ import CheckIcon from '@material-ui/icons/Check'
 import CloseIcon from '@material-ui/icons/Close'
 import date from 'date-and-time'
 import React from 'react'
-import { Button, Card, Col, Row } from 'react-bootstrap'
+import { Button, Card, Col, Row, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { firestoreConnect, isLoaded } from 'react-redux-firebase'
 import { compose } from 'recompose'
@@ -36,12 +36,30 @@ const InstanceDisplay = ({invitation, periods, rooms, instance, acceptInvitation
         {`${dayName} ${periodName}, ${dateName}`}
       </Row>
       </Col>
+      <OverlayTrigger
+        placement="top-start"
+        overlay={
+          <Tooltip>
+            Accept
+          </Tooltip>
+        }
+      >
       <Button variant="link" className='mx-0 p-0 ml-auto d-flex justify-content-center align-items-center' style={{lineHeight: '0 !important'}} onClick={acceptInvitation}>
         <CheckIcon/>
       </Button>
+      </OverlayTrigger>
+      <OverlayTrigger
+        placement="top-start"
+        overlay={
+          <Tooltip>
+            Decline
+          </Tooltip>
+        }
+      >
       <Button variant="link" className='mx-0 p-0 ml-auto d-flex justify-content-center align-items-center' style={{lineHeight: '0 !important'}} onClick={declineInvitation}>
         <CloseIcon/>
       </Button>
+      </OverlayTrigger>
       </Row>
     </Card.Body>
   </Card>
