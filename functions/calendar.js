@@ -204,7 +204,10 @@ exports.create = functions.runWith(runtimeOpts).https.onCall(async (data, contex
     })
   }))
 
-  await db.collection('users').doc(context.auth.token.uid).set({
+  console.log(context.auth.token.uid)
+  console.log(newCalendar.id)
+
+  await db.collection('users').doc(context.auth.token.uid).update({
     calendar: newCalendar.id,
   }, {
     merge: true,
