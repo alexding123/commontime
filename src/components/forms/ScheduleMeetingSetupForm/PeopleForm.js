@@ -19,7 +19,7 @@ const PeopleForm = ({pristine, submitting, validated, people, profile, handleSub
   const peopleList = people ? Object.values(people) : []
   return (
   <Form onSubmit={handleSubmit}>
-    <h5>Who are meeting?</h5>
+    <h5>Who is meeting?</h5>
     <Form.Group>
       <Field
         name="people"
