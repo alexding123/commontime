@@ -17,7 +17,7 @@ const HomePage = ({meta, periods, rooms, users, exception}) => {
   if (!isLoaded(meta) || !meta.terms || !isLoaded(periods) || !periods || !isLoaded(rooms) || !rooms || !isLoaded(users) || !isLoaded(exception)) {
     return <SplashScreen/>
   }
-  const currentDate = new Date(2020, 4, 25, 9, 10)
+  const currentDate = new Date()
   const currentDateStr = date.format(currentDate, 'MM/DD/YYYY')
   const currentPeriod = getCurrentPeriod(periods, meta.terms, currentDate)
 
