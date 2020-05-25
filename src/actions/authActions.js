@@ -44,7 +44,9 @@ const populateCourses = (uid) => {
 
 export const login = () => {
   return (dispatch, getState, {getFirebase, getFirestore}) => {
+    console.log("Trying to login Google")
     window.gapi.auth2.getAuthInstance().signIn().then(user => {
+      console.log("Google Login success")
       if (user.getHostedDomain() !== "commschool.org") {
         throw new Error("You must log in with a @commschool.org email")
       }
@@ -53,13 +55,15 @@ export const login = () => {
       const db = getFirestore()
       const getPromise = db.collection('userPreset').where('email', '==', email).get()
       const idTokenPromise = Promise.resolve(idToken)
-
+      
+      console.log("Getting userPreset for", email)
       return Promise.all([getPromise, idTokenPromise])
     }).then(([docs, idToken]) => {
       if (docs.empty) {
         throw new Error("Your email was not found on the uploaded roster. Make sure you're logging in with the email of a student or teacher.")
       }
       const firebase = getFirebase()
+      console.log("Trying to login firebase")
       return firebase.login({
         credential: firebase.auth.GoogleAuthProvider.credential(
           idToken,
@@ -69,24 +73,38 @@ export const login = () => {
       if (r.additionalUserInfo.isNewUser) {
         dispatch(createCalendar())
         dispatch(notificationSet('firstTimeLogin'))
-      }
+      } else {
+        // check if we should populate with courses
+        const db = getFirestore()
+        console.log(r.user.uid)
+        db.collection('users').doc(r.user.uid).get().then(doc => {
+          if (doc.exists && doc.data().shouldPopulateCourses) {
+            dispatch(populateCourses(r.user.uid))
+            dispatch(notificationSet('coursesPopulated'))
+          }
+          if (doc.exists && !doc.data().calendar && !doc.data().isCreatingCalendar) {
+            dispatch(createCalendar(  ))
+            dispatch(notificationSet('firstTimeLogin'))
+          }
 
-      // check if we should populate with courses
-      const db = getFirestore()
-      db.collection('users').doc(r.user.uid).get().then(doc => {
-        if (doc.exists && doc.data().shouldPopulateCourses) {
-          dispatch(populateCourses(r.user.uid))
-          dispatch(notificationSet('coursesPopulated'))
-        }
-      })
+        })
+      }
       dispatch(loginSuccess())
     }).catch(err => {
-      switch (err.type) {
-        case "tokenFailed":
-          dispatch(loginError("You must log in with a @commschool.org email"))
+      console.log("Error", err)
+      console.log("Signing out")
+      window.gapi.auth2.getAuthInstance().signOut()
+      const firebase = getFirebase()
+      firebase.logout()
+      switch (err.error) {
+        case "popup_closed_by_user":
           return
         default:
-          dispatch(loginError(err.message))
+          if (err.message) {
+            dispatch(loginError(err.message))
+          } else {
+            console.log(err)
+          }
       }
     })
   }
@@ -100,7 +118,9 @@ export const logout = () => {
   return (dispatch, getState, {getFirebase}) => {
     const firebase = getFirebase()
     firebase.logout().then(() => {
+      return window.gapi.auth2.getAuthInstance().signOut()
+    }).then(() => {
       dispatch(logoutSuccess())
-    })
+    }) 
   }
 }

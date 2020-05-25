@@ -32,6 +32,7 @@ exports.onCreate = functions.auth.user().onCreate(async (user, context) => {
 exports.onDelete = functions.auth.user().onDelete(async (user, context) => {
   try {
   const profile = await db.collection('users').doc(user.uid).get()
+  await db.collection('users').doc(user.uid).delete()
   if (!profile.data().calendar) return
   
   
@@ -47,7 +48,6 @@ exports.onDelete = functions.auth.user().onDelete(async (user, context) => {
     })
   }).catch(console.error)
   await deleteCalendarPromise
-  await db.collection('users').doc(user.uid).delete()
   } catch (error) {
     if (!error.code) sentry.captureException(error)
     throw error

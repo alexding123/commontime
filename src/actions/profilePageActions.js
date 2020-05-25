@@ -22,3 +22,13 @@ export const updateSettings = (id, values) => {
     })
   }
 }
+
+export const resetCalendar = () => {
+  return (dispatch, getState, {getFirebase, getFirestore}) => {
+    const firebase = getFirebase()
+    const resetCalendar = firebase.functions().httpsCallable('calendar-reset')
+    resetCalendar({
+      token: window.gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse(true).access_token,
+    })
+  }
+}

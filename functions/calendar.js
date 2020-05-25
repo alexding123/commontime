@@ -157,7 +157,8 @@ const runtimeOpts = { timeoutSeconds: 540, memory: '1GB' }
 exports.populateCourses = functions.runWith(runtimeOpts).https.onCall(async (data, context) => {
   try {
   const user = (await db.collection('users').doc(context.auth.uid).get()).data()
-  const calendarID = user.calendar
+  console.log(user)
+  const calendarId = user.calendar
 
   if (!calendarId) {
     throw new functions.https.HttpsError('invalid-argument', `User ${context.auth.uid} has no calendar associated`)
@@ -178,16 +179,18 @@ exports.populateCourses = functions.runWith(runtimeOpts).https.onCall(async (dat
   }
 })
 
-exports.create = functions.runWith(runtimeOpts).https.onCall(async (data, context)=> {
-  try {
+const create = async (data, context) => {
   const userAuth = getAuth(data.token)
-
   const user = await db.collection('users').doc(context.auth.token.uid).get().then(doc => doc.data())
+  await db.collection('users').doc(context.auth.token.uid).set({
+    isCreatingCalendar: true,
+  }, {
+    merge: true,
+  })
   const userPreset = await getUserPresetByEmail(user.email)
   if (user.calendar) {
     throw new functions.https.HttpsError('invalid-argument', 'User already has a calendar associated')
   }
-
   const newCalendar = await (new Promise((resolve, reject) => {
     calendar.calendars.insert({
       auth: userAuth,
@@ -203,9 +206,6 @@ exports.create = functions.runWith(runtimeOpts).https.onCall(async (data, contex
       resolve(res.data)
     })
   }))
-
-  console.log(context.auth.token.uid)
-  console.log(newCalendar.id)
 
   await db.collection('users').doc(context.auth.token.uid).update({
     calendar: newCalendar.id,
@@ -266,6 +266,51 @@ exports.create = functions.runWith(runtimeOpts).https.onCall(async (data, contex
   })
 
   await populateCalendar(userPreset, newCalendar.id, data.token)
+
+  await db.collection('users').doc(context.auth.token.uid).update({
+    isCreatingCalendar: false,
+  })
+}
+
+exports.create = functions.runWith(runtimeOpts).https.onCall(async (data, context)=> {
+  try {
+    await create(data, context)
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
+})
+
+exports.reset = functions.https.onCall(async (data, context) => {
+  try {
+  const userID = context.auth.uid
+  if (!userID) {
+    throw new functions.https.HttpsError('unauthenticated', 'You must be logged in to reset your calendar')
+  }
+  const user = (await db.collection('users').doc(userID).get()).data()
+  if (user.calendar) {
+    console.log("Deleting")
+    const deleteCalendarPromise = new Promise((resolve, reject) => {
+      calendar.calendars.delete({
+        calendarId: user.calendar,
+        auth: auth,
+      }, (err, res) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(res)
+      })
+    }).catch(console.error)
+    await deleteCalendarPromise
+    await db.collection('users').doc(userID).set({
+      calendar: null
+    }, {
+      merge: true,
+    })
+  }
+
+  await create(data, context)
+
   } catch (error) {
     if (!error.code) sentry.captureException(error)
     throw error

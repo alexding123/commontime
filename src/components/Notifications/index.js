@@ -1,7 +1,6 @@
-import React, { lazy } from 'react'
+import React, { lazy, Suspense } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
-import { Suspense } from 'react'
 
 const BookOneOffInviteSuccess = lazy(() => import('./BookOneOffInviteSuccess'))
 const BookOneOffNotifySuccess = lazy(() => import('./BookOneOffNotifySuccess'))
@@ -12,6 +11,7 @@ const ConfirmAddAdmin = lazy(() => import('./ConfirmAddAdmin'))
 const ConfirmDeleteCourse = lazy(() => import('./ConfirmDeleteCourse'))
 const ConfirmDeleteException = lazy(() => import('./ConfirmDeleteException'))
 const ConfirmDeleteUser = lazy(() => import('./ConfirmDeleteUser'))
+const ConfirmResetCalendar = lazy(() => import('./ConfirmResetCalendar'))
 const CoursesPopulated = lazy(() => import('./CoursesPopulated'))
 const FirstTimeLogin = lazy(() => import('./FirstTimeLogin'))
 const InvitationAccepted = lazy(() => import('./InvitationAccepted'))
@@ -33,6 +33,7 @@ const Notifications = ({current}) => {
     {current === 'confirmDeleteCourse' && <ConfirmDeleteCourse/>}
     {current === 'confirmDeleteException' && <ConfirmDeleteException/>}
     {current === 'confirmDeleteUser' && <ConfirmDeleteUser/>}
+    {current === 'confirmResetCalendar' && <ConfirmResetCalendar/>}
     {current === 'coursesPopulated' && <CoursesPopulated/>}
     {current === 'firstTimeLogin' && <FirstTimeLogin/>}
     {current === 'invitationAccepted' && <InvitationAccepted/>}
