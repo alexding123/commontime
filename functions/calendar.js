@@ -179,8 +179,7 @@ exports.populateCourses = functions.runWith(runtimeOpts).https.onCall(async (dat
   }
 })
 
-exports.create = functions.runWith(runtimeOpts).https.onCall(async (data, context)=> {
-  try {
+const create = async (data, context) => {
   const userAuth = getAuth(data.token)
   const user = await db.collection('users').doc(context.auth.token.uid).get().then(doc => doc.data())
   await db.collection('users').doc(context.auth.token.uid).set({
@@ -271,6 +270,47 @@ exports.create = functions.runWith(runtimeOpts).https.onCall(async (data, contex
   await db.collection('users').doc(context.auth.token.uid).update({
     isCreatingCalendar: false,
   })
+}
+
+exports.create = functions.runWith(runtimeOpts).https.onCall(async (data, context)=> {
+  try {
+    await create(data, context)
+  } catch (error) {
+    if (!error.code) sentry.captureException(error)
+    throw error
+  }
+})
+
+exports.reset = functions.https.onCall(async (data, context) => {
+  try {
+  const userID = context.auth.uid
+  if (!userID) {
+    throw new functions.https.HttpsError('unauthenticated', 'You must be logged in to reset your calendar')
+  }
+  const user = (await db.collection('users').doc(userID).get()).data()
+  if (user.calendar) {
+    console.log("Deleting")
+    const deleteCalendarPromise = new Promise((resolve, reject) => {
+      calendar.calendars.delete({
+        calendarId: user.calendar,
+        auth: auth,
+      }, (err, res) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(res)
+      })
+    }).catch(console.error)
+    await deleteCalendarPromise
+    await db.collection('users').doc(userID).set({
+      calendar: null
+    }, {
+      merge: true,
+    })
+  }
+
+  await create(data, context)
+
   } catch (error) {
     if (!error.code) sentry.captureException(error)
     throw error

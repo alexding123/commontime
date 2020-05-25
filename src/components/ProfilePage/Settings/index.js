@@ -1,12 +1,12 @@
 import React from 'react'
-import { compose } from 'recompose'
-import ProfileForm from '../../forms/ProfileForm'
-import { isLoaded } from 'react-redux-firebase'
-import SplashScreen from '../../SplashScreen'
 import { connect } from 'react-redux'
+import { isLoaded } from 'react-redux-firebase'
+import { compose } from 'recompose'
 import { updateSettings } from '../../../actions/profilePageActions'
-import AddCalendar from './AddCalendar'
 import ErrorBoundary from '../../ErrorBoundary'
+import ProfileForm from '../../forms/ProfileForm'
+import SplashScreen from '../../SplashScreen'
+import ResetCalendar from './ResetCalendar'
 
 const Settings = ({auth, profile, handleSubmit}) => {
   if (!isLoaded(auth) || !isLoaded(profile)) {
@@ -22,7 +22,7 @@ const Settings = ({auth, profile, handleSubmit}) => {
     <hr/>
     </ErrorBoundary>
     <ErrorBoundary>
-    <AddCalendar/>
+    <ResetCalendar/>
     </ErrorBoundary>
   </div>)
 }
