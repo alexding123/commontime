@@ -48,7 +48,7 @@ const enhance = compose(
   })),
   firestoreConnect(props => [
     { collection: 'periods' },
-    { collection: 'rooms '},
+    { collection: 'rooms'},
     { collection: 'instances', doc: props.instanceID },
   ]),
 )

@@ -1,14 +1,5 @@
 import { combineReducers } from "redux"
-import { PAGE_SET, SCHEDULE_MEETING_SETUP_SAVED, TOGGLE_SHOW_MEETING_FILTERS, ONEOFF_INSTANCE_SELECTED, PERIOD_SELECTED } from "../actions/meetingPageActions"
-
-const showFiltersReducer = (state=false, action) => {
-  switch (action.type) {
-    case TOGGLE_SHOW_MEETING_FILTERS:
-      return !state
-    default:
-      return state
-  }
-}
+import { PAGE_SET, SCHEDULE_MEETING_SETUP_SAVED, ONEOFF_INSTANCE_SELECTED, PERIOD_SELECTED } from "../actions/meetingPageActions"
 
 const stageReducer = (state='PEOPLE', action) => {
   switch (action.type) {
@@ -90,7 +81,6 @@ const meetingPageReducer = combineReducers({
   frequency: frequencyReducer,
   people: peopleReducer,
   dateRange: dateRangeReducer,
-  showFilters: showFiltersReducer,
   periods: periodsReducer,
   allowRebook: allowRebookReducer,
   oneoffInstance: oneoffInstanceReducer,

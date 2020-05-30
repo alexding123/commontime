@@ -44,7 +44,7 @@ const InstanceDisplay = ({profile, instance, instanceID, periods, rooms, invitat
         { isCreator ? 
           <OverlayTrigger trigger='click' rootClose={true} placement="top-start" overlay={
             isNotify ? 
-            notifyFunc(instance, instanceID, handleNotifySubmit(instanceID)) : 
+            notifyFunc(instance, instanceID, handleNotifySubmit(instance, instanceID)) : 
             inviteFunc(instance, instanceID, handleInviteSubmit(instance, instanceID, profile.id))
           }>
             <Button variant="link" className='p-0' style={{lineHeight: '0 !important'}}>
@@ -87,8 +87,8 @@ const enhance = compose(
   }), (dispatch, props) => ({
     deleteMeeting: () => dispatch(deleteOneOffMeeting(props.instanceID)),
     unsubscribe: (id) => dispatch(unsubscribeOneOffMeeting(props.instanceID, id)),
-    handleNotifySubmit: (instanceID) => (values) => {
-      dispatch(notifyOneOffMeeting(values, instanceID))
+    handleNotifySubmit: (instance, instanceID) => (values) => {
+      dispatch(notifyOneOffMeeting(values, instance, instanceID))
       document.body.click()
     },
     handleInviteSubmit: (instance, instanceID, userID) => (values) => {

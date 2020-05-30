@@ -9,7 +9,7 @@ const db = admin.firestore()
 
 exports.roomRebooked = functions.https.onCall((data, context) => {
   try {
-  if (!context.auth.token.admin || !context.auth.token.teacher) {
+  if (!context.auth.token.admin && !context.auth.token.teacher) {
     throw new functions.https.HttpsError('permission-denied', 'Only admins and teachers can rebook rooms')
   }
 
@@ -76,7 +76,7 @@ exports.roomRebooked = functions.https.onCall((data, context) => {
 
 exports.meetingScheduled = functions.https.onCall(async (data, context) => {
   try {
-  if (!context.auth.token.admin || !context.auth.token.teacher) {
+  if (!context.auth.token.admin && !context.auth.token.teacher) {
     throw new functions.https.HttpsError('permission-denied', 'Only admins and teachers can notify meetings.')
   }
 
@@ -138,7 +138,7 @@ exports.meetingScheduled = functions.https.onCall(async (data, context) => {
 
 exports.recurringMeetingScheduled = functions.https.onCall(async (data, context) => {
   try {
-  if (!context.auth.token.admin || !context.auth.token.teacher) {
+  if (!context.auth.token.admin && !context.auth.token.teacher) {
     throw new functions.https.HttpsError('permission-denied', 'Only admins and teachers can notify meetings')
   }
 

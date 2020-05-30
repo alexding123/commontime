@@ -12,7 +12,7 @@ const OneoffDisplay = ({instances, exceptions}) => {
   }
   if (!instances) {
     return <div className="mt-2">
-      <p>You are not part of any one-off meeting.</p>
+      <p>You are not part of any upcoming one-off meeting.</p>
     </div>
   }
   return (<div className="mt-2">
@@ -29,7 +29,7 @@ const enhance = compose(
     collection: 'instances',
     where: [
       ['members', 'array-contains', props.userId],
-      ['endDate', '>', new Date()],
+
     ],
   }]),
   connect(state => ({

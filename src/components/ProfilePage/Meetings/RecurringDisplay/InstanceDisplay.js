@@ -41,7 +41,7 @@ const InstanceDisplay = ({profile, recurring, recurringID, periods, rooms, invit
         { isCreator ?
           <OverlayTrigger trigger='click' rootClose={true} placement="top-start" overlay={
             isNotify ? 
-            notifyFunc(recurring, recurringID, handleNotifySubmit(recurringID)) : 
+            notifyFunc(recurring, recurringID, handleNotifySubmit(recurring, recurringID)) : 
             inviteFunc(recurring, recurringID, handleInviteSubmit(recurring, recurringID, profile.id))
           }>
             <Button variant="link" className='p-0' style={{lineHeight: '0 !important'}}>
@@ -83,8 +83,8 @@ const enhance = compose(
   }), (dispatch, props) => ({
     deleteMeeting: () => dispatch(deleteRecurringMeeting(props.recurringID)),
     unsubscribe: (id) => dispatch(unsubscribeRecurringMeeting(props.recurringID, id)),
-    handleNotifySubmit: (recurringID) => (values) => {
-      dispatch(notifyRecurringMeeting(values, recurringID))
+    handleNotifySubmit: (recurring, recurringID) => (values) => {
+      dispatch(notifyRecurringMeeting(values, recurring, recurringID))
       document.body.click()
     },
     handleInviteSubmit: (recurring, recurringID, userID) => (values) => {
