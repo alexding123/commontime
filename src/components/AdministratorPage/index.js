@@ -2,6 +2,7 @@ import React, { lazy } from 'react'
 import { Row, Col } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
+import PropTypes from 'prop-types'
 import Sidebar from './Sidebar'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import ErrorBoundary from '../ErrorBoundary'
@@ -19,10 +20,17 @@ const Users = lazy(() => import('./Users'))
 const AddUser = lazy(() => import('./AddUser'))
 const EditUser = lazy(() => import('./EditUser'))
 
+/**
+ * Administrator page, available only for admins to do
+ * sensitive admin stuff
+ */
 const AdministratorPage = ({ profile }) => {
+  // hide from non-admins
   if (!profile.token.claims.admin) {
     return <NotFoundPage/>
   }
+
+  // subrouter
   return (
     <Switch>
     <Route exact path="/Administrator/DangerZone"><DangerZone/></Route>
@@ -51,6 +59,10 @@ const AdministratorPage = ({ profile }) => {
     </Route>
     </Switch>
   )
+}
+
+AdministratorPage.propTypes = {
+  profile: PropTypes.object,
 }
 
 const enhance = compose(

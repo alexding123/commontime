@@ -7,7 +7,12 @@ import { initiateAddAdmin } from '../../../actions/administratorActions'
 import Administrators from './Administrators'
 import RelinquishAdmin from './RelinquishAdmin'
 import ErrorBoundary from '../../ErrorBoundary'
+import PropTypes from 'prop-types'
 
+/**
+ * Subpage to display the administrator dashboard, where
+ * admins can add admins or relinquish admin privileges
+ */
 const Dashboard = ({dashboard, handleSubmit}) => {
   return (<div>
     <h3>Dashboard</h3>
@@ -29,6 +34,14 @@ const Dashboard = ({dashboard, handleSubmit}) => {
     <RelinquishAdmin/>
     </ErrorBoundary>
   </div>)
+}
+
+Dashboard.propTypes = {
+  dashboard: PropTypes.shape({
+    /** Optional error messages */
+    admin: PropTypes.object.isRequired,
+  }).isRequired,
+  handleSubmit: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

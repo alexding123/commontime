@@ -8,7 +8,11 @@ import { withRouter } from 'react-router-dom'
 import { editException } from '../../../actions/administratorActions'
 import ErrorBoundary from '../../ErrorBoundary'
 import EditExceptionForm from '../../forms/EditExceptionForm'
+import PropTypes from 'prop-types'
 
+/**
+ * Subpage to edit an exception
+ */
 const EditCourse = ({exception, handleSubmit}) => {
   if (!isLoaded(exception)) {
     return <SplashScreen/>
@@ -25,6 +29,11 @@ const EditCourse = ({exception, handleSubmit}) => {
     </ErrorBoundary>
     </div>
   </div>)
+}
+
+EditExceptionForm.propTypes = {
+  exception: PropTypes.object,
+  handleSubmit: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

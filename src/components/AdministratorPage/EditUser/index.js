@@ -8,7 +8,11 @@ import { withRouter } from 'react-router-dom'
 import { editUser } from '../../../actions/administratorActions'
 import EditUserForm from '../../forms/EditUserForm'
 import ErrorBoundary from '../../ErrorBoundary'
+import PropTypes from 'prop-types'
 
+/**
+ * Subpage to edit an user
+ */
 const EditUser = ({user, users, handleSubmit}) => {
   if (!isLoaded(user) || !isLoaded(users)) {
     return <SplashScreen/>
@@ -25,6 +29,12 @@ const EditUser = ({user, users, handleSubmit}) => {
     </ErrorBoundary>
     </div>
   </div>)
+}
+
+EditUser.propTypes = {
+  user: PropTypes.object,
+  users: PropTypes.object,
+  handleSubmit: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

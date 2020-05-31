@@ -8,11 +8,16 @@ import EditCourseForm from '../../forms/EditCourseForm'
 import { withRouter } from 'react-router-dom'
 import { editCourse } from '../../../actions/administratorActions'
 import ErrorBoundary from '../../ErrorBoundary'
+import PropTypes from 'prop-types'
 
+/**
+ * Subpage to edit a course
+ */
 const EditCourse = ({course, courses, periods, rooms, users, handleSubmit}) => {
   if (!isLoaded(course) || !isLoaded(courses) || !courses || !isLoaded(periods) || !isLoaded(rooms) || !isLoaded(users)) {
     return <SplashScreen/>
   }
+  // if the course is not found, display 404
   if (!course) {
     return <NotFoundPage/>
   }
@@ -25,6 +30,14 @@ const EditCourse = ({course, courses, periods, rooms, users, handleSubmit}) => {
     </ErrorBoundary>
     </div>
   </div>)
+}
+EditCourse.propTypes = {
+  course: PropTypes.object,
+  courses: PropTypes.object,
+  periods: PropTypes.object,
+  rooms: PropTypes.object,
+  users: PropTypes.object,
+  handleSubmit: PropTypes.func.isRequired,
 }
 
 const enhance = compose(
