@@ -4,7 +4,12 @@ import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { notificationClosed } from '../../actions/notificationsActions'
 import { relinquishAdmin } from '../../actions/administratorActions'
+import PropTypes from 'prop-types'
 
+/**
+ * Notification prompting the user to confirm relinquishing their admin
+ * privileges
+ */
 const RelinquishAdmin = ({confirm, closeNotification}) => {
   return (
     <Modal
@@ -22,6 +27,13 @@ const RelinquishAdmin = ({confirm, closeNotification}) => {
       </Modal.Footer>
     </Modal>
   )
+}
+
+RelinquishAdmin.propTypes = {
+  /** Handler to confirm relinquishing admin privileges */
+  confirm: PropTypes.func.isRequired,
+  /** Handler to cancel relinquishing admin privileges and close the notification */
+  closeNotification: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

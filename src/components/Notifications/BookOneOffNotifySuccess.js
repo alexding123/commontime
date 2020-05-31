@@ -7,11 +7,18 @@ import { compose } from 'recompose'
 import { notificationClosed } from '../../actions/notificationsActions'
 import { dayMap } from '../../utils'
 import SplashScreen from '../SplashScreen'
+import PropTypes from 'prop-types'
 
+/**
+ * Notificaiton to inform the user that an one-off meeting has been
+ * booked successfully, and emails have been sent out to the other
+ * participants informing them of this
+ */
 const BookOneOffNotifySuccess = ({data: {useCustomRoom, customRoomName, room, period, name, date, people}, periods, rooms, users, closeNotification}) => {
   if (!isLoaded(periods) || !isLoaded(rooms) || !isLoaded(users)) {
     return <SplashScreen/>
   }
+  // convert from objects to displayable strings
   const dateObj = dateLib.parse(date, 'MM/DD/YYYY')
   const usersObj = Object.values(users)
   const periodObj = periods[period]
@@ -51,6 +58,24 @@ const BookOneOffNotifySuccess = ({data: {useCustomRoom, customRoomName, room, pe
       </Modal.Footer>
     </Modal>
   )
+}
+
+BookOneOffNotifySuccess.propTypes = {
+  /** Data to use for the notification */
+  data: PropTypes.shape({
+    useCustomRoom: PropTypes.bool.isRequired,
+    customRoomName: PropTypes.string,
+    room: PropTypes.string,
+    period: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    date: PropTypes.string.isRequired,
+    people: PropTypes.arrayOf(PropTypes.string).isRequired,
+  }).isRequired,
+  periods: PropTypes.object,
+  rooms: PropTypes.object,
+  users: PropTypes.object,
+  /** Handler to close the notification */
+  closeNotification: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

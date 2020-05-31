@@ -4,7 +4,11 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { deleteUser } from '../../actions/administratorActions'
 import { notificationClosed } from '../../actions/notificationsActions'
+import PropTypes from 'prop-types'
 
+/**
+ * Notificaiton prompting the user to confirm deleting a user record
+ */
 const ConfirmDeleteUser = ({data: {id, user}, confirm, closeNotification}) => {
   return (
     <Modal
@@ -23,6 +27,21 @@ const ConfirmDeleteUser = ({data: {id, user}, confirm, closeNotification}) => {
       </Modal.Footer>
     </Modal>
   )
+}
+
+ConfirmDeleteUser.propTypes = {
+  /** Data to use for the notification */
+  data: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    user: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+  /** Handler to confirm deleting the user */
+  confirm: PropTypes.func.isRequired,
+  /** Handler to cancel deleting the user and close the notification */
+  closeNotification: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

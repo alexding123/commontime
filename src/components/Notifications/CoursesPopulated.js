@@ -3,7 +3,12 @@ import { Modal, Button } from 'react-bootstrap'
 import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { notificationClosed } from '../../actions/notificationsActions'
+import PropTypes from 'prop-types'
 
+/**
+ * Notification that a new course upload has been made and that
+ * the user's calendar will be populated with new events
+ */
 const CoursesPopulated = ({closeNotification}) => {
   return (
     <Modal
@@ -21,6 +26,11 @@ const CoursesPopulated = ({closeNotification}) => {
       </Modal.Footer>
     </Modal>
   )
+}
+
+CoursesPopulated.propTypes = {
+  /** Handler to cancel deleting the exception and close the notification */
+  closeNotification: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

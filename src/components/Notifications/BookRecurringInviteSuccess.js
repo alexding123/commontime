@@ -6,8 +6,14 @@ import { compose } from 'recompose'
 import { notificationClosed } from '../../actions/notificationsActions'
 import { dayMap } from '../../utils'
 import SplashScreen from '../SplashScreen'
+import PropTypes from 'prop-types'
 
-const BookRecurringNotifySuccess = ({data: {useCustomRoom, customRoomName, room, period, name, people}, periods, rooms, users, closeNotification}) => {
+/**
+ * Notificaiton to inform the user that a recurring meeting has been
+ * booked successfully, and invitations have been sent out to the other
+ * participants to join
+ */
+const BookRecurringInviteSuccess = ({data: {useCustomRoom, customRoomName, room, period, name, people}, periods, rooms, users, closeNotification}) => {
   if (!isLoaded(periods) || !isLoaded(rooms) || !isLoaded(users)) {
     return <SplashScreen/>
   }
@@ -51,6 +57,23 @@ const BookRecurringNotifySuccess = ({data: {useCustomRoom, customRoomName, room,
   )
 }
 
+BookRecurringInviteSuccess.propTypes = {
+  /** Data to use for the notification */
+  data: PropTypes.shape({
+    useCustomRoom: PropTypes.bool.isRequired,
+    customRoomName: PropTypes.string,
+    room: PropTypes.string,
+    period: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    people: PropTypes.arrayOf(PropTypes.string).isRequired,
+  }).isRequired,
+  periods: PropTypes.object,
+  rooms: PropTypes.object,
+  users: PropTypes.object,
+  /** Handler to close the notification */
+  closeNotification: PropTypes.func.isRequired,
+}
+
 const enhance = compose(
   firestoreConnect([{
     collection: 'periods',
@@ -69,4 +92,4 @@ const enhance = compose(
   }))
 )
 
-export default enhance(BookRecurringNotifySuccess)
+export default enhance(BookRecurringInviteSuccess)

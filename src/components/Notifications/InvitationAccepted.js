@@ -3,7 +3,12 @@ import { Modal, Button } from 'react-bootstrap'
 import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { notificationClosed } from '../../actions/notificationsActions'
+import PropTypes from 'prop-types'
 
+/** 
+ * Notification confirming that an invitation to a one-off meeting
+ * has been accepted 
+ */
 const InvitationAccepted = ({closeNotification}) => {
   return (
     <Modal
@@ -20,6 +25,11 @@ const InvitationAccepted = ({closeNotification}) => {
       </Modal.Footer>
     </Modal>
   )
+}
+
+InvitationAccepted.propTypes = {
+  /** Handler to close the notification */
+  closeNotification: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
+import PropTypes from 'prop-types'
 
 const BookOneOffInviteSuccess = lazy(() => import('./BookOneOffInviteSuccess'))
 const BookOneOffNotifySuccess = lazy(() => import('./BookOneOffNotifySuccess'))
@@ -20,6 +21,10 @@ const RecurringInvitationAccepted = lazy(() => import('./RecurringInvitationAcce
 const RecurringInvitationDeclined = lazy(() => import('./RecurringInvitationDeclined'))
 const RelinquishAdmin = lazy(() => import('./RelinquishAdmin'))
 
+/**
+ * Component to display all modal notifications, routing to show the appropriate
+ * notification
+ */
 const Notifications = ({current}) => {
   return (
     <Suspense fallback={<div/>}>
@@ -44,6 +49,11 @@ const Notifications = ({current}) => {
     </div>
     </Suspense>
   )
+}
+
+Notifications.propTypes = {
+  /** The current notification to show (null if none) */
+  current: PropTypes.string,
 }
 
 const enhance = compose(

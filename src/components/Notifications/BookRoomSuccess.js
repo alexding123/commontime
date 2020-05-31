@@ -7,7 +7,12 @@ import { compose } from 'recompose'
 import { notificationClosed } from '../../actions/notificationsActions'
 import { dayMap } from '../../utils'
 import SplashScreen from '../SplashScreen'
+import PropTypes from 'prop-types'
 
+/**
+ * Notification to inform the user that they have successfully
+ * booked a room for themselves
+ */
 const BookRoomSuccess = ({data: {room, period, name, date}, periods, rooms, closeNotification}) => {
   if (!isLoaded(periods) || !isLoaded(rooms)) {
     return <SplashScreen/>
@@ -35,6 +40,20 @@ const BookRoomSuccess = ({data: {room, period, name, date}, periods, rooms, clos
       </Modal.Footer>
     </Modal>
   )
+}
+
+BookRoomSuccess.propTypes = {
+  /** Data to use for the notification */
+  data: PropTypes.shape({
+    room: PropTypes.string.isRequired,
+    period: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    date: PropTypes.string.isRequired,
+  }).isRequired,
+  periods: PropTypes.object,
+  rooms: PropTypes.object,
+  /** Handler to close the notification */
+  closeNotification: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

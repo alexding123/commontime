@@ -4,8 +4,12 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { notificationClosed } from '../../actions/notificationsActions'
 import { resetCalendar } from '../../actions/profilePageActions'
+import PropTypes from 'prop-types'
 
-const ConfirmResetCalendar = ({data: {profile}, confirm, closeNotification}) => {
+/**
+ * Notificaiton prompting the user to confirm resetting their calendar
+ */
+const ConfirmResetCalendar = ({data: {}, confirm, closeNotification}) => {
   return (
     <Modal
       size="lg"
@@ -26,6 +30,16 @@ const ConfirmResetCalendar = ({data: {profile}, confirm, closeNotification}) => 
       </Modal.Footer>
     </Modal>
   )
+}
+
+ConfirmResetCalendar.propTypes = {
+  /** Data to use for the notification */
+  data: PropTypes.shape({
+  }).isRequired,
+  /** Handler to confirm resetting the calendar */
+  confirm: PropTypes.func.isRequired,
+  /** Handler to cancel resetting the calendar and close the notification */
+  closeNotification: PropTypes.func.isRequired,
 }
 
 const enhance = compose(
