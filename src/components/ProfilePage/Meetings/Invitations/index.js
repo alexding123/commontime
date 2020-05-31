@@ -6,14 +6,20 @@ import SplashScreen from '../../../SplashScreen'
 import InstanceDisplay from './InstanceDisplay'
 import RecurringDisplay from './RecurringDisplay'
 import ErrorBoundary from '../../../ErrorBoundary'
+import PropTypes from 'prop-types'
 
+/**
+ * Component to display all the pending invitations the user has
+ */
 const Invitations = ({invitations}) => {
   if (!isLoaded(invitations)) {
     return <SplashScreen/>
   }
+  // avoid null values
   const filteredInvitations = invitations ? 
     Object.entries(invitations).filter(([key, invitation]) => invitation) :
     []
+  // if no invitation, say so
   if (!filteredInvitations.length) {
     return <div className="mt-2">
       <p>You have no pending invitation.</p>
@@ -28,6 +34,10 @@ const Invitations = ({invitations}) => {
     )}
     </ErrorBoundary>
   </div>)
+}
+
+Invitations.propTypes = {
+  invitations: PropTypes.object,
 }
 
 const enhance = compose(

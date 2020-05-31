@@ -8,8 +8,12 @@ import { compose } from 'recompose'
 import { acceptRecurringInvitation, declineInvitation } from '../../../../actions/meetingPageActions'
 import { dayMap } from '../../../../utils'
 import SplashScreen from '../../../SplashScreen'
+import PropTypes from 'prop-types'
 
-const RecurringDisplay = ({invitation, periods, rooms, recurring, acceptInvitation, declineInvitation}) => {
+/**
+ * Component to display an invitation to a weekly meeting
+ */
+const RecurringDisplay = ({periods, rooms, recurring, acceptInvitation, declineInvitation}) => {
   if (!isLoaded(recurring) || !recurring) {
     return <SplashScreen/>
   }
@@ -60,6 +64,16 @@ const RecurringDisplay = ({invitation, periods, rooms, recurring, acceptInvitati
       </Row>
     </Card.Body>
   </Card>
+}
+
+RecurringDisplay.propTypes = {
+  periods: PropTypes.object,
+  rooms: PropTypes.object,
+  recurring: PropTypes.object,
+  /** Handler to accept the invitation */
+  acceptInvitation: PropTypes.func.isRequired,
+  /** Handler to decline the invitation */
+  declineInvitation: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

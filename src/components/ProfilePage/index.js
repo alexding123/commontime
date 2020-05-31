@@ -7,10 +7,14 @@ import { compose } from 'recompose'
 import SplashScreen from '../SplashScreen'
 import Sidebar from './Sidebar'
 import ErrorBoundary from '../ErrorBoundary'
+import PropTypes from 'prop-types'
 
 const Settings = lazy(() => import('./Settings'))
 const Meetings = lazy(() => import('./Meetings'))
 
+/**
+ * Page to display the user profile and settings
+ */
 const ProfilePage = ({ profile }) => {
   if (!isLoaded(profile)) {
     return <SplashScreen/>
@@ -29,6 +33,10 @@ const ProfilePage = ({ profile }) => {
       </Col>
     </Row>
   )
+}
+
+ProfilePage.propTypes = {
+  profile: PropTypes.object,
 }
 
 const enhance = compose(

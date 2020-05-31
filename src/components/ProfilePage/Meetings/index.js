@@ -8,7 +8,11 @@ import { isLoaded } from 'react-redux-firebase'
 import SplashScreen from '../../SplashScreen'
 import RecurringDisplay from './RecurringDisplay'
 import Invitations from './Invitations'
+import PropTypes from 'prop-types'
 
+/**
+ * Component to display meetings and invitations the user has
+ */
 const Meetings = ({profile, periods, rooms, tab, setTab}) => {
   if (!isLoaded(profile) || !isLoaded(periods) || !isLoaded(rooms)) {
     return <SplashScreen/>
@@ -31,6 +35,16 @@ const Meetings = ({profile, periods, rooms, tab, setTab}) => {
     </Tab>
   </Tabs>
   </div>)
+}
+
+Meetings.propTypes ={
+  profile: PropTypes.object,
+  periods: PropTypes.object,
+  rooms: PropTypes.object,
+  /** The currently active tab */
+  tab: PropTypes.string.isRequired,
+  /** Hook to set the value of tab */
+  setTab: PropTypes.func.isRequired,
 }
 
 const enhance = compose(
