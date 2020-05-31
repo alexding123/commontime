@@ -30,10 +30,11 @@ const Meetings = ({instancesLunch, instancesAfter, rooms, profile, isAddLunch, s
           {instancesLunch ? Object.entries(instancesLunch).filter(([key, instance]) => instance.room !== '').map(([key, instance]) => (
             <Meeting key={key} id={key} instance={instance} instances={instancesLunch} rooms={rooms} editable={hasAccess} />
           )) : null}
-          { hasAccess ?
-            <AddMeeting date={date} day={period.day} instances={instancesLunch} isAdd={isAddLunch} setIsAdd={setIsAddLunch} rooms={rooms} time="Lunch"/> :
-            null
-          } 
+          </React.Fragment> :
+          hasAccess ?
+          <React.Fragment>
+          <ListGroup.Item>Lunch</ListGroup.Item>
+          <AddMeeting date={date} day={period.day} instances={instancesLunch} isAdd={isAddLunch} setIsAdd={setIsAddLunch} rooms={rooms} time="Lunch"/>
           </React.Fragment> :
           <ListGroup.Item>No Lunch Meeting!</ListGroup.Item>
           }
@@ -46,11 +47,12 @@ const Meetings = ({instancesLunch, instancesAfter, rooms, profile, isAddLunch, s
           {instancesAfter ? Object.entries(instancesAfter).filter(([key, instance]) => instance.room !== '').map(([key, instance]) => (
             <Meeting key={key} id={key} instance={instance} instances={instancesAfter} rooms={rooms} editable={!isEmpty(profile) && (profile.token.claims.admin || profile.token.claims.teacher)} />
           )) : null}
-          { hasAccess ? 
-            <AddMeeting date={date} day={period.day} instances={instancesAfter} isAdd={isAddAfter} setIsAdd={setIsAddAfter} rooms={rooms} time="After School"/> :
-            null
-          }
-          </React.Fragment> : 
+          </React.Fragment> :
+          hasAccess ? 
+          <React.Fragment>
+          <ListGroup.Item>After School</ListGroup.Item>
+          <AddMeeting date={date} day={period.day} instances={instancesAfter} isAdd={isAddAfter} setIsAdd={setIsAddAfter} rooms={rooms} time="After School"/>
+          </React.Fragment> :
           <ListGroup.Item>No After School Meeting!</ListGroup.Item>
           }
         </ListGroup>
