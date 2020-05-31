@@ -7,14 +7,18 @@ import { acceptInvitation, declineInvitation } from '../../actions/invitationPag
 import { dayMap } from '../../utils'
 import NotFoundPage from '../NotFoundPage'
 import SplashScreen from '../SplashScreen'
+import date from 'date-and-time'
+import PropTypes from 'prop-types'
 
-const date = require('date-and-time')
-
+/**
+ * Component to display an invitation to a one-off meeting
+ */
 const InstanceInvitation = ({creator, invitee, instanceID, periods, rooms, instances, handleAccept, handleDecline}) => {
   if (!isLoaded(periods) || !isLoaded(rooms) || !isLoaded(instances)) {
     return <SplashScreen/>
   }
 
+  // if the instance pointed to by the invitation is not found, return 404
   if (isEmpty(instances) || !instances[instanceID]) {
     return <NotFoundPage/>
   }
@@ -35,6 +39,26 @@ const InstanceInvitation = ({creator, invitee, instanceID, periods, rooms, insta
       <Button onClick={handleDecline} variant="danger">Decline</Button>
     </ButtonGroup>
   </div>)
+}
+
+InstanceInvitation.propTypes = {
+  /** Creator of the invitation */
+  creator: PropTypes.shape({
+    name: PropTypes.string.isRequired
+  }).isRequired,
+  /** The invited user */
+  invitee: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+  }).isRequired,
+  /** ID of the invitation's instance */
+  instanceID: PropTypes.string.isRequired,
+  periods: PropTypes.object,
+  rooms: PropTypes.object,
+  instances: PropTypes.object,
+  /** Handler for accepting the invitation */
+  handleAccept: PropTypes.func.isRequired,
+  /** Handler for declining the invitation */
+  handleDecline: PropTypes.func.isRequired,
 }
 
 const enhance = compose(
