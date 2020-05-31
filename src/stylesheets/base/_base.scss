@@ -38,11 +38,13 @@ a {
  * React default styles
  */
 html,
-body,
+body {
+  height: 100%;
+}
+
 #root {
   background-color: $color-tertiary;
   margin: 0;
-  height: 100%;
 }
 
 code {

@@ -35,7 +35,7 @@ const AdministratorPage = ({ profile }) => {
     <Switch>
     <Route exact path="/Administrator/DangerZone"><DangerZone/></Route>
     <Route path="*">
-      <Row style={{height: '100%'}}>
+      <Row className="sidebar-page">
         <Sidebar/>
         <Col className="ml-auto px-4 pt-3">
           <ErrorBoundary>
