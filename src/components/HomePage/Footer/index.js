@@ -4,8 +4,11 @@ import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 
+/**
+ * Component that displays a footer on the button of the screen
+ * to tell users to submit feedback on GitHub
+ */
 const Footer = () => {
-
   return (<footer>
       <Row className="align-items-center mt-auto mb-auto h-100">
         <Col>
@@ -23,6 +26,10 @@ const Footer = () => {
         </Col>
       </Row>
   </footer>)
+}
+
+Footer.propTypes = {
+  
 }
 
 export default Footer

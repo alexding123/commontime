@@ -9,14 +9,20 @@ import SplashScreen from '../SplashScreen'
 import CurrentStatus from './CurrentStatus'
 import ErrorBoundary from '../ErrorBoundary'
 import Footer from './Footer'
+import PropTypes from 'prop-types'
 const FreeRooms = lazy(() => import('./FreeRooms'))
 const Meetings = lazy(() => import('./Meetings'))
 const Exception = lazy(() => import('./Exception'))
 
+/**
+ * Page to show the current period, lunch and after school meetings
+ * of the day, and free rooms this period
+ */
 const HomePage = ({meta, periods, rooms, users, exception}) => {
   if (!isLoaded(meta) || !meta.terms || !isLoaded(periods) || !periods || !isLoaded(rooms) || !rooms || !isLoaded(users) || !isLoaded(exception)) {
     return <SplashScreen/>
   }
+  // find out what period "now" is
   const currentDate = new Date()
   const currentDateStr = date.format(currentDate, 'MM/DD/YYYY')
   const currentPeriod = getCurrentPeriod(periods, meta.terms, currentDate)
@@ -54,6 +60,14 @@ const HomePage = ({meta, periods, rooms, users, exception}) => {
       <Footer/>
     </div>
   )
+}
+
+HomePage.propTypes = {
+  meta: PropTypes.object,
+  periods: PropTypes.object,
+  rooms: PropTypes.object,
+  users: PropTypes.object,
+  exception: PropTypes.object,
 }
 
 const enhance = compose(

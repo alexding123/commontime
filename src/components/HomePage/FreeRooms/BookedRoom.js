@@ -9,15 +9,21 @@ import { isEmpty } from 'react-redux-firebase'
 import { compose } from 'recompose'
 import { attendMeeting, cancelBooking, rebookRoom, unattendMeeting } from '../../../actions/homeActions'
 import rebookRoomFunc from './rebookRoom'
+import PropTypes from 'prop-types'
 
-
-
+/**
+ * Component that shows a booked room
+ */
 const BookedRoom = ({instance, users, profile, rooms, handleSubmit, handleCancel, handleAttend, handleUnattend}) => {
-  users = users ? Object.values(users) : [] 
-  const creator = users.filter(user => user && user.id === instance.creator)[0]
+  // needed to avoid null values
+  const allUsers = users ? Object.values(users).filter(user => user) : [] 
+  // find the creator of the instance (could be null)
+  const creator = allUsers.filter(user => user && user.id === instance.creator)[0]
+  // and the room of the instance
   const room = rooms[instance.room] ? rooms[instance.room] : {}
   return (<ListGroup.Item key={instance.room}>
     <Row>
+      {/** Room information and optional private badge */}
       <Col xs={5}>
         <Button variant="link" className="inline-link" href={`/Room/${instance.room}`}>{room.name}</Button>
         &nbsp;
@@ -31,6 +37,7 @@ const BookedRoom = ({instance, users, profile, rooms, handleSubmit, handleCancel
       { 
         !isEmpty(profile) ?
         <Col className='ml-auto d-flex justify-content-end'>
+          {/** If logged in, show an attend/unattend button */}
           {
             instance.members.includes(profile.id) ?
             <OverlayTrigger
@@ -58,6 +65,7 @@ const BookedRoom = ({instance, users, profile, rooms, handleSubmit, handleCancel
             </Button>
             </OverlayTrigger>
           }
+          {/** If current user is creator, show delete button */}
           { instance.creator === profile.id ?
             <OverlayTrigger
               placement="top-start"
@@ -73,6 +81,11 @@ const BookedRoom = ({instance, users, profile, rooms, handleSubmit, handleCancel
             </OverlayTrigger> :
             profile.token.claims.teacher ? 
             <React.Fragment>
+            {
+            /** If current user is a teacher but not creator, 
+              * allow user to rebook or simply delete the instance
+              */
+            }
             <OverlayTrigger
               rootClose={true}
               overlay={rebookRoomFunc(room, instance, handleSubmit)}
@@ -103,6 +116,28 @@ const BookedRoom = ({instance, users, profile, rooms, handleSubmit, handleCancel
     </Row>
     
   </ListGroup.Item>)
+}
+
+BookedRoom.propTypes = {
+  /** Instance to be displayed */
+  instance: PropTypes.shape({
+    creator: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    room: PropTypes.string.isRequired,
+    private: PropTypes.bool.isRequired,
+    members: PropTypes.arrayOf(Object).isRequired,
+  }).isRequired,
+  users: PropTypes.object,
+  profile: PropTypes.object,
+  rooms: PropTypes.object,
+  /** Handler of rebooking the room */
+  handleSubmit: PropTypes.func.isRequired,
+  /** Handler of deleting the room */
+  handleCancel: PropTypes.func.isRequired,
+  /** Hanlder of adding the current user to the meeting */
+  handleAttend: PropTypes.func.isRequired,
+  /** Handler of removing the current user from the meeting */
+  handleUnattend: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

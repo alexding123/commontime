@@ -6,17 +6,23 @@ import SplashScreen from '../../SplashScreen'
 import { ListGroup, Card } from 'react-bootstrap'
 import Meeting from './Meeting'
 import AddMeeting from './AddMeeting'
+import PropTypes from 'prop-types'
 
+/**
+ * Component to list all lunch and after school meetings
+ */
 const Meetings = ({instancesLunch, instancesAfter, rooms, profile, isAddLunch, setIsAddLunch, date, period, isAddAfter, setIsAddAfter}) => {
   if (!isLoaded(instancesLunch) || !isLoaded(instancesAfter) || !isLoaded(rooms)) {
     return <SplashScreen/>
   }
 
+  // only admins can add meetings to this list
   const hasAccess = !isEmpty(profile) && profile.token.claims.admin
   return (
     <Card>
       <Card.Header>Meetings</Card.Header>
       <Card.Body className='pt-1 pl-1 pr-1 pb-1'>
+        {/** Lunch meetings */}
         <ListGroup variant="flush">
           { instancesLunch ?
           <React.Fragment>
@@ -32,6 +38,7 @@ const Meetings = ({instancesLunch, instancesAfter, rooms, profile, isAddLunch, s
           <ListGroup.Item>No Lunch Meeting!</ListGroup.Item>
           }
         </ListGroup>
+        {/** After school meetings */}
         <ListGroup variant="flush">
           { instancesAfter ? 
           <React.Fragment>
@@ -50,6 +57,23 @@ const Meetings = ({instancesLunch, instancesAfter, rooms, profile, isAddLunch, s
       </Card.Body>
     </Card>
   )
+}
+
+Meetings.propTypes = {
+  /** All lunch meetings (could be null) */
+  instancesLunch: PropTypes.object,
+  /** All after school meetings (could be null) */
+  instancesAfter: PropTypes.object,
+  rooms: PropTypes.object,
+  profile: PropTypes.object,
+  /** Whether user is adding a lunch meeting */
+  isAddLunch: PropTypes.bool.isRequired,
+  /** Hook to update isAddLunch */
+  setIsAddLunch: PropTypes.func.isRequired,
+  /** Whether user is adding an after school meeting */
+  isAddAfter: PropTypes.bool.isRequired,
+  /** Hook to update isAddAfter */
+  setIsAddAfter: PropTypes.func.isRequired,
 }
 
 const enhance = compose(
