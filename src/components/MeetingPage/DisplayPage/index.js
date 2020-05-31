@@ -10,13 +10,20 @@ import { filterDuplicate } from '../../../utils'
 import SplashScreen from '../../SplashScreen'
 import Display from './Display'
 import ErrorBoundary from '../../ErrorBoundary'
+import PropTypes from 'prop-types'
 
+/**
+ * Subpage to display all available time/place pairs under the search
+ * parameters given by the user
+ */
 const DisplayPage = ({goPeoplePage, goFrequencyPage, goPeriodsPage, restart, data, periods}) => {
   if (!isLoaded(periods)) {
     return <SplashScreen/>
   }
-  periods = periods ? filterDuplicate(Object.values(periods), 'period') : []
-  const excludePeriods = periods.filter(period => !data.periods.map(period => period.period).includes(period.period))
+  // get all unique periods
+  const allPeriods = periods ? filterDuplicate(Object.values(periods), 'period') : []
+  // calculate all the periods excluded by the search parameters
+  const excludePeriods = allPeriods.filter(period => !data.periods.map(period => period.period).includes(period.period))
   return (
   <div className="d-flex flex-column">
     <div>
@@ -62,6 +69,28 @@ const DisplayPage = ({goPeoplePage, goFrequencyPage, goPeriodsPage, restart, dat
       <Button onClick={restart}>Reset</Button>
     </ButtonGroup>
   </div>)
+}
+
+DisplayPage.propTypes = {
+  /** Handler to navigate to the people subpage of the form */
+  goPeoplePage: PropTypes.func.isRequired,
+  /** Handler to navigate to the frequency subpage of the form */
+  goFrequencyPage: PropTypes.func.isRequired,
+  /** Handler to navigate to the periods subpage of the form */
+  goPeriodsPage: PropTypes.func.isRequired,
+  /** Handler to reset the search parameters form */
+  restart: PropTypes.func.isRequired,
+  /** Values the user inputted in the search parameters form */
+  data: PropTypes.shape({
+    frequency: PropTypes.oneOf(['oneOff', 'recurring']).isRequired,
+    periods: PropTypes.array.isRequired,
+    people: PropTypes.array.isRequired,
+    dateRange: PropTypes.shape({
+      startDate: PropTypes.objectOf(Date).isRequired,
+      endDate: PropTypes.objectOf(Date).isRequired,
+    })
+  }).isRequired,
+  periods: PropTypes.object,
 }
 
 const enhance = compose(

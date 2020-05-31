@@ -19,7 +19,7 @@ const allowRebookReducer = (state=false, action) => {
   }
 }
 
-const frequencyReducer = (state='ONE_OFF', action) => {
+const frequencyReducer = (state='oneOff', action) => {
   switch (action.type) {
     case SCHEDULE_MEETING_SETUP_SAVED:
       return action.data.frequency

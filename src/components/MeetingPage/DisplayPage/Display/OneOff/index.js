@@ -8,18 +8,26 @@ import InstanceDisplay from './InstanceDisplay'
 
 import { ListGroup } from 'react-bootstrap'
 import { getCommonFreePeriods } from '../../../../../utils'
+import PropTypes from 'prop-types'
 
+/**
+ * Component to display the search results for potential times of 
+ * one-off meetings
+ */
 const OneOff = ({profile, instances, periods, data}) => {
   if (!isLoaded(instances) || !isLoaded(periods) || !isLoaded(profile) || !data) {
     return <SplashScreen/>
   }
-  const freeInstances = getCommonFreePeriods(instances, periods, data)
+  // get all time slots with no class shared by all members
+  const searchResults = getCommonFreePeriods(instances, periods, data)
+  // only teachers can even have the option to rebook
   const canRebook = !isEmpty(profile) && profile.token.claims.teacher ? data.allowRebook : false
-  const filteredInstances = canRebook ? freeInstances : freeInstances.filter(instance => !instance.instances)
-  return filteredInstances.length ? 
+  // get all free time slots shared by members
+  const freeInstances = canRebook ? searchResults : searchResults.filter(instance => !instance.instances)
+  return freeInstances.length ? 
     <ListGroup>
       {
-        filteredInstances.map((instance, index) => <InstanceDisplay key={index} instance={instance}/>)
+        freeInstances.map((instance, index) => <InstanceDisplay key={index} instance={instance}/>)
       }
     </ListGroup> :
     <ListGroup>
@@ -32,6 +40,23 @@ const OneOff = ({profile, instances, periods, data}) => {
         </div>
       </ListGroup.Item>
     </ListGroup>
+}
+
+OneOff.propTypes = {
+  profile: PropTypes.object,
+  instances: PropTypes.object,
+  periods: PropTypes.object,
+  /** Values the user inputted in the search parameters form */
+  data: PropTypes.shape({
+    frequency: PropTypes.oneOf(['oneOff', 'recurring']).isRequired,
+    periods: PropTypes.array.isRequired,
+    people: PropTypes.array.isRequired,
+    dateRange: PropTypes.shape({
+      startDate: PropTypes.objectOf(Date).isRequired,
+      endDate: PropTypes.objectOf(Date).isRequired,
+    }),
+    allowRebook: PropTypes.bool,
+  }).isRequired,
 }
 
 const enhance = compose(

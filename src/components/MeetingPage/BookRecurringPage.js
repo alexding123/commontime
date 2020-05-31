@@ -8,17 +8,42 @@ import { addRecurringAndInvite, addRecurringAndNotify } from '../../actions/meet
 import { dayMap } from '../../utils'
 import BookRecurringForm from '../forms/BookRecurringForm'
 import SplashScreen from '../SplashScreen'
+import PropTypes from 'prop-types'
 
+/**
+ * Subpage to book a recurring meeting at a selected period/place
+ */
 const BookRecurringPage = ({courses, periods, period, profile, rooms, people, recurrings, handleSubmit}) => {
   if (!isLoaded(profile) || !isLoaded(courses) || !isLoaded(rooms) || !isLoaded(periods) || !isLoaded(recurrings)) {
     return <SplashScreen/>
   }
+  // only teachers can book private meetings
   const canBookPrivate = !isEmpty(profile) && profile.token.claims.teacher
+  // only a teacher booking a meeting with only students can simsply notify
+  // instead of invite the other members
   const isInvite = isEmpty(profile) || !profile.token.claims.teacher || !people.every(person => person.id === profile.id || !person.teacher)
   return (<div className="stage-container">
     <h5>Adding a weekly meeting for {`${dayMap[periods[period.period].day]} ${periods[period.period].name}`}</h5>
     <BookRecurringForm onSubmit={handleSubmit(isInvite)} isInvite={isInvite} canBookPrivate={canBookPrivate} period={period.period}/>
   </div>)
+}
+
+BookRecurringPage.propTypes = {
+  courses: PropTypes.object,
+  periods: PropTypes.object,
+  /** Selected period for the weekly meeting */
+  period: PropTypes.shape({
+    period: PropTypes.string.isRequired,
+  }).isRequired,
+  profile: PropTypes.object,
+  rooms: PropTypes.object,
+  /** Selected members of the meeting */
+  people: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+  })).isRequired,
+  recurrings: PropTypes.object,
+  /** Handler for submitting the form to book the weekly meeting */
+  handleSubmit: PropTypes.func.isRequired,
 }
 
 const enhance = compose(
