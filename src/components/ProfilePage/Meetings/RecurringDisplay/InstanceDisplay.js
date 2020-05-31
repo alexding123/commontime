@@ -36,7 +36,7 @@ const InstanceDisplay = ({profile, recurring, recurringID, periods, rooms, invit
       <Col className="p-0">
         <h5 className="d-inline">{recurring.name}</h5>
         <div className="d-inline pl-1">{recurring.room ? 
-          <Button className="inline-link" variant="link" href={`/Rooms/${recurring.room}`}>{roomName}</Button> :
+          <Button className="inline-link" variant="link" href={`/Room/${recurring.room}`}>{roomName}</Button> :
           roomName
         }</div>  
       </Col>

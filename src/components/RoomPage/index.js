@@ -13,30 +13,34 @@ import NotFoundPage from '../NotFoundPage'
 import SplashScreen from '../SplashScreen'
 import { Box, Header } from './Box'
 import ErrorBoundary from '../ErrorBoundary'
+import date from 'date-and-time'
+import PropTypes from 'prop-types'
 
-const date = require('date-and-time')
-
+/**
+ * Page to display the schedule of a particular room
+ */
 const RoomPage = ({rooms, periods, instances, exceptions, profile, roomID, users, startDate, endDate, redirect, handleBookInstance, handleRebookInstance, handleCancelInstance}) => {
-
   if (!isLoaded(profile) || !isLoaded(rooms) || !isLoaded(periods) || !isLoaded(instances) || !isLoaded(users) || !isLoaded(exceptions)) {
     return <SplashScreen/>
   }
 
-  // if roomID doesn't exist
+  // if roomID doesn't exist, display 404
   if (!rooms[roomID]) {
     return <NotFoundPage/>
   }
 
   const room = rooms[roomID]
   const periodsArray = periods ? Object.values(periods) : []
-  const instancesEntries = instances ? Object.entries(instances) : []
-  const isTeacher = !isEmpty(profile) && (profile.token.claims.teacher || profile.token.claims.admin)
+  // filter out potential null values
+  const instancesEntries = instances ? Object.entries(instances).filter(([key, instance]) => instance) : []
+  const isTeacher = !isEmpty(profile) && profile.token.claims.teacher
   
   return (
   <div className="main" style={{overflow: 'auto'}}>
     <div className="m-auto" style={{display: 'block', width: 900}}>
     <h3 style={{textAlign: 'center'}}>{room.name}</h3>
     <div className='d-flex align-items-center justify-content-center h5'>
+      {/** Buttons to take us back or ahead by a week */}
       <Button variant="link" onClick={() => redirect(`/Room/${roomID}?date=${date.format(date.addDays(startDate, -7), 'MM/DD/YYYY')}`)}>
         <ArrowBackIcon/>
       </Button>
@@ -47,11 +51,13 @@ const RoomPage = ({rooms, periods, instances, exceptions, profile, roomID, users
     </div>
     <ErrorBoundary>
     <div className="d-flex flex-row">
+      {/** Iterate over weekdays */}
       { [1,2,3,4,5].map((day) => {
         const periodsOnDay = periodsArray.filter(period => period.day === day)
         periodsOnDay.sort((a, b) => (a.endTime < b.endTime) ? -1 : 1)
         return (<div className="d-flex flex-column" key={day}>
           <Header day={day}/>
+          {/** Iterate over periods on that day */}
           { periodsOnDay.map(period => {
               const periodID = `${period.day}-${period.period}`
               const filteredInstances = instancesEntries.filter(([key, instance]) => instance && instance.period === periodID)
@@ -80,6 +86,29 @@ const RoomPage = ({rooms, periods, instances, exceptions, profile, roomID, users
     </div>
   </div>
   )
+}
+
+RoomPage.propTypes = {
+  rooms: PropTypes.object,
+  periods: PropTypes.object,
+  instances: PropTypes.object,
+  exceptions: PropTypes.object,
+  profile: PropTypes.object,
+  users: PropTypes.object,
+  /** ID of the room */
+  roomID: PropTypes.string.isRequired,
+  /** Starting date of the displayed schedule */
+  startDate: PropTypes.objectOf(Date).isRequired,
+  /** Ending date of the displayed schedule */
+  endDate: PropTypes.objectOf(Date).isRequired,
+  /** Handler to redirect the user to another URL */
+  redirect: PropTypes.func.isRequired,
+  /** Handler for booking a time slot of the room */
+  handleBookInstance: PropTypes.func.isRequired,
+  /** Handler for overriding a booking on a time slot of the room */
+  handleRebookInstance: PropTypes.func.isRequired,
+  /** Handler for deleting a booking on a time slot of the room */
+  handleCancelInstance: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

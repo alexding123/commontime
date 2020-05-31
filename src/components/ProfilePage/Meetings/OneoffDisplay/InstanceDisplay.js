@@ -39,7 +39,7 @@ const InstanceDisplay = ({profile, instance, instanceID, periods, rooms, invitat
       <Col className="p-0">
         <h5 className="d-inline">{instance.name}</h5>
         <div className="d-inline pl-1">{instance.room ? 
-          <Button className="inline-link" variant="link" href={`/Rooms/${instance.room}`}>{roomName}</Button> :
+          <Button className="inline-link" variant="link" href={`/Room/${instance.room}`}>{roomName}</Button> :
           roomName
         }</div>  
       </Col>
