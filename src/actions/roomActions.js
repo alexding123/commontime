@@ -1,4 +1,4 @@
-import { getPeriodTimes } from "../selectors"
+import { getPeriodTimes } from "../utils"
 import date from 'date-and-time'
 import { startSubmit, stopSubmit } from "redux-form"
 

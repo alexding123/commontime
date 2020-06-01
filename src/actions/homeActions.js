@@ -1,5 +1,5 @@
 import { startSubmit, stopSubmit } from 'redux-form'
-import { getPeriodTimes } from '../selectors'
+import { getPeriodTimes } from '../utils'
 import { notificationSet } from './notificationsActions'
 
 /**

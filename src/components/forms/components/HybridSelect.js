@@ -37,7 +37,7 @@ HybridSelect.propTypes = {
   /** Callback triggered whenever component value is changed */
   onChange: PropTypes.func,
   /** Field value */
-  value: PropTypes.object,
+  value: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 }
 
 /**

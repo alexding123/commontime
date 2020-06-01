@@ -35,7 +35,7 @@ a {
 }
 
 /**
- * React default styles
+ * Background colors and basic setups
  */
 html,
 body {
@@ -52,6 +52,9 @@ code {
   font-family: $code-font-stack;
 }
 
+/**
+ * Main frame of the page beneath navbar
+ */
 .main {
   margin-left: auto;
   margin-right: auto;
@@ -61,6 +64,9 @@ code {
   width: 100%;
 }
 
+/**
+ * Makes a button look like a regular href inline link
+ */
 .inline-link {
   display: inline;
   font-size: inherit;
@@ -70,6 +76,9 @@ code {
   vertical-align: baseline;
 }
 
+/**
+ * Makes an icon inline (inside text)
+ */
 .inline-icon {
   align-items: center;
   display: inline-flex;
@@ -77,14 +86,23 @@ code {
   padding: 0;
 }
 
+/**
+ * Renders new lines properly
+ */
 textarea {
   white-space: pre-line;
 }
 
+/**
+ * Renders new lines properly
+ */
 .pre-like {
   white-space: pre-line;
 }
 
+/**
+ * Centers the icon within the button component
+ */
 .center-button {
   align-items: center;
   display: flex;
@@ -92,6 +110,9 @@ textarea {
   padding: 0;
 }
 
+/**
+ * Margin to make icons appear on the same level as text
+ */
 .octicon {
   margin-bottom: 3px;
   margin-left: 2px;

@@ -21,8 +21,8 @@ const ScheduleMeetingSetupForm = ({stage, profile, users, periods, onSubmit, sho
   // avoid duplicates
   const usersArray = users ? Object.values(users).filter(user => user) : []
   const defaultExcludePeriods = ['Before School', 'After School', 'Assembly', 'Recess', 'Lunch', 'Class Meetings']
-  periods = periods ? filterDuplicate(Object.values(periods), 'period') : []
-  const initPeriods = periods.filter(period => !defaultExcludePeriods.includes(period.period))
+  const allPeriods = periods ? filterDuplicate(Object.values(periods), 'period') : []
+  const initPeriods = allPeriods.filter(period => !defaultExcludePeriods.includes(period.period))
 
   const initialValues = {
     people: [usersArray.filter(user => profile.id === user.id)[0]], 

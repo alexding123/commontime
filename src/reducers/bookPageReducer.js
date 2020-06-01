@@ -1,6 +1,9 @@
 import { TOGGLE_SHOW_FILTERS, UPDATE_FILTERS } from '../actions/bookPageActions'
 import { combineReducers } from 'redux'
 
+/**
+ * Reducer for managing the visibility of the Filters
+ */
 const showFilters = (state=false, action) => {
   switch (action.type) {
     case TOGGLE_SHOW_FILTERS:
@@ -10,13 +13,9 @@ const showFilters = (state=false, action) => {
   }
 }
 
-const page = (state='ROOM', action) => {
-  switch (action.type) {
-    default:
-      return state
-  }
-}
-
+/**
+ * Reducer for managing the filter settings 
+ */
 const data = (state={
   dateRange: {
     startDate: new Date(),
@@ -34,9 +33,11 @@ const data = (state={
   }
 }
 
+/**
+ * Reducer for the Book Page
+ */
 const bookPageReducer = combineReducers({
   showFilters,
-  page,
   data
 })
 
