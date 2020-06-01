@@ -3,7 +3,12 @@ import { useSelector } from 'react-redux'
 import { isEmpty, isLoaded } from 'react-redux-firebase'
 import { Route } from 'react-router-dom'
 import NotFoundPage from '../components/NotFoundPage'
+import PropTypes from 'prop-types'
 
+/**
+ * Helper component to only render if the user is an admin
+ * Otherwise, display 404
+ */
 function AdministratorRoute({ children, ...rest }) {
   const auth = useSelector(state => state.firebase.auth)
   const profile = useSelector(state => state.firebase.profile)
@@ -19,6 +24,11 @@ function AdministratorRoute({ children, ...rest }) {
       }
     />
   );
+}
+
+AdministratorRoute.propTypes = {
+  /** Child JSX components to render if user is admin */
+  children: PropTypes.object.isRequired,
 }
 
 export default AdministratorRoute

@@ -6,6 +6,9 @@ import 'firebase/functions'
 import "firebase/performance"
 import { createFirestoreInstance, reduxFirestore } from 'redux-firestore'
 
+/**
+ * Configuration object for Firebase to link to the right project
+ */
 const firebaseConfig = {
   apiKey: "AIzaSyCeGBBE_vDvaVUkdbeUBu2qxdZV7U6_JO4",
   authDomain: "commontime-1581984480494.firebaseapp.com",
@@ -17,6 +20,9 @@ const firebaseConfig = {
   measurementId: "G-RZ9Y39J6H8",
 }
 
+/**
+ * React-Redux-Firebase config
+ */
 const rrfConfig = {
   userProfile: 'users',
   useFirestoreForProfile: true, 
@@ -35,10 +41,14 @@ firebase.firestore()
     ssl: false,
   })
 }*/
+
 if (process.env.NODE_ENV === "production") {
   firebase.performance()
 }
 
+/**
+ * Redux-Firestore config
+ */
 const rfConfig = {}
 
 export const enhanceStore = reduxFirestore(firebase, rfConfig)
