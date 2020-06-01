@@ -248,7 +248,7 @@ export const getCurrentStatus = (state, period, currentDate) => {
   }
 
   if (state === 'summerAfter') {
-    return 'It is the summer after school starts.'
+    return 'It is the summer after school ends.'
   }
 
   if (state === 'winterBreak') {
