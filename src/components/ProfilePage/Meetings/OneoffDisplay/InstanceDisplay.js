@@ -90,7 +90,7 @@ InstanceDisplay.propTypes = {
   profile: PropTypes.object,
   /** The instance to display */
   instance: PropTypes.shape({
-    date: PropTypes.objectOf(Date).isRequired,
+    date: PropTypes.string.isRequired,
     room: PropTypes.string,
     roomName: PropTypes.string,
     period: PropTypes.string.isRequired,

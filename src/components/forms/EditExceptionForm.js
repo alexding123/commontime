@@ -6,9 +6,12 @@ import { Field, formValueSelector, reduxForm } from 'redux-form'
 import { compose } from 'redux'
 import Control from './components/Control'
 import { connect } from 'react-redux'
-
 import date from 'date-and-time'
+import PropTypes from 'prop-types'
 
+/**
+ * Form to edit an exception
+ */
 const EditExcpetionForm = ({pristine, submitting, validated, handleSubmit}) => {
   return (
   <Form onSubmit={handleSubmit}>
@@ -35,8 +38,23 @@ const EditExcpetionForm = ({pristine, submitting, validated, handleSubmit}) => {
   )
 }
 
+EditExcpetionForm.propTypes = {
+  /** Whether the form has been touched */
+  pristine: PropTypes.bool.isRequired,
+  /** Whether the form is currently being submitted */
+  submitting: PropTypes.bool.isRequired,
+  /** Whether the form values are validated */
+  validated: PropTypes.bool.isRequired,
+  /** Handler for form submission */
+  handleSubmit: PropTypes.func.isRequired,
+}
+
+/**
+ * Validates the values of the form
+ * @param {function} selector Selector of the forms
+ */
 const validate = (selector) => {
-  return (selector('date') && 
+  return Boolean(selector('date') && 
   selector('summary') &&
   selector('description'))
 }

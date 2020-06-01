@@ -23,7 +23,7 @@ const HomePage = ({meta, periods, rooms, users, exception}) => {
     return <SplashScreen/>
   }
   // find out what period "now" is
-  const currentDate = new Date(2020, 4, 12, 8, 30)
+  const currentDate = new Date()
   const currentDateStr = date.format(currentDate, 'MM/DD/YYYY')
   const currentPeriod = getCurrentPeriod(periods, meta.terms, currentDate)
 

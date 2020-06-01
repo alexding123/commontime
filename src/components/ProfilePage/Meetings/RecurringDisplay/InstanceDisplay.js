@@ -27,6 +27,7 @@ const InstanceDisplay = ({profile, recurring, recurringID, periods, rooms, invit
   const dayName = dayMap[periods[recurring.period].day]
   // only a teacher can add others to the meeting without inviting
   const isNotify = !isEmpty(profile) && profile.token.claims.teacher
+  console.log(isNotify)
   const isCreator = profile.id === recurring.creator
   return <Card className="mb-2">
     <Card.Body>

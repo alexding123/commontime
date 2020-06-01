@@ -15,8 +15,8 @@ const Meetings = lazy(() => import('./Meetings'))
 /**
  * Page to display the user profile and settings
  */
-const ProfilePage = ({ profile }) => {
-  if (!isLoaded(profile)) {
+const ProfilePage = ({ profile, users }) => {
+  if (!isLoaded(profile) || !isLoaded(users)) {
     return <SplashScreen/>
   }
   return (
@@ -37,6 +37,7 @@ const ProfilePage = ({ profile }) => {
 
 ProfilePage.propTypes = {
   profile: PropTypes.object,
+  users: PropTypes.object,
 }
 
 const enhance = compose(
@@ -46,10 +47,13 @@ const enhance = compose(
     collection: 'rooms',
   }, {
     collection: 'exceptions',
+  }, {
+    collection: 'userPreset',
   }]),
   connect(
     (state) => ({
       profile: state.firebase.profile,
+      users: state.firestore.data.userPreset,
     }),
   ),
 )

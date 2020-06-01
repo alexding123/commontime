@@ -8,8 +8,12 @@ import Control from './components/Control'
 import { connect } from 'react-redux'
 
 import DatePicker from './components/DatePicker'
+import PropTypes from 'prop-types'
 
-const AddExcpetionForm = ({periods, rooms, users, pristine, submitting, validated, handleSubmit}) => {
+/**
+ * Form to add an exception to the database
+ */
+const AddExcpetionForm = ({pristine, submitting, validated, handleSubmit}) => {
   return (
   <Form onSubmit={handleSubmit}>
     <Form.Group>
@@ -32,10 +36,27 @@ const AddExcpetionForm = ({periods, rooms, users, pristine, submitting, validate
   )
 }
 
+AddExcpetionForm.propTypes = {
+  /** Whether the form has been touched */
+  pristine: PropTypes.bool.isRequired,
+  /** Whether the form is currently being submitted */
+  submitting: PropTypes.bool.isRequired,
+  /** Whether the form values are validated */
+  validated: PropTypes.bool.isRequired,
+  /** Handler for form submission */
+  handleSubmit: PropTypes.func.isRequired,
+}
+
+/**
+ * Validates the values of the form
+ * @param {function} selector Selector of the forms
+ */
 const validate = (selector) => {
-  return (selector('date') && 
-  selector('summary') &&
-  selector('description'))
+  return Boolean(
+    selector('date') && 
+    selector('summary') &&
+    selector('description')
+  )
 }
 
 const enhance = compose(

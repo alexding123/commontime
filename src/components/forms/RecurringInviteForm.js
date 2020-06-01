@@ -4,17 +4,31 @@ import React from 'react'
 import { Button, Col, Row } from 'react-bootstrap'
 import Form from 'react-bootstrap/Form'
 import { connect } from 'react-redux'
-import { firestoreConnect, isLoaded } from 'react-redux-firebase'
 import { compose } from 'recompose'
 import { Field, formValueSelector, reduxForm } from 'redux-form'
-import SplashScreen from '../SplashScreen'
 import HybridSelect from './components/HybridSelect'
+import PropTypes from 'prop-types'
 
+/**
+ * Sort an array of users by first name then last name
+ * @param {Object[]} instances Array of instances to sort
+ */
+const sortPeople = (people) => {
+  people.sort((a, b) => {
+    if (a.name > b.name) return -1
+    if (a.name === b.name) return 0
+    return 1
+  })
+  return people
+}
+
+/**
+ * Form to invite more users to a preexisting recurring meeting
+ */
 const RecurringInviteForm = ({pristine, submitting, validated, instance, invitationIDs, handleSubmit, people}) => {
-  if (!isLoaded(people)) {
-    return <SplashScreen/>
-  }
-  people = people ? Object.values(people) : []
+  // filter null values
+  const filteredPeople = people ? Object.values(people).filter(person => person) : []
+  const sortedPeople = sortPeople(filteredPeople)
   return (
   <Form onSubmit={handleSubmit}>
     <Form.Group>
@@ -22,7 +36,7 @@ const RecurringInviteForm = ({pristine, submitting, validated, instance, invitat
         name="people"
         valueField='id'
         textField='name'
-        data={people}
+        data={sortedPeople}
         disabled={[...instance.members, ...invitationIDs]}
         defaultMode='multi'
         component={HybridSelect}
@@ -47,15 +61,35 @@ const RecurringInviteForm = ({pristine, submitting, validated, instance, invitat
 }
 
 
+RecurringInviteForm.propTypes = {
+  /** Whether the form has been touched */
+  pristine: PropTypes.bool.isRequired,
+  /** Whether the form is currently being submitted */
+  submitting: PropTypes.bool.isRequired,
+  /** Whether the form values are validated */
+  validated: PropTypes.bool.isRequired,
+  /** Handler for form submission */
+  handleSubmit: PropTypes.func.isRequired,
+  /** Object describing the current recurring meeting */
+  instance: PropTypes.object.isRequired,
+  /** All pending invitations for this meeting */
+  invitationIDs: PropTypes.arrayOf(PropTypes.string).isRequired,
+  /** All users in the school */
+  people: PropTypes.object.isRequired,
+}
 
-const validate = (instance, selector) => {
-  return selector('people') && selector('people').filter(person => !instance.members.includes(person.id)).length
+/**
+ * Validates the values of the form
+ * @param {function} selector Selector of the forms
+ * @param {Object} instance The current meeting
+ */
+const validate = (selector, instance) => {
+  return Boolean(
+    selector('people') && selector('people').filter(person => !instance.members.includes(person.id)).length
+  )
 }
 
 const enhance = compose(
-  firestoreConnect((props) => [{
-    collection: 'userPreset'
-  }]),
   connect((state, props) => {
     const form = `recurring${props.instanceID}InviteForm`
     const selector = (...field) => formValueSelector(form)(state, ...field)
@@ -64,7 +98,7 @@ const enhance = compose(
     return {
       form,
       selector,
-      validated: validate(props.instance, selector),
+      validated: validate(selector, props.instance),
       initialValues: {
         people: [...props.instance.members, ...invitationIDs],
       },

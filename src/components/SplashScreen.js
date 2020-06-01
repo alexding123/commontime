@@ -2,7 +2,7 @@ import React from 'react'
 import { Spinner } from 'react-bootstrap'
 
 /**
- * Spinner to display when data is loading
+ * Spinner to display when a page is loading
  */
 const SplashScreen = () => (
   <div className="main">

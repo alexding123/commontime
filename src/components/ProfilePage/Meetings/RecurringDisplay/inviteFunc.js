@@ -1,6 +1,6 @@
 import React from 'react' 
 import { Popover } from 'react-bootstrap'
-import RecurringNotifyForm from '../../../forms/RecurringNotifyForm'
+import RecurringInviteForm from '../../../forms/RecurringInviteForm'
 
 /**
  * Popover to invite other users to attend the meeting
@@ -12,7 +12,7 @@ const inviteFunc = (recurring, recurringID, handleSubmit) => {
   return <Popover>
     <Popover.Title>Invite people to attend</Popover.Title>
     <Popover.Content>
-      <RecurringNotifyForm onSubmit={handleSubmit} instanceID={recurringID} instance={recurring}/>
+      <RecurringInviteForm onSubmit={handleSubmit} instanceID={recurringID} instance={recurring}/>
     </Popover.Content>
   </Popover>
 }

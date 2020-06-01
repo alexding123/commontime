@@ -56,7 +56,7 @@ const enhance = compose(
     collection: 'instances',
     where: [
       ['members', 'array-contains', props.userId],
-      ['endDate', '>', new Date()]
+      ['endDate', '>', new Date()],
     ],
   }]),
   connect(state => ({

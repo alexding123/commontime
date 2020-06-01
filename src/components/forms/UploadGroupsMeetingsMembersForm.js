@@ -6,8 +6,12 @@ import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import DatePicker from './components/DatePicker'
 import FileInput from './components/FileInput'
+import PropTypes from 'prop-types'
 
-let UploadGroupsMeetingsMembersForm = ({pristine, submitting, validated, handleSubmit}) => {
+/**
+ * Form to submit a year's course files
+ */
+const UploadGroupsMeetingsMembersForm = ({pristine, submitting, validated, handleSubmit}) => {
   return (
   <Form style={{maxWidth: '500px'}} onSubmit={handleSubmit}>
     <Form.Group>
@@ -98,33 +102,48 @@ let UploadGroupsMeetingsMembersForm = ({pristine, submitting, validated, handleS
   )
 }
 
-UploadGroupsMeetingsMembersForm = reduxForm({
-  form: 'uploadGroupsMeetingsMembersForm',
-})(UploadGroupsMeetingsMembersForm)
+UploadGroupsMeetingsMembersForm.propTypes = {
+  /** Whether the form has been touched */
+  pristine: PropTypes.bool.isRequired,
+  /** Whether the form is currently being submitted */
+  submitting: PropTypes.bool.isRequired,
+  /** Whether the form values are validated */
+  validated: PropTypes.bool.isRequired,
+  /** Handler for form submission */
+  handleSubmit: PropTypes.func.isRequired,
+}
 
-const selector = formValueSelector('uploadGroupsMeetingsMembersForm')
-
-const validate = (state) => {
-  const groupsFile = selector(state, 'groupsFile')
-  const meetingsFile = selector(state, 'meetingsFile')
-  const membersFile = selector(state, 'membersFile')
-  const fallStart = selector(state, 'fallStart')
-  const fallEnd = selector(state, 'fallEnd')
-  const winterStart = selector(state, 'winterStart')
-  const winterEnd = selector(state, 'winterEnd')
-  const springStart = selector(state, 'springStart')
-  const springEnd = selector(state, 'springEnd')
-  const daylightStart = selector(state, 'daylightStart')
-  const daylightEnd = selector(state, 'daylightEnd')
-  return groupsFile && meetingsFile && membersFile && 
-    fallStart && fallEnd && winterStart && winterEnd && springStart && springEnd &&
-    daylightStart && daylightEnd
-  }
+/**
+ * Validates the values of the form
+ * @param {function} selector Selector of the forms
+ */
+const validate = (selector) => {
+  return Boolean(
+    selector('groupsFile') && 
+    selector('meetingsFile') && 
+    selector('membersFile') && 
+    selector('fallStart') && 
+    selector('fallEnd') && 
+    selector('winterStart') &&
+    selector('winterEnd') &&
+    selector('springStart') &&
+    selector('springEnd') &&
+    selector('daylightStart') &&
+    selector('daylightEnd')
+  )
+}
 
 const enhance = compose(
-  connect(state => ({
-    validated: validate(state),
-  }))
+  connect(state => {
+    const form = 'uploadGroupsMeetingsMembersForm'
+    const selector = (...field) => formValueSelector(form)(state, ...field)
+    return {
+      validated: validate(selector),
+      form,
+    }
+    
+  }),
+  reduxForm()
 )
 
 export default enhance(UploadGroupsMeetingsMembersForm)
