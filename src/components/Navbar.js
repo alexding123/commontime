@@ -12,17 +12,22 @@ import { push } from 'connected-react-router'
 import HomeIcon from '@material-ui/icons/Home'
 import EventIcon from '@material-ui/icons/Event'
 import GroupIcon from '@material-ui/icons/Group'
+import PropTypes from 'prop-types'
 
+/**
+ * Sticky, collapsible navbar on the top of the screen
+ */
 const OurNavbar = ({profile, location, redirect, logout}) => {
   const isLoggedIn = !isEmpty(profile)
   const pathname = location.pathname
-  let admin = isLoggedIn ? profile.token.claims.admin : null
+  const admin = isLoggedIn ? profile.token.claims.admin : null
   return (
   <Navbar className="main-navbar" expand="sm" variant="dark">
   <Navbar.Brand href="/">
     Commontime
   </Navbar.Brand>
   <Navbar.Toggle aria-controls="navbar"/>
+  {/** Left align the following */}
   <Navbar.Collapse id="navbar">
     <Nav className="mr-auto" activeKey={pathname}>
       <Nav.Item>
@@ -44,6 +49,7 @@ const OurNavbar = ({profile, location, redirect, logout}) => {
         </Nav.Link>
       </Nav.Item>
     </Nav>
+    {/** Right align the following */}
     <Nav className="ml-auto">
       {isLoggedIn ? 
         <NavDropdown title={profile.name ? profile.name : "Loading name..."}>
@@ -76,6 +82,15 @@ const OurNavbar = ({profile, location, redirect, logout}) => {
   </Navbar>
 )}
 
+OurNavbar.propTypes ={
+  profile: PropTypes.object,
+  /** Location object supplied by the router */
+  location: PropTypes.object,
+  /** Handler to redirect the user */
+  redirect: PropTypes.func.isRequired,
+  /** Handler to log the user out */
+  logout: PropTypes.func.isRequired,
+}
 
 const enhance = compose(
   withRouter,
