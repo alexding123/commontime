@@ -8,6 +8,17 @@ const date = require('date-and-time')
 const { firstDayFromDay, dateInBetween, auth, insert, addRecurring, listEvents, list, delete_, deleteEvent } = require('../utils/calendar')
 const { getTerms, getPeriods, deleteRecurringInstances, getUserByID, deleteRecurringInvitations } = require('../utils/db')
 
+/**
+ * Creates individual weekly instances for a term for a recurring meeting
+ * @param {Date} targetDate Today (no instance for days before today)
+ * @param {Date} startDate Starting date of the term
+ * @param {Date} endDate Ending date of the term
+ * @param {Object} snap Snapshot of the recurring meeting
+ * @param {Object} context Context of the Cloud Function Trigger call
+ * @param {Object} periods All periods
+ * @param {Date} daylightStart Starting date of daylight saving
+ * @param {Date} daylightEnd Ending date of daylight saving
+ */
 const createInstancesForTerm = (targetDate, startDate, endDate, snap, context, periods, daylightStart, daylightEnd) => {
   const ref = db.collection('recurrings').doc(context.params.id).collection('instances')
   const data = snap.data()
@@ -19,6 +30,8 @@ const createInstancesForTerm = (targetDate, startDate, endDate, snap, context, p
   let dates = []
   let currentDate = startDate
   let lastDate = currentDate
+  // iterate from startDate on a weekly basis till we reach the first day
+  // after "now"
   while (date.subtract(currentDate, targetDate).toMinutes() < 0) {
     if (dateInBetween(daylightEnd, lastDate, currentDate)) {
       currentDate = date.addHours(currentDate, -1)
@@ -34,6 +47,7 @@ const createInstancesForTerm = (targetDate, startDate, endDate, snap, context, p
     
   const [startHour, startMinute] = period.startTime.split(':').map(n => Number(n))
   const [endHour, endMinute] = period.endTime.split(':').map(n => Number(n))
+  // iterate weekly from "now" to the endDate to create instances
   while (date.subtract(endDate, currentDate).toDays() >= 0) {
     if (dateInBetween(daylightEnd, lastDate, currentDate)) {
       currentDate = date.addHours(currentDate, -1)
@@ -74,13 +88,19 @@ const createInstancesForTerm = (targetDate, startDate, endDate, snap, context, p
   return promises
 }
 
+/**
+ * Firestore Trigger when a new recurring meeting is created, creating associated weekly instances
+ * and adding Calendar events to each member
+ */
 exports.onCreate = functions.firestore.document('recurrings/{id}').onCreate(async (snap, context) => {
   try {
+  // delete any preexisting children instances
   await deleteRecurringInstances(context.params.id)
 
   const periods = await getPeriods()
   const terms = await getTerms()
-
+  
+  // create children instances
   var promises = createInstancesForTerm(new Date(), terms.fallStart.toDate(), terms.fallEnd.toDate(), snap, context, periods, terms.daylightStart, terms.daylightEnd)
   await Promise.all(promises)
   promises = createInstancesForTerm(new Date(), terms.winterStart.toDate(), terms.winterEnd.toDate(), snap, context, periods, terms.daylightStart, terms.daylightEnd)
@@ -104,12 +124,17 @@ exports.onCreate = functions.firestore.document('recurrings/{id}').onCreate(asyn
   }
 })
 
+/**
+ * Firestore Trigger when a recurring meeting is deleted, removing children instances and
+ * associated invitations, as well as Calendar events
+ */
 exports.onDelete = functions.firestore.document('recurrings/{id}').onDelete(async (snap, context) => {
   try {
   await deleteRecurringInstances(context.params.id)
   await deleteRecurringInvitations(context.params.id)
   for (let member of snap.data().members) {
     const calendarID = (await getUserByID(member)).calendar
+    // skip if user is unregistered (and hence has no associated calendarID)
     if (!calendarID) continue
 
     const setups = await addRecurring(calendarID, snap.data(), auth, context.params.id)
@@ -123,9 +148,17 @@ exports.onDelete = functions.firestore.document('recurrings/{id}').onDelete(asyn
   }
 })
 
+/**
+ * Firestore Trigger when a recurring meeting is updated, recreating children instances
+ * and associated Calendar events
+ */
 exports.onUpdate = functions.firestore.document('recurrings/{id}').onUpdate(async (snap, context) => {
   try {
   const recurringID = context.params.id
+  /**
+   * Deletes the associated Calendar events for a given user
+   * @param {string} member ID of the user
+   */
   const deleteMember = async (member) => {
     const calendarID = (await getUserByID(member)).calendar
     
@@ -141,6 +174,10 @@ exports.onUpdate = functions.firestore.document('recurrings/{id}').onUpdate(asyn
     return null
   }
 
+  /**
+   * Creates the associated Calendar events for a given user
+   * @param {string} member ID of the user
+   */
   const addMember = async (member) => {
     const calendarID = (await getUserByID(member)).calendar
     if (!calendarID) return null
@@ -158,13 +195,13 @@ exports.onUpdate = functions.firestore.document('recurrings/{id}').onUpdate(asyn
   const afterMembers = snap.after.data().members
 
   if (beforeMembers.length > afterMembers.length) {
-    // member deleted
+    // if member deleted
     const diff = beforeMembers.filter(member => !afterMembers.includes(member))
     for (let member of diff) {
       await deleteMember(member)
     }
   } else {
-    // member added
+    // if member added
     const diff = afterMembers.filter(member => !beforeMembers.includes(member))
     for (let member of diff) {
       await addMember(member)

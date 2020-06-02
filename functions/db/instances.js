@@ -9,11 +9,17 @@ const date = require('date-and-time')
 const { addInstance, insert, calendar, auth, getAuth, list, listEvents, delete_, deleteEvent } = require('../utils/calendar')
 const { getUserByID, deleteInstanceInvitations } = require('../utils/db')
 
-const onCreateFunc = async (snap, context) => {
+/**
+ * Firestore Trigger when a new instance is added, adding corresponding events to members'
+ * Google Calendar
+ */
+exports.onCreate = functions.firestore.document('instances/{instanceID}').onCreate(async (snap, context) => {
   try {
   const instanceID = context.params.instanceID
   const members = snap.data().members
+  // add Calendar events for each user
   for (let member of members) {
+    // skip if the user isn't registered (and hence has no associated Calendar)
     const calendarID = (await getUserByID(member)).calendar
     if (!calendarID) {
       continue
@@ -26,20 +32,22 @@ const onCreateFunc = async (snap, context) => {
     if (!error.code) sentry.captureException(error)
     throw error
   }
-}
+})
 
-exports.onCreateFunc = onCreateFunc
-
-exports.onCreate = functions.firestore.document('instances/{instanceID}').onCreate(onCreateFunc)
-
-const onDeleteFunc = async (snap, context) => {
+/**
+ * Firestore Trigger when an instance is deleted, removing all invitations and Calendar events
+ * associated
+ */
+exports.onDelete = functions.firestore.document('instances/{instanceID}').onDelete(async (snap, context) => {
   try {
   // delete invitations
   const instanceID = context.params.instanceID
   await deleteInstanceInvitations(instanceID)
   
+  // delete Calendar events associated
   const members = snap.data().members
   for (let member of members) {
+    // skip if user isn't registered (and hence has no associated calendarID)
     const calendarID = (await getUserByID(member)).calendar
     if (!calendarID) {
       return
@@ -58,14 +66,18 @@ const onDeleteFunc = async (snap, context) => {
     if (!error.code) sentry.captureException(error)
     throw error
   }
-}
-exports.onDeleteFunc = onDeleteFunc
+})
 
-exports.onDelete = functions.firestore.document('instances/{instanceID}').onDelete(onDeleteFunc)
-
-const onUpdateFunc = async (snap, context) => {
+/**
+ * Firestore Trigger when an instance is updated, recreating Calendar events using the latest data
+ */
+exports.onUpdate = functions.firestore.document('instances/{instanceID}').onUpdate(async (snap, context) => {
   try {
   const instanceID = context.params.instanceID
+  /**
+   * Delete the instance from the member's Calendar
+   * @param {string} member ID of the member
+   */
   const deleteMember = async (member) => {
     const calendarID = (await getUserByID(member)).calendar
     
@@ -81,6 +93,10 @@ const onUpdateFunc = async (snap, context) => {
     return null
   }
 
+  /**
+   * Add the instance to the member's Calendar
+   * @param {string} member ID of the member
+   */
   const addMember = async (member) => {
     const calendarID = (await getUserByID(member)).calendar
     if (!calendarID) return null
@@ -95,13 +111,13 @@ const onUpdateFunc = async (snap, context) => {
   const afterMembers = snap.after.data().members
 
   if (beforeMembers.length > afterMembers.length) {
-    // member deleted
+    // if member deleted
     const diff = beforeMembers.filter(member => !afterMembers.includes(member))
     for (let member of diff) {
       await deleteMember(member)
     }
   } else {
-    // member added
+    // if member added
     const diff = afterMembers.filter(member => !beforeMembers.includes(member))
     for (let member of diff) {
       await addMember(member)
@@ -111,8 +127,4 @@ const onUpdateFunc = async (snap, context) => {
     if (!error.code) sentry.captureException(error)
     throw error
   }
-}
-
-exports.onUpdateFunc = onUpdateFunc
-
-exports.onUpdate = functions.firestore.document('instances/{instanceID}').onUpdate(onUpdateFunc)
+})

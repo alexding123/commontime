@@ -9,7 +9,7 @@ import PropTypes from 'prop-types'
 /**
  * Notificaiton prompting the user to confirm resetting their calendar
  */
-const ConfirmResetCalendar = ({data: {}, confirm, closeNotification}) => {
+const ConfirmResetCalendar = ({confirm, closeNotification}) => {
   return (
     <Modal
       size="lg"

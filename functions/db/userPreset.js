@@ -5,7 +5,10 @@ const db = admin.firestore()
 const { applyPreset } = require('../utils/preset')
 const { getUserByID } = require('../utils/db')
 
-
+/**
+ * Firestore Trigger when a userPreset is created, applying the preset to the matching
+ * existing user (if present)
+ */
 exports.onCreate = functions.firestore.document('userPreset/{id}').onCreate(async (snap, context) => {
   try {
   // apply preset to user (if found) whenever userPreset is created 
@@ -24,6 +27,10 @@ exports.onCreate = functions.firestore.document('userPreset/{id}').onCreate(asyn
   }
 })
 
+/**
+ * Firestore Trigger when a userPreset is deleted, removing the associated user object
+ * (unless it's an upload)
+ */
 exports.onDelete = functions.firestore.document('userPreset/{id}').onDelete(async (snap, context) => {
   try {
   // first thing to do: determine whether this is an upload
@@ -52,6 +59,10 @@ exports.onDelete = functions.firestore.document('userPreset/{id}').onDelete(asyn
   }
 })
 
+/**
+ * Firestore Trigger when a userPreset is updated, applying the latest preset to
+ * the associated user (if it exists)
+ */
 exports.onUpdate = functions.firestore.document('userPreset/{id}').onUpdate(async (snap, context) => {
   try {
   // each user Firebase auth has an associated entry in users/{uid}

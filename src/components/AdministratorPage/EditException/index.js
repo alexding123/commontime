@@ -13,7 +13,7 @@ import PropTypes from 'prop-types'
 /**
  * Subpage to edit an exception
  */
-const EditCourse = ({exception, handleSubmit}) => {
+const EditException = ({exception, handleSubmit}) => {
   if (!isLoaded(exception)) {
     return <SplashScreen/>
   }
@@ -31,7 +31,7 @@ const EditCourse = ({exception, handleSubmit}) => {
   </div>)
 }
 
-EditExceptionForm.propTypes = {
+EditException.propTypes = {
   exception: PropTypes.object,
   handleSubmit: PropTypes.func.isRequired,
 }
@@ -46,8 +46,8 @@ const enhance = compose(
   connect((state, props) => ({
     exception: state.firestore.data[`exception${props.match.params.id}`],
   }), (dispatch, props) => ({
-    handleSubmit: (values) => dispatch(editException(props.match.params.id, values))
+    handleSubmit: (values) => dispatch(editException(props.match.params.id, values)),
   }))
 )
 
-export default enhance(EditCourse)
+export default enhance(EditException)

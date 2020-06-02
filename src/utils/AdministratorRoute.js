@@ -28,7 +28,7 @@ function AdministratorRoute({ children, ...rest }) {
 
 AdministratorRoute.propTypes = {
   /** Child JSX components to render if user is admin */
-  children: PropTypes.object.isRequired,
+  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
 }
 
 export default AdministratorRoute

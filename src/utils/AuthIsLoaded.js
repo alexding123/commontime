@@ -16,5 +16,5 @@ export default function AuthIsLoaded({ children }) {
 }
 
 AuthIsLoaded.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
 }

@@ -33,7 +33,7 @@ function PrivateRoute({ children, ...rest }) {
 
 PrivateRoute.propTypes = {
   /** JSX components to render if the user is logged in */
-  children: PropTypes.object.isRequired,
+  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
 }
 
 export default PrivateRoute

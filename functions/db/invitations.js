@@ -6,8 +6,13 @@ const { sendEmail } = require('../utils/email')
 const { dayMap } = require('../utils/constants')
 const { getUserPresetByID, getInstance, getRecurring, getPeriod, getRoom } = require('../utils/db')
 const date = require('date-and-time')
+
+/**
+ * Firestore Trigger when a new invitation is created, sending an email to the invitee
+ */
 exports.onCreate = functions.firestore.document('invitations/{invitationID}').onCreate(async (snap, context) => {
   try {
+  // get relevant information
   const creator = await getUserPresetByID(snap.data().creator)
   const invitee = await getUserPresetByID(snap.data().invitee)
   const instance = snap.data().type === 'oneOff' ?
@@ -18,6 +23,7 @@ exports.onCreate = functions.firestore.document('invitations/{invitationID}').on
     (await getRoom(instance.room)).name :
     instance.roomName
 
+  // send an email of the appropriate type
   if (snap.data().type === 'oneOff') {
     await sendEmail(invitee.email, 'oneoffMeetingInvited', {
       creatorName: creator.name,

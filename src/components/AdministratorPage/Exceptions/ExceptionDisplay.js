@@ -45,7 +45,7 @@ ExceptionDisplay.propTypes = {
   id: PropTypes.string.isRequired,
   /** Exception object */
   exception: PropTypes.shape({
-    date: PropTypes.instanceOf(Date).isRequired,
+    date: PropTypes.string.isRequired,
     summary: PropTypes.string.isRequired,
   }).isRequired,
   /** Function to delete the displayed exception */

@@ -1,3 +1,7 @@
+/**
+ * Firebase Functions for sending emails of various purposes
+ */
+
 const functions = require('firebase-functions')
 const { sendEmail } = require('./utils/email')
 const { getInstance, getUserPresetByID, getPeriod, getRoom } = require('./utils/db')
@@ -7,6 +11,12 @@ const sentry = require("@sentry/node")
 const date = require('date-and-time')
 const db = admin.firestore()
 
+/**
+ * Firebase Function to send an email notifying the user that their room
+ * has been rebooked
+ */
+
+// TO BE REWRITTEN AS ASYNC (AND SIMPLIFIED DRASTICALLY)
 exports.roomRebooked = functions.https.onCall((data, context) => {
   try {
   if (!context.auth.token.admin && !context.auth.token.teacher) {
@@ -22,6 +32,7 @@ exports.roomRebooked = functions.https.onCall((data, context) => {
     throw new functions.https.HttpsError('invalid-argument', "Must supply instance and by arguments")
   }
 
+  // gather relevant information
   const getUser = db.collection('users').where('id', '==', instance.creator).get().then(doc => {
     if (doc.empty) {
       throw new functions.https.HttpsError('invalid-argument', "Instance creator does not exist")
@@ -74,6 +85,10 @@ exports.roomRebooked = functions.https.onCall((data, context) => {
   }
 })
 
+/**
+ * Firebase Function to send an email confirming that their booking is
+ * successful
+ */
 exports.meetingScheduled = functions.https.onCall(async (data, context) => {
   try {
   if (!context.auth.token.admin && !context.auth.token.teacher) {
@@ -88,6 +103,8 @@ exports.meetingScheduled = functions.https.onCall(async (data, context) => {
   } catch (e) {
     throw new functions.https.HttpsError('invalid-argument', "Must supply instanceID and person arguments.")
   }
+
+  // gather relevant information
 
   const instance = await getInstance(instanceID) 
   if (Object.keys(instance).length === 0 && instance.constructor === Object) {
@@ -136,6 +153,10 @@ exports.meetingScheduled = functions.https.onCall(async (data, context) => {
   }
 })
 
+/**
+ * Firebase Function to send an email confirming that their booking of
+ * a recurring meeting is successful
+ */
 exports.recurringMeetingScheduled = functions.https.onCall(async (data, context) => {
   try {
   if (!context.auth.token.admin && !context.auth.token.teacher) {
@@ -150,6 +171,8 @@ exports.recurringMeetingScheduled = functions.https.onCall(async (data, context)
   } catch (e) {
     throw new functions.https.HttpsError('invalid-argument', "Must supply recurringID and person arguments.")
   }
+
+  // gather relevant information
 
   const recurring = await db.collection('recurrings').doc(recurringID).get().then(doc => {
     if (!doc.exists) {
