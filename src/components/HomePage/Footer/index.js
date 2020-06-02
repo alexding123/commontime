@@ -13,12 +13,12 @@ const Footer = () => {
       <Row className="align-items-center mt-auto mb-auto h-100">
         <Col>
           Got a feature request or noticed a bug? Open an&nbsp;
-          <Button variant="link" className="inline-link" href="https://github.com/alexding123/commontime/issues">
+          <Button variant="link" className="inline-link" href="https://github.com/alexander-ding/commontime/issues">
             <span>Issue</span>
             <Octicon icon={IssueOpened} size={10}/>
           </Button>&nbsp;
           on&nbsp;
-          <Button variant="link" className="inline-link" href="https://github.com/alexding123/commontime">
+          <Button variant="link" className="inline-link" href="https://github.com/alexander-ding/commontime">
             <span>GitHub</span>
             <Octicon icon={MarkGithub} size={10}/>
           </Button>

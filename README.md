@@ -1,6 +1,6 @@
 # Commontime
 
-![Build and Deploy](https://github.com/alexding123/commontime/workflows/Build%20and%20Deploy/badge.svg)
+![Build and Deploy](https://github.com/alexander-ding/commontime/workflows/Build%20and%20Deploy/badge.svg)
 
 This is the source code of [Commonwealth School](https://www.commschool.org/)'s scheduling app/website.
 
