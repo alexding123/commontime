@@ -7,11 +7,16 @@ import { Alert } from 'react-bootstrap'
 import { addUser } from '../../../actions/administratorActions'
 import AddUserForm from '../../forms/AddUserForm'
 import ErrorBoundary from '../../ErrorBoundary'
+import PropTypes from 'prop-types'
 
+/**
+ * Subpage to add a new user to the database
+ */
 const AddUser = ({users, error, handleSubmit}) => {
   if (!isLoaded(users)) {
     return <SplashScreen/>
   }
+  // necessary to avoid null values
   const filteredUsers = users ? Object.values(users).filter(user => user) : []
 
   return (<div>
@@ -24,6 +29,13 @@ const AddUser = ({users, error, handleSubmit}) => {
       </ErrorBoundary>
     </div>
   </div>)
+}
+
+AddUser.propTypes = {
+  users: PropTypes.object,
+  /** optional error message to display */
+  error: PropTypes.string,
+  handleSubmit: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

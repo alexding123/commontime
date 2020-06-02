@@ -2,6 +2,9 @@ import React from 'react'
 import Button from 'react-bootstrap/Button'
 import { compose } from 'recompose'
 
+/**
+ * The 404 page, with a link the the home page
+ */
 const NotFoundPage = () => {
   return (
     <div className="main d-flex flex-column justify-content-center align-items-center" style={{textAlign: 'center', height: '60vh'}}>

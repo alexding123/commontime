@@ -1,6 +1,11 @@
 import React from 'react'
 import { Alert, OverlayTrigger, Button, Popover } from 'react-bootstrap'
+import PropTypes from 'prop-types'
 
+/**
+ * Component that pops up to show the details of an exception
+ * @param {Object} exception The exception to show
+ */
 const popover = (exception) => (
   <Popover>
     <Popover.Title>Special Schedule</Popover.Title>
@@ -11,6 +16,9 @@ const popover = (exception) => (
   </Popover>
 )
 
+/**
+ * Component that alerts the user that today has an exception
+ */
 const Exception = ({exception}) => {
   return (
     <Alert variant="danger">
@@ -20,6 +28,13 @@ const Exception = ({exception}) => {
     </OverlayTrigger>
     </Alert>
   )
+}
+
+Exception.propTypes = {
+  exception: PropTypes.shape({
+    summary: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+  }).isRequired,
 }
 
 export default Exception

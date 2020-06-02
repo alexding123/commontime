@@ -7,16 +7,20 @@ import { compose } from 'recompose'
 import SplashScreen from '../SplashScreen'
 import Sidebar from './Sidebar'
 import ErrorBoundary from '../ErrorBoundary'
+import PropTypes from 'prop-types'
 
 const Settings = lazy(() => import('./Settings'))
 const Meetings = lazy(() => import('./Meetings'))
 
-const ProfilePage = ({ profile }) => {
-  if (!isLoaded(profile)) {
+/**
+ * Page to display the user profile and settings
+ */
+const ProfilePage = ({ profile, users }) => {
+  if (!isLoaded(profile) || !isLoaded(users)) {
     return <SplashScreen/>
   }
   return (
-    <Row style={{height: '100%'}}>
+    <Row className="sidebar-page">
       <Sidebar/>
       <Col className="ml-auto px-4 pt-3">
         <ErrorBoundary>
@@ -31,6 +35,11 @@ const ProfilePage = ({ profile }) => {
   )
 }
 
+ProfilePage.propTypes = {
+  profile: PropTypes.object,
+  users: PropTypes.object,
+}
+
 const enhance = compose(
   firestoreConnect([{
     collection: 'periods',
@@ -38,10 +47,13 @@ const enhance = compose(
     collection: 'rooms',
   }, {
     collection: 'exceptions',
+  }, {
+    collection: 'userPreset',
   }]),
   connect(
     (state) => ({
       profile: state.firebase.profile,
+      users: state.firestore.data.userPreset,
     }),
   ),
 )

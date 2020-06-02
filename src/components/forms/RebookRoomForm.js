@@ -11,8 +11,13 @@ import { Field, formValueSelector, reduxForm } from 'redux-form'
 import Control from './components/Control'
 import Toggle from './components/Toggle'
 import Exception from './components/Exception'
+import PropTypes from 'prop-types'
 
-let RebookRoomForm = ({pristine, submitting, handleSubmit, selector, cancelForm, validated, exceptions, exceptionKey}) => {
+/**
+ * Form to override a current meeting and book another
+ */
+const RebookRoomForm = ({pristine, submitting, handleSubmit, selector, cancelForm, validated, exceptions, exceptionKey}) => {
+  // find the exception today, if there is one
   const exception = exceptions ? exceptions[exceptionKey] : null
   return (
   <Form onSubmit={handleSubmit}>
@@ -55,8 +60,27 @@ let RebookRoomForm = ({pristine, submitting, handleSubmit, selector, cancelForm,
   )
 }
 
+RebookRoomForm.propTypes = {
+  /** Whether the form has been touched */
+  pristine: PropTypes.bool.isRequired,
+  /** Whether the form is currently being submitted */
+  submitting: PropTypes.bool.isRequired,
+  /** Whether the form values are validated */
+  validated: PropTypes.bool.isRequired,
+  /** Handler for form submission */
+  handleSubmit: PropTypes.func.isRequired,
+  /** Selector of current form values */
+  selector: PropTypes.func.isRequired,
+  /** Handler to leave the form and cancel the attempt */
+  cancelForm: PropTypes.func.isRequired,
+  /** All exceptions this school year */
+  exceptions: PropTypes.object,
+  /** Access key to the exception in the time range selected for this booking (could map to null) */
+  exceptionKey: PropTypes.string.isRequired,
+}
+
 const validate = (selector) => {
-  return selector('name')
+  return Boolean(selector('name'))
 }
 
 const enhance = compose(

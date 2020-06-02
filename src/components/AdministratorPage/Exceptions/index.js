@@ -6,12 +6,17 @@ import SplashScreen from '../../SplashScreen'
 import ExceptionDisplay from './ExceptionDisplay'
 import { Button, Card } from 'react-bootstrap'
 import ErrorBoundary from '../../ErrorBoundary'
+import PropTypes from 'prop-types'
 
+/**
+ * Subpage to display all the exceptions in Cloud Firestore
+ */
 const Exceptions = ({exceptions}) => {
   if (!isLoaded(exceptions)) {
     return <SplashScreen/>
   }
 
+  // required to avoid null values
   const filteredExceptions = exceptions ? Object.entries(exceptions).filter(([key, exception]) => exception) : []
 
   return (<div>
@@ -35,6 +40,10 @@ const Exceptions = ({exceptions}) => {
       </ErrorBoundary>
     </div>
   </div>)
+}
+
+Exceptions.propTypes = {
+  exceptions: PropTypes.object,
 }
 
 const enhance = compose(

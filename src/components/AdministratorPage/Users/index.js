@@ -6,11 +6,16 @@ import SplashScreen from '../../SplashScreen'
 import UserDisplay from './UserDisplay'
 import { Button, Card } from 'react-bootstrap'
 import ErrorBoundary from '../../ErrorBoundary'
+import PropTypes from 'prop-types'
 
+/**
+ * Subpage to display all the users in Cloud Firestore
+ */
 const Users = ({users}) => {
   if (!isLoaded(users)) {
     return <SplashScreen/>
   }
+  // required to avoid null values
   const filteredUsers = users ? Object.entries(users).filter(([key, user]) => user) : []
   return (<div>
     <h3>Users</h3>
@@ -37,6 +42,10 @@ const Users = ({users}) => {
       </ErrorBoundary>
     </div>
   </div>)
+}
+
+Users.propTypes = {
+  users: PropTypes.object
 }
 
 const enhance = compose(

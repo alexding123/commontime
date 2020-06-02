@@ -1,11 +1,15 @@
+/**
+ * Search filters in Book Page
+ */
+
 @include media-breakpoint-up(sm) {
   .search-filters {
+    height: calc(100vh - 106px);
     max-width: 340px;
     padding-right: .5rem;
     position: sticky;
     top: calc(56px + 1rem);
     width: 340px;
-    height: calc(100vh - 106px);
   }
 
   .filters-display-container {

@@ -5,7 +5,11 @@ import AddMeetingForm from '../../forms/AddMeetingForm'
 import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { addMeeting } from '../../../actions/homeActions'
+import PropTypes from 'prop-types'
 
+/**
+ * Component that allows an admin to add a lunch or after school meeting
+ */
 const AddMeeting = ({isAdd, setIsAdd, time, instances, rooms, handleSubmit}) => {
   if (!isAdd) {
     return <ListGroup.Item>
@@ -31,6 +35,19 @@ const AddMeeting = ({isAdd, setIsAdd, time, instances, rooms, handleSubmit}) => 
     cancelForm={() => setIsAdd(false)}
     instances={instances}
   />
+}
+
+AddMeeting.propTypes = {
+  /** Whether we are in the middle of adding a meeting */
+  isAdd: PropTypes.bool.isRequired,
+  /** Hook to set the value of isAdd */
+  setIsAdd: PropTypes.func.isRequired,
+  /** Current date, formatted as MM/DD/YYYY */
+  time: PropTypes.string.isRequired,
+  instances: PropTypes.object,
+  rooms: PropTypes.object,
+  /** Handler for form submission */
+  handleSubmit: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

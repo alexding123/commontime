@@ -22,7 +22,9 @@ if (functions.config().sentry && functions.config().sentry.dsn) {
 const admin = require('firebase-admin')
 admin.initializeApp()
 
-
+/**
+ * Export all the exposed Firebase Functions
+ */
 exports.auth = require('./auth')
 exports.db = require('./db')
 exports.upload = require('./upload')

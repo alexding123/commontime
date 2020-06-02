@@ -6,11 +6,16 @@ import SplashScreen from '../../SplashScreen'
 import CourseDisplay from './CourseDisplay'
 import { Button, Card } from 'react-bootstrap'
 import ErrorBoundary from '../../ErrorBoundary'
+import PropTypes from 'prop-types'
 
+/**
+ * Subpage to list all the courses in the database
+ */
 const Courses = ({courses, periods, rooms, users}) => {
   if (!isLoaded(courses) || !isLoaded(periods) || !isLoaded(rooms) || !isLoaded(users)) {
     return <SplashScreen/>
   }
+  // needed to filter null values
   const filteredCourses = courses ? Object.entries(courses).filter(([key, course]) => course) : []
   return (<div>
     <h3>Courses</h3>
@@ -36,6 +41,13 @@ const Courses = ({courses, periods, rooms, users}) => {
       </ErrorBoundary>
     </div>
   </div>)
+}
+
+Courses.propTypes = {
+  courses: PropTypes.object,
+  periods: PropTypes.object,
+  rooms: PropTypes.object,
+  users: PropTypes.object,
 }
 
 const enhance = compose(

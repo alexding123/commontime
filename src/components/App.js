@@ -21,12 +21,19 @@ const NotFoundPage = lazy(() => import('./NotFoundPage'))
 const ProfilePage = lazy(() => import('./ProfilePage'))
 const RoomPage = lazy(() => import('./RoomPage'))
 
+/**
+ * The main app, including the primary router and support
+ * for lazy loading (Suspense) and optional DevTools
+ */
 const App = () => (
   <Suspense fallback={<SplashScreen/>}>
+    {/** Requires that firebase.auth is loaded before proceeding */}
     <AuthIsLoaded>
+    {/** Overlay notifications */}
     <ErrorBoundary>
     <Notifications/>
     </ErrorBoundary>
+    {/** Primary routing */}
     <Switch>
       <Route path="/Login"><LoginPage/></Route>
       <Route path="*">

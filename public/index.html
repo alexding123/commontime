@@ -11,6 +11,7 @@
       content="Commonwealth School's schedule website"
     />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!-- Defer loads the Google API, initializing when ready -->
     <script>
       function init() {
         gapi.load('auth2', () => {

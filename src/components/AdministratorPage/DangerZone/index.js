@@ -1,3 +1,7 @@
+/**
+ * TO BE REWRITTEN COMPLETELY
+ * Ignore this horrible mess now
+ */
 import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'

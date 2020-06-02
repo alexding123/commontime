@@ -10,9 +10,15 @@ import { defaultExcludeRooms, getFreeRecurringRooms } from '../../utils'
 import Control from './components/Control'
 import HybridSelect from './components/HybridSelect'
 import Toggle from './components/Toggle'
+import PropTypes from 'prop-types'
 
+/**
+ * Form to book a weekly, recurring meeting
+ */
 const BookRecurringForm = ({pristine, submitting, validated, period, isInvite, rooms, courses, recurrings, canBookPrivate, selector, handleSubmit, goDisplayPage}) => {
+  // get all free weekly time slots
   const freeRooms = getFreeRecurringRooms(rooms, courses, recurrings, period)
+  // sort rooms by ID
   const roomsSorted = freeRooms.sort((a, b) => {
     if (defaultExcludeRooms.includes(a.id) && defaultExcludeRooms.includes(b.id)) {
       return 0
@@ -95,12 +101,44 @@ const BookRecurringForm = ({pristine, submitting, validated, period, isInvite, r
   )
 }
 
+
+BookRecurringForm.propTypes = {
+  /** Whether the form has been touched */
+  pristine: PropTypes.bool.isRequired,
+  /** Whether the form is currently being submitted */
+  submitting: PropTypes.bool.isRequired,
+  /** Whether the form values are validated */
+  validated: PropTypes.bool.isRequired,
+  /** Handler for form submission */
+  handleSubmit: PropTypes.func.isRequired,
+  /** Selector of current form values */
+  selector: PropTypes.func.isRequired,
+  /** ID of the selected period for this weekly meeting */
+  period: PropTypes.string.isRequired,
+  /** Whether submitting the form invites the other members or simply notifies them */
+  isInvite: PropTypes.bool.isRequired,
+  /** All the available rooms */
+  rooms: PropTypes.object.isRequired,
+  /** All the courses of the school */
+  courses: PropTypes.object.isRequired,
+  /** All the preexisting recurring weekly meetings */
+  recurrings: PropTypes.object,
+  /** Whether the user is allowed to book a private meeting */
+  canBookPrivate: PropTypes.bool.isRequired,
+  /** Handler to navigate the user to the display page */
+  goDisplayPage: PropTypes.func.isRequired,
+}
+
+/**
+ * Validates the values of the form
+ * @param {function} selector Selector of the forms
+ */
 const validate = (selector) => {
   if (!selector('name')) {
     return false
   }
   if (!selector('useCustomRoom')) {
-    return selector('room')
+    return Boolean(selector('room'))
   } else {
     return true
   }

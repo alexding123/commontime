@@ -5,22 +5,36 @@ import { isEmpty } from 'react-redux-firebase'
 import { compose } from 'recompose'
 import { getFreeInstances } from '../../../utils'
 import InstanceDisplay from './InstanceDisplay'
+import PropTypes from 'prop-types'
 
-
-
+/**
+ * Order an array of instances to display the booked instances first
+ * @param {Object[]} instances Array of instances to sort
+ */
 const sortInstances = (instances) => {
   const bookedInstances = instances.filter(instance => instance.instance)
   const freeInstances = instances.filter(instance => !instance.instance)
   return [...bookedInstances, ...freeInstances]
 }
 
+/**
+ * Component to display the found instances within the contraints of
+ * the filters
+ */
 const Display = ({profile, instances, periods, data}) => {
+  // all time/location pairs within the constraint of the filters that 
+  // don't have a class (including pairs that are booked meetings) 
   const freeInstances = getFreeInstances(instances, periods, data)
-  const userBookedRooms = isEmpty(profile) || data.allowRebook ? [] : freeInstances.filter(instance => instance.instance && instance.instance.creator === profile.id)
+  // all the instances the current user has booked 
+  const userBookedInstances = isEmpty(profile) || data.allowRebook ? [] : freeInstances.filter(instance => instance.instance && instance.instance.creator === profile.id)
+  // only teachers can even have the option to rebook
   const canRebook = !isEmpty(profile) && profile.token.claims.teacher ? data.allowRebook : false
+  // if exclude booked instances, we filter all time/location pairs
+  // with any meeting on it
   const filteredInstances = canRebook ? sortInstances(freeInstances) : freeInstances.filter(instance => !instance.instance)
 
-  const allInstancesToDisplay = [...userBookedRooms, ...filteredInstances]
+  // display the user's own booked instances and the filtered results
+  const allInstancesToDisplay = [...userBookedInstances, ...filteredInstances]
   return allInstancesToDisplay.length ? 
     <ListGroup>
       {allInstancesToDisplay.map((instance, index) => 
@@ -37,6 +51,13 @@ const Display = ({profile, instances, periods, data}) => {
         </div>
       </ListGroup.Item>
     </ListGroup>
+}
+
+Display.propTypes = {
+  profile: PropTypes.object,
+  instances: PropTypes.object,
+  periods: PropTypes.object,
+  data: PropTypes.object,
 }
 
 const enhance = compose(

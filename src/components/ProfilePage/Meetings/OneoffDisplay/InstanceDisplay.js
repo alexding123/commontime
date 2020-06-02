@@ -11,16 +11,24 @@ import { dayMap } from '../../../../utils'
 import SplashScreen from '../../../SplashScreen'
 import inviteFunc from './inviteFunc'
 import notifyFunc from './notifyFunc'
+import PropTypes from 'prop-types'
 
+/**
+ * Component to display a single one-off meeting the user is in
+ */
 const InstanceDisplay = ({profile, instance, instanceID, periods, rooms, invitations, unsubscribe, deleteMeeting, handleNotifySubmit, handleInviteSubmit}) => {
-  if (instance.creator === profile.id && !isLoaded(invitations)) {
-    return <SplashScreen/>
+  // only need the invitations if user is the creator of the instance
+  if (instance.creator === profile.id) {
+    if (!isLoaded(invitations)) {
+      return <SplashScreen/>
+    }
   }
   const periodName = periods[instance.period].name
   const roomName = instance.room ? rooms[instance.room].name : instance.roomName
   const dateObj = date.parse(instance.date, 'MM/DD/YYYY')
   const dayName = dayMap[dateObj.getDay()]
   const dateName = date.format(dateObj, 'MMMM DD')
+  // only a teacher can simply add other members, instead of invite 
   const isNotify = !isEmpty(profile) && profile.token.claims.teacher
   const isCreator = profile.id === instance.creator
   return <Card className="mb-2">
@@ -31,7 +39,7 @@ const InstanceDisplay = ({profile, instance, instanceID, periods, rooms, invitat
       <Col className="p-0">
         <h5 className="d-inline">{instance.name}</h5>
         <div className="d-inline pl-1">{instance.room ? 
-          <Button className="inline-link" variant="link" href={`/Rooms/${instance.room}`}>{roomName}</Button> :
+          <Button className="inline-link" variant="link" href={`/Room/${instance.room}`}>{roomName}</Button> :
           roomName
         }</div>  
       </Col>
@@ -44,7 +52,7 @@ const InstanceDisplay = ({profile, instance, instanceID, periods, rooms, invitat
         { isCreator ? 
           <OverlayTrigger trigger='click' rootClose={true} placement="top-start" overlay={
             isNotify ? 
-            notifyFunc(instance, instanceID, handleNotifySubmit(instanceID)) : 
+            notifyFunc(instance, instanceID, handleNotifySubmit(instance, instanceID)) : 
             inviteFunc(instance, instanceID, handleInviteSubmit(instance, instanceID, profile.id))
           }>
             <Button variant="link" className='p-0' style={{lineHeight: '0 !important'}}>
@@ -78,6 +86,32 @@ const InstanceDisplay = ({profile, instance, instanceID, periods, rooms, invitat
   </Card>
 }
 
+InstanceDisplay.propTypes = {
+  profile: PropTypes.object,
+  /** The instance to display */
+  instance: PropTypes.shape({
+    date: PropTypes.string.isRequired,
+    room: PropTypes.string,
+    roomName: PropTypes.string,
+    period: PropTypes.string.isRequired,
+    creator: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+  }).isRequired,
+  /** ID of the displayed instance */
+  instanceID: PropTypes.string.isRequired,
+  periods: PropTypes.object,
+  rooms: PropTypes.object,
+  invitations: PropTypes.object,
+  /** Handler to remove the current user from the members list */
+  unsubscribe: PropTypes.func.isRequired,
+  /** Handler to delete this meeting */
+  deleteMeeting: PropTypes.func.isRequired,
+  /** Handler to notify new members */
+  handleNotifySubmit: PropTypes.func.isRequired,
+  /** Handler to invite new members */
+  handleInviteSubmit: PropTypes.func.isRequired,
+}
+
 const enhance = compose(
   connect((state, props) => ({
     periods: state.firestore.data.periods,
@@ -87,8 +121,8 @@ const enhance = compose(
   }), (dispatch, props) => ({
     deleteMeeting: () => dispatch(deleteOneOffMeeting(props.instanceID)),
     unsubscribe: (id) => dispatch(unsubscribeOneOffMeeting(props.instanceID, id)),
-    handleNotifySubmit: (instanceID) => (values) => {
-      dispatch(notifyOneOffMeeting(values, instanceID))
+    handleNotifySubmit: (instance, instanceID) => (values) => {
+      dispatch(notifyOneOffMeeting(values, instance, instanceID))
       document.body.click()
     },
     handleInviteSubmit: (instance, instanceID, userID) => (values) => {
@@ -97,6 +131,7 @@ const enhance = compose(
     }
   })),
   firestoreConnect(props => {
+    // only need the invitations if user is the creator of the instance
     if (props.instance.creator === props.profile.id) {
       return [{
         collection: 'invitations',

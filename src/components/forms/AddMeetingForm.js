@@ -9,12 +9,22 @@ import CheckIcon from '@material-ui/icons/Check'
 import CloseIcon from '@material-ui/icons/Close'
 import { getFreeRooms } from '../../utils'
 import Control from './components/Control'
+import PropTypes from 'prop-types'
 
+/**
+ * Helper function to filter choices as the user enters values
+ * (check if name starts with the user-entered value)
+ * @param {Object} room Candidate room name
+ * @param {string} value User-entered value
+ */
 const filterName = (room, value) => {
   return room.name.toLowerCase().indexOf(value.toLowerCase()) === 0
 }
 
-let AddMeetingForm = ({submitting, rooms, handleSubmit, cancelForm, validated, instances}) => {
+/**
+ * Form to add a new meeting
+ */
+const AddMeetingForm = ({pristine, submitting, rooms, handleSubmit, cancelForm, validated, instances}) => {
   const availableRooms = getFreeRooms(rooms, instances)
   return (
   <Form onSubmit={handleSubmit}>
@@ -38,7 +48,7 @@ let AddMeetingForm = ({submitting, rooms, handleSubmit, cancelForm, validated, i
           />
         </div>
         <div className="col-2 d-flex justify-content-center align-items-center">
-          <Button variant="link" type="submit" disabled={submitting || !validated} className="center-button">     
+          <Button variant="link" type="submit" disabled={pristine || submitting || !validated} className="center-button">     
             <CheckIcon/>
           </Button>
           <Button variant="link" onClick={cancelForm} className="center-button">     
@@ -47,23 +57,49 @@ let AddMeetingForm = ({submitting, rooms, handleSubmit, cancelForm, validated, i
         </div>
       </div>
     </ListGroup.Item>
-    
   </Form>
   )
 }
 
-const validate = (state, props) => {
-  const selector = formValueSelector(`addMeetingForm${props.time}`)
-  const name = selector(state, 'name')
-  const room = selector(state, 'room')
-  return name && room && Object.keys(props.rooms).includes(room)
+AddMeetingForm.propTypes = {
+  rooms: PropTypes.object,
+  /** Whether the form has been touched */
+  pristine: PropTypes.bool.isRequired,
+  /** Whether the form is currently being submitted */
+  submitting: PropTypes.bool.isRequired,
+  /** Whether the form values are validated */
+  validated: PropTypes.bool.isRequired,
+  /** Handler for form submission */
+  handleSubmit: PropTypes.func.isRequired,
+  /** Handler for closing the form */
+  cancelForm: PropTypes.func.isRequired,
+  /** Optional list of preexisting meetings */
+  instances: PropTypes.arrayOf(PropTypes.string),
+}
+
+/**
+ * Validates the values of the form
+ * @param {function} selector Selector of the forms
+ * @param {function} rooms All available rooms
+ */
+const validate = (selector, rooms) => {
+  const name = selector('name')
+  const room = selector('room')
+  return Boolean(
+    name && room && Object.keys(rooms).includes(room)
+  )
 }
 
 const enhance = compose(
-  connect((state, props) => ({
-    form: `addMeetingForm${props.time}`,
-    validated: validate(state, props),
-  })),
+  connect((state, props) => {
+    const form = `addMeetingForm`
+    const selector = (...field) => formValueSelector(form)(state, ...field)
+    const validated = validate(selector, props.rooms)
+    return {
+      form: `addMeetingForm${props.time}`,
+      validated,
+    }
+  }),
   reduxForm(),
 )
 

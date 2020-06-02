@@ -1,12 +1,18 @@
 import React from 'react' 
 import { Popover } from 'react-bootstrap'
-import RecurringNotifyForm from '../../../forms/RecurringNotifyForm'
+import RecurringInviteForm from '../../../forms/RecurringInviteForm'
 
-const inviteFunc = (instance, instanceID, handleSubmit) => {
+/**
+ * Popover to invite other users to attend the meeting
+ * @param {Object} recurring The recurring meeting
+ * @param {string} recurringID ID of the recurring meting
+ * @param {function} handleSubmit Handler for form submission
+ */
+const inviteFunc = (recurring, recurringID, handleSubmit) => {
   return <Popover>
     <Popover.Title>Invite people to attend</Popover.Title>
     <Popover.Content>
-      <RecurringNotifyForm onSubmit={handleSubmit} instanceID={instanceID} instance={instance}/>
+      <RecurringInviteForm onSubmit={handleSubmit} instanceID={recurringID} instance={recurring}/>
     </Popover.Content>
   </Popover>
 }

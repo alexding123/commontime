@@ -6,7 +6,11 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { notificationSet } from '../../../actions/notificationsActions'
 import date from 'date-and-time'
+import PropTypes from 'prop-types'
 
+/**
+ * Component to display a single exception
+ */
 const ExceptionDisplay = ({id, exception, deleteException}) => {
   return (<Card>
     <Card.Body>
@@ -36,6 +40,17 @@ const ExceptionDisplay = ({id, exception, deleteException}) => {
   </Card>)
 }
 
+ExceptionDisplay.propTypes = {
+  /** ID of the exception */
+  id: PropTypes.string.isRequired,
+  /** Exception object */
+  exception: PropTypes.shape({
+    date: PropTypes.string.isRequired,
+    summary: PropTypes.string.isRequired,
+  }).isRequired,
+  /** Function to delete the displayed exception */
+  deleteException: PropTypes.func.isRequired,
+}
 const enhance = compose(
   connect(null, (dispatch, props) => ({
     deleteException: () => dispatch(notificationSet('confirmDeleteException', {

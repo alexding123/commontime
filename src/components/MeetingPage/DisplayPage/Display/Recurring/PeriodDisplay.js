@@ -5,7 +5,12 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { pageSet, periodSelected } from '../../../../../actions/meetingPageActions'
 import { dayMap } from '../../../../../utils'
+import PropTypes from 'prop-types'
 
+/**
+ * Component to display a common period found under the search parameters,
+ * allowing the user to potentially book a meeting on it
+ */
 const PeriodDisplay = ({period, periods, goBookRoom}) => {
   return <ListGroup.Item>
   <Row>
@@ -38,6 +43,23 @@ const PeriodDisplay = ({period, periods, goBookRoom}) => {
   </Row>
   
 </ListGroup.Item>
+}
+
+PeriodDisplay.propTypes = {
+  /** The period to display, with any preexisting meeting during it */
+  period: PropTypes.shape({
+    period: PropTypes.string.isRequired,
+    conflicts: PropTypes.arrayOf(PropTypes.shape({
+      person: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+      }).isRequired,
+      private: PropTypes.bool.isRequired,
+      name: PropTypes.string.isRequired,
+    })),
+  }).isRequired,
+  periods: PropTypes.object,
+  /** Handler to navigate to the subpage to book the room */
+  goBookRoom: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

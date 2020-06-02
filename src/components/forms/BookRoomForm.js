@@ -11,8 +11,13 @@ import { Field, formValueSelector, reduxForm } from 'redux-form'
 import Control from './components/Control'
 import Exception from './components/Exception'
 import Toggle from './components/Toggle'
+import PropTypes from 'prop-types'
 
-let BookRoomForm = ({pristine, submitting, canBookPrivate, handleSubmit, cancelForm, validated, selector, exceptions, exceptionKey}) => {
+/**
+ * Form to book a single room in the BookPage
+ */
+const BookRoomForm = ({pristine, submitting, canBookPrivate, handleSubmit, cancelForm, validated, selector, exceptions, exceptionKey}) => {
+  // find if there's an exception on this day
   const exception = exceptions ? exceptions[exceptionKey] : null
   return (
   <Form onSubmit={handleSubmit}>
@@ -59,9 +64,33 @@ let BookRoomForm = ({pristine, submitting, canBookPrivate, handleSubmit, cancelF
 }
 
 
+BookRoomForm.propTypes = {
+  /** Whether the form has been touched */
+  pristine: PropTypes.bool.isRequired,
+  /** Whether the form is currently being submitted */
+  submitting: PropTypes.bool.isRequired,
+  /** Whether the form values are validated */
+  validated: PropTypes.bool.isRequired,
+  /** Handler for form submission */
+  handleSubmit: PropTypes.func.isRequired,
+  /** Selector of current form values */
+  selector: PropTypes.func.isRequired,
+  /** Whether the user is allowed to book a private meeting */
+  canBookPrivate: PropTypes.bool.isRequired,
+  /** Handler to close the form */
+  cancelForm: PropTypes.func.isRequired,
+  /** All exceptions this school year */
+  exceptions: PropTypes.object,
+  /** Access key to the exception in the time range selected for this booking (could map to null) */
+  exceptionKey: PropTypes.string.isRequired,
+}
 
+/**
+ * Validates the values of the form
+ * @param {function} selector Selector of the forms
+ */
 const validate = (selector) => {
-  return selector('name')
+  return Boolean(selector('name'))
 }
 
 const enhance = compose(

@@ -1,22 +1,27 @@
-import React from 'react';
-import { DateRange } from 'react-date-range';
-import 'react-date-range/dist/styles.css';
-import 'react-date-range/dist/theme/default.css';
+import React from 'react'
+import { DateRange } from 'react-date-range'
+import 'react-date-range/dist/styles.css'
+import 'react-date-range/dist/theme/default.css'
 
+/**
+ * Redux-Form component for choosing a range of dates
+ */
 class renderDateRangePicker extends React.Component {
   constructor(props) {
     super(props);
 
     const initValues = (props.input && props.input.value) || {};
 
+    // default values
     this.state = {
-      startDate: initValues.startDate || new Date(),
+      startDate: initValues.startDate || new Date(), // default to "now" if not given
       endDate: initValues.endDate || new Date(),
       key: 'selection',
       showDatePicker : false
     }
   }
 
+  // build a Redux-Form onChange event to update its internal value
   constructEvent(selection) {
     return {
       startDate: selection.startDate,
@@ -24,6 +29,7 @@ class renderDateRangePicker extends React.Component {
     }
   }
 
+  // triggered when user interacts with the component
   handleChange(payload) {
     this.setState({
       ...this.state,

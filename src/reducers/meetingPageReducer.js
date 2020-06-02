@@ -1,15 +1,9 @@
 import { combineReducers } from "redux"
-import { PAGE_SET, SCHEDULE_MEETING_SETUP_SAVED, TOGGLE_SHOW_MEETING_FILTERS, ONEOFF_INSTANCE_SELECTED, PERIOD_SELECTED } from "../actions/meetingPageActions"
+import { PAGE_SET, SCHEDULE_MEETING_SETUP_SAVED, ONEOFF_INSTANCE_SELECTED, PERIOD_SELECTED } from "../actions/meetingPageActions"
 
-const showFiltersReducer = (state=false, action) => {
-  switch (action.type) {
-    case TOGGLE_SHOW_MEETING_FILTERS:
-      return !state
-    default:
-      return state
-  }
-}
-
+/**
+ * Reducer for managing which subpage to display
+ */
 const stageReducer = (state='PEOPLE', action) => {
   switch (action.type) {
     case PAGE_SET:
@@ -19,8 +13,12 @@ const stageReducer = (state='PEOPLE', action) => {
   }
 }
 
+/**
+ * Reducer for managing whether to show booked time slots
+ */
 const allowRebookReducer = (state=false, action) => {
   switch (action.type) {
+    // save value when the setup is done
     case SCHEDULE_MEETING_SETUP_SAVED:
       return action.data.allowRebook ? action.data.allowRebook : false
     default:
@@ -28,8 +26,12 @@ const allowRebookReducer = (state=false, action) => {
   }
 }
 
-const frequencyReducer = (state='ONE_OFF', action) => {
+/**
+ * Reducer for managing whether to book a one-off or a recurring meeting
+ */
+const frequencyReducer = (state='oneOff', action) => {
   switch (action.type) {
+    // save value when setup is done
     case SCHEDULE_MEETING_SETUP_SAVED:
       return action.data.frequency
     default:
@@ -37,8 +39,12 @@ const frequencyReducer = (state='ONE_OFF', action) => {
   }
 }
 
+/**
+ * Reducer for managing who are in the meeting
+ */
 const peopleReducer = (state=[], action) => {
   switch (action.type) {
+    // save value when setup is done
     case SCHEDULE_MEETING_SETUP_SAVED:
       return action.data.people
     default:
@@ -46,8 +52,12 @@ const peopleReducer = (state=[], action) => {
   }
 }
 
+/**
+ * Reducer for managing which periods are allowed
+ */
 const periodsReducer = (state=[], action) => {
   switch (action.type) {
+    // save value when setup is done
     case SCHEDULE_MEETING_SETUP_SAVED:
       return action.data.periods
     default:
@@ -55,11 +65,15 @@ const periodsReducer = (state=[], action) => {
   }
 }
 
+/**
+ * Reducer for managing the date range of time slots to search
+ */
 const dateRangeReducer = (state={
   startDate: new Date(),
   endDate: new Date(),
 }, action) => {
   switch (action.type) {
+    // save value when setup is done
     case SCHEDULE_MEETING_SETUP_SAVED:
       return action.data.dateRange
     default:
@@ -67,6 +81,9 @@ const dateRangeReducer = (state={
   }
 }
 
+/**
+ * Reducer for managing which one-off time slot is selected
+ */
 const oneoffInstanceReducer = (state=null, action) => {
   switch (action.type) {
     case ONEOFF_INSTANCE_SELECTED:
@@ -76,6 +93,9 @@ const oneoffInstanceReducer = (state=null, action) => {
   }
 }
 
+/**
+ * Reducer for managing which recurring time slot is selected
+ */
 const recurringPeriodReducer = (state=null, action) => {
   switch (action.type) {
     case PERIOD_SELECTED:
@@ -85,12 +105,14 @@ const recurringPeriodReducer = (state=null, action) => {
   }
 }
 
+/**
+ * Reducer for the Meeting Page
+ */
 const meetingPageReducer = combineReducers({
   stage: stageReducer,
   frequency: frequencyReducer,
   people: peopleReducer,
   dateRange: dateRangeReducer,
-  showFilters: showFiltersReducer,
   periods: periodsReducer,
   allowRebook: allowRebookReducer,
   oneoffInstance: oneoffInstanceReducer,

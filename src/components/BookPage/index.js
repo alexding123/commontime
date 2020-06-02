@@ -2,6 +2,9 @@ import React from 'react'
 import { compose } from 'recompose'
 import BookRoom from './BookRoom'
 
+/**
+ * Page to book a meeting for the current user
+ */
 const BookPage = () => {
 
   return (
@@ -10,6 +13,10 @@ const BookPage = () => {
       <BookRoom/>
     </div>
   )
+}
+
+BookPage.propTypes = {
+
 }
 
 const enhance = compose(

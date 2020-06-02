@@ -9,15 +9,21 @@ import { dayMap, getFreeRooms } from '../../../utils'
 import SplashScreen from '../../SplashScreen'
 import BookedRoom from './BookedRoom'
 import bookRoomFunc from './bookRoom'
+import PropTypes from 'prop-types'
 
-
+/**
+ * Component that displays all the free rooms right now
+ */
 const FreeRooms = ({rooms, instances, period, profile, handleSubmit}) => {
   if (!isLoaded(instances)) {
     return <SplashScreen/>
   }
 
+  // get all free rooms right now
   const freeRooms = getFreeRooms(rooms, instances)
   const isTeacher = !isEmpty(profile) && profile.token.claims.teacher
+  // get all meetings happening in a real room that are either public
+  // or created by the current user
   const bookedInstances = instances ? Object.entries(instances).filter(([key, instance]) => 
     instance && instance.type === 'event' && instance.room &&
     (!instance.private || instance.creator === profile.id)
@@ -31,9 +37,11 @@ const FreeRooms = ({rooms, instances, period, profile, handleSubmit}) => {
           {freeRooms.map(room => (
             <ListGroup.Item key={room.id}>
               <Row>
+                {/** Room name (with URL) */}
                 <Col>
                   <Button className="inline-link" variant="link" href={`/Room/${room.id}`}>{room.name}</Button>
                 </Col>
+                {/** Button to book this room */}
                 <Col className='ml-auto d-flex justify-content-end' xs={2}>
                   <OverlayTrigger
                     rootClose={true}
@@ -68,6 +76,16 @@ const FreeRooms = ({rooms, instances, period, profile, handleSubmit}) => {
     }
     </div>
   )
+}
+
+FreeRooms.propTypes = {
+  rooms: PropTypes.object,
+  instances: PropTypes.object,
+  /** The current period */
+  period: PropTypes.object.isRequired,
+  profile: PropTypes.object,
+  /** Handler for booking a room */
+  handleSubmit: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

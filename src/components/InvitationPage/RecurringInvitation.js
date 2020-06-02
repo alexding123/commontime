@@ -7,12 +7,17 @@ import { acceptRecurringInvitation, declineRecurringInvitation } from '../../act
 import { dayMap } from '../../utils'
 import NotFoundPage from '../NotFoundPage'
 import SplashScreen from '../SplashScreen'
+import PropTypes from 'prop-types'
 
+/**
+ * Component to display an invitation to a recurring meeting
+ */
 const RecurringInvitation = ({creator, invitee, recurringID, periods, rooms, recurrings, handleAccept, handleDecline}) => {
   if (!isLoaded(periods) || !isLoaded(rooms) || !isLoaded(recurrings)) {
     return <SplashScreen/>
   }
 
+  // if the meeting pointed to by the invitation is not found, display 404
   if (isEmpty(recurrings) || !recurrings[recurringID]) {
     return <NotFoundPage/>
   }
@@ -32,6 +37,26 @@ const RecurringInvitation = ({creator, invitee, recurringID, periods, rooms, rec
       <Button onClick={handleDecline} variant="danger">Decline</Button>
     </ButtonGroup>
   </div>)
+}
+
+RecurringInvitation.propTypes = {
+  /** Creator of the invitation */
+  creator: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+  }).isRequired,
+  /** User invited to the meeting */
+  invitee: PropTypes.shape({
+    name: PropTypes.string.isRequired
+  }).isRequired,
+  /** ID of the recurring meeting pointed to by the invitation */
+  recurringID: PropTypes.string.isRequired,
+  periods: PropTypes.object,
+  rooms: PropTypes.object,
+  recurrings: PropTypes.object,
+  /** Handler for accepting the invitation */
+  handleAccept: PropTypes.func.isRequired,
+  /** Handler for declining the invitation */
+  handleDecline: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

@@ -5,7 +5,11 @@ import { Button, Card, Col, Row } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { notificationSet } from '../../../actions/notificationsActions'
+import PropTypes from 'prop-types'
 
+/**
+ * Subpage to display a single user
+ */
 const UserDisplay = ({id, user, deleteUser}) => {
   return (<Card>
     <Card.Body>
@@ -34,6 +38,18 @@ const UserDisplay = ({id, user, deleteUser}) => {
       </Row>
     </Card.Body>
   </Card>)
+}
+
+UserDisplay.propTypes = {
+  /** ID of the displayed user */
+  id: PropTypes.string.isRequired,
+  /** User object */
+  user: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+  }).isRequired,
+  /** Handler to delete the displayed user */
+  deleteUser: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

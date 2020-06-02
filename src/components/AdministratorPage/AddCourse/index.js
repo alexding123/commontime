@@ -7,11 +7,16 @@ import AddCourseForm from '../../forms/AddCourseForm'
 import { Alert } from 'react-bootstrap'
 import { addCourse } from '../../../actions/administratorActions'
 import ErrorBoundary from '../../ErrorBoundary'
+import PropTypes from 'prop-types'
 
+/**
+ * Subpage to add a new course to the database
+ */
 const AddCourse = ({courses, periods, rooms, users, error, handleSubmit}) => {
   if (!isLoaded(courses) || !courses || !isLoaded(periods) || !isLoaded(rooms) || !isLoaded(users)) {
     return <SplashScreen/>
   }
+  // necessary to avoid null values
   const filteredCourses = courses ? Object.values(courses).filter(course => course) : []
   return (<div>
     <h3>Add a Course</h3>
@@ -23,6 +28,16 @@ const AddCourse = ({courses, periods, rooms, users, error, handleSubmit}) => {
       </ErrorBoundary>
     </div>
   </div>)
+}
+
+AddCourse.propTypes = {
+  courses: PropTypes.object,
+  periods: PropTypes.object,
+  rooms: PropTypes.object,
+  users: PropTypes.object,
+  /** Optional error message from adding a course */
+  error: PropTypes.string,
+  handleSubmit: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

@@ -9,8 +9,14 @@ import { firestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase'
 import SplashScreen from '../../SplashScreen'
 import date from 'date-and-time'
 import ErrorBoundary from '../../ErrorBoundary'
+import PropTypes from 'prop-types'
 
+/**
+ * Component to allow users to search for free rooms using filters
+ * and book meetings in the free slots
+ */
 const BookRoom = ({showFilters, toggleShowFilters, rooms, periods, profile, instances, users, exceptions, data}) => {
+  // ensuring that all prerequisites are loaded before rendering
   if (!isLoaded(rooms) || !isLoaded(periods) || !isLoaded(profile) || !isLoaded(instances) || !isLoaded(users) || !isLoaded(exceptions) || !data) {
     return <SplashScreen/>
   }
@@ -34,6 +40,20 @@ const BookRoom = ({showFilters, toggleShowFilters, rooms, periods, profile, inst
       </div>
     </div>
   </div>)
+}
+
+BookRoom.propTypes = {
+  /** Whether to show the filters */
+  showFilters: PropTypes.bool.isRequired,
+  /** Handler to toggle the visibility of the filters */
+  toggleShowFilters: PropTypes.func.isRequired,
+  rooms: PropTypes.object,
+  periods: PropTypes.object,
+  profile: PropTypes.object,
+  instances: PropTypes.object,
+  users: PropTypes.object,
+  exceptions: PropTypes.object,
+  data: PropTypes.object,
 }
 
 const enhance = compose(

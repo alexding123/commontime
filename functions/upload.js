@@ -129,7 +129,7 @@ exports.courses = functions.https.onCall(async (data, context) => {
 
   // delete all instances and recurrings
   await db.collection('instances').get().then(docs => {
-    const promises = docs.docs.map(doc => db.collection('instances').doc(doc.id).delete())
+    const promises = docs.docs.map(doc => doc.ref.delete())
     return Promise.all(promises)
   })
 
@@ -142,6 +142,12 @@ exports.courses = functions.https.onCall(async (data, context) => {
 
       await doc.ref.delete()
     })
+    return Promise.all(promises)
+  })
+
+  // delete all exceptions
+  await db.collection('exceptions').get().then(docs => {
+    const promises = docs.docs.map(doc => doc.ref.delete())
     return Promise.all(promises)
   })
   

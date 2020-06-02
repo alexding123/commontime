@@ -2,6 +2,10 @@ import React, { Component } from 'react'
 import * as Sentry from '@sentry/browser'
 import { Button, Alert } from 'react-bootstrap'
 
+/**
+ * Implementation of the error boundary, only active
+ * in production. Allows user to report to Sentry.io
+ */
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props)

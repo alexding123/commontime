@@ -8,7 +8,11 @@ import Toggle from './components/Toggle'
 import { compose } from 'redux'
 import { Field, formValueSelector, reduxForm } from 'redux-form'
 import Control from './components/Control'
+import PropTypes from 'prop-types'
 
+/**
+ * Form to add a new user to the database
+ */
 const AddUserForm = ({pristine, submitting, validated, handleSubmit, selector}) => {
   return (
   <Form onSubmit={handleSubmit}>
@@ -62,11 +66,30 @@ const AddUserForm = ({pristine, submitting, validated, handleSubmit, selector}) 
   )
 }
 
+AddUserForm.propTypes = {
+  /** Whether the form has been touched */
+  pristine: PropTypes.bool.isRequired,
+  /** Whether the form is currently being submitted */
+  submitting: PropTypes.bool.isRequired,
+  /** Whether the form values are validated */
+  validated: PropTypes.bool.isRequired,
+  /** Handler for form submission */
+  handleSubmit: PropTypes.func.isRequired,
+  /** Selector of current form values */
+  selector: PropTypes.func.isRequired,
+}
+
+/**
+ * Validates the values of the form
+ * @param {function} selector Selector of the forms
+ */
 const validate = (selector) => {
-  return (selector('firstName') && 
-  selector('id') &&
-  (selector('email') && selector('email').endsWith('@commschool.org')) &&
-  (selector('teacher') || (!selector('teacher') && selector('grade'))))
+  return Boolean(
+    selector('firstName') && 
+    selector('id') &&
+    (selector('email') && selector('email').endsWith('@commschool.org')) &&
+    (selector('teacher') || (!selector('teacher') && selector('grade')))
+  )
 }
 
 const enhance = compose(

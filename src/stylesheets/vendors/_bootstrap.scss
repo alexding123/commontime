@@ -1,3 +1,8 @@
+// -----------------------------------------------------------------------------
+// This file contains styles that are specific to the Bootstrap package.
+// We modify the color schemes and individual elements supplied by Bootstrap.
+// -----------------------------------------------------------------------------
+
 $theme-colors: (
   'primary': $color-secondary,
   'secondary': $color-tertiary,

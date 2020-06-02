@@ -1,6 +1,9 @@
 import { combineReducers } from "redux"
 import { PROFILE_MEETINGS_TAB_SET, PROFILE_COLLAPSE_TOGGLED } from '../actions/profilePageActions'
 
+/**
+ * Reducer for managing which tab is open
+ */
 const meetingsTabReducer = (state='oneOff', action) => {
   switch (action.type) {
     case PROFILE_MEETINGS_TAB_SET:
@@ -10,6 +13,9 @@ const meetingsTabReducer = (state='oneOff', action) => {
   }
 }
 
+/**
+ * Reducer for managing the visibility of the sidebar
+ */
 const sidebarCollapsedReducer = (state=true, action) => {
   switch (action.type) {
     case PROFILE_COLLAPSE_TOGGLED:
@@ -19,6 +25,9 @@ const sidebarCollapsedReducer = (state=true, action) => {
   }
 }
 
+/**
+ * Reducer for the Profile Page
+ */
 const profilePageReducer = combineReducers({
   meetingsTab: meetingsTabReducer,
   sidebarCollapsed: sidebarCollapsedReducer,

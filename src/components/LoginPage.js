@@ -6,8 +6,14 @@ import { Redirect } from 'react-router-dom'
 import { withLastLocation } from 'react-router-last-location'
 import { compose } from 'recompose'
 import { login } from '../actions/authActions'
+import PropTypes from 'prop-types'
 
+/**
+ * Page to login
+ */
 const LoginPage = ({ login, auth, lastLocation, error}) => {
+  // if logged in, redirect to the last location
+  // if last location is not found, redirect to home page
   if (!isEmpty(auth)) {
     const redirectPath = lastLocation ? lastLocation : "/"
     return <Redirect to={redirectPath}/>
@@ -24,6 +30,16 @@ const LoginPage = ({ login, auth, lastLocation, error}) => {
       </div>
     </Container>
   )
+}
+
+LoginPage.propTypes = {
+  /** Handler to prompt user to OAuth login */
+  login: PropTypes.func.isRequired,
+  auth: PropTypes.object,
+  /** Last location of the user */
+  lastLocation: PropTypes.object,
+  /** Optional error message to display */
+  error: PropTypes.string,
 }
 
 const enhance = compose(

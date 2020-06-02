@@ -12,7 +12,12 @@ import WarningIcon from '@material-ui/icons/Warning'
 import MenuBookIcon from '@material-ui/icons/MenuBook'
 import PeopleIcon from '@material-ui/icons/People'
 import EventBusyIcon from '@material-ui/icons/EventBusy'
+import PropTypes from 'prop-types'
 
+/**
+ * Component to display a collapsible sidebar to navigate under
+ * the administrator page
+ */
 const Sidebar = ({location, collapsed, toggleCollapsed}) => {
   const pathname = location.pathname.replace("/Administrator", "")
   return (
@@ -80,6 +85,15 @@ const Sidebar = ({location, collapsed, toggleCollapsed}) => {
     
     </div>
   )
+}
+
+Sidebar.propTypes = {
+  /** router-supplied location object */
+  location: PropTypes.object.isRequired,
+  /** whether the sidebar is collapsed */
+  collapsed: PropTypes.bool.isRequired,
+  /** handler to toggle visibility of the sidebar */
+  toggleCollapsed: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

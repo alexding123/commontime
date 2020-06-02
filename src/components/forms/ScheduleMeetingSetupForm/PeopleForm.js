@@ -9,10 +9,12 @@ import { Field, reduxForm } from 'redux-form'
 import { pageSet } from '../../../actions/meetingPageActions'
 import SplashScreen from '../../SplashScreen'
 import HybridSelect from '../components/HybridSelect'
+import PropTypes from 'prop-types'
 
-const form = 'scheduleMeetingSetupForm'
-
-const PeopleForm = ({pristine, submitting, validated, people, profile, handleSubmit, nextPage}) => {
+/**
+ * Form to set the people who are meeting in order to find available time slots
+ */
+const PeopleForm = ({people, profile, handleSubmit, nextPage}) => {
   if (!isLoaded(people) || !isLoaded(profile)) {
     return <SplashScreen/>
   }
@@ -39,6 +41,17 @@ const PeopleForm = ({pristine, submitting, validated, people, profile, handleSub
   )
 }
 
+
+PeopleForm.propTypes = {
+  people: PropTypes.object,
+  profile: PropTypes.object,
+  /** Handler for form submission */
+  handleSubmit: PropTypes.func.isRequired,
+  /** Handler to navigate to the next page of the form */
+  nextPage: PropTypes.func.isRequired,
+}
+
+const form = 'scheduleMeetingSetupForm'
 const enhance = compose(
   connect((state, props) => ({
     people: state.firestore.data.userPreset,

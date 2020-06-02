@@ -5,12 +5,17 @@ import { compose } from 'recompose'
 import { updateFilters } from '../../../actions/bookPageActions'
 import { defaultExcludePeriods, defaultExcludeRooms, filterDuplicate } from '../../../utils'
 import ScheduleRoomForm from '../../forms/ScheduleRoomForm'
+import PropTypes from 'prop-types'
 
+/** 
+ * Component to allow the user to filter instances to display
+ */
 const Filters = ({rooms, periods, profile, handleSubmit}) => {
-  rooms = rooms ? Object.values(rooms) : []
-  periods = periods ? filterDuplicate(Object.values(periods), 'period') : []
-  const initRooms = rooms.filter(room => room && !defaultExcludeRooms.includes(room.id))
-  const initPeriods = periods.filter(period => period && !defaultExcludePeriods.includes(period.period))
+  const allRooms = rooms ? Object.values(rooms).filter(room => room) : []
+  const allPeriods = periods ? filterDuplicate(Object.values(periods), 'period') : []
+  // exclude the rooms and periods the users haven't selected
+  const initRooms = allRooms.filter(room => room && !defaultExcludeRooms.includes(room.id))
+  const initPeriods = allPeriods.filter(period => period && !defaultExcludePeriods.includes(period.period))
 
   return (
     <ScheduleRoomForm 
@@ -23,10 +28,17 @@ const Filters = ({rooms, periods, profile, handleSubmit}) => {
           endDate: new Date(),
         },
         allowRebook: false
-      }} rooms={rooms} periods={periods}
+      }} rooms={allRooms} periods={allPeriods}
       canRebook={!isEmpty(profile) && profile.token.claims.teacher}
     />
   )
+}
+
+Filters.propTypes = {
+  rooms: PropTypes.object,
+  periods: PropTypes.object,
+  profile: PropTypes.object,
+  handleSubmit: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

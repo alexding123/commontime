@@ -11,14 +11,17 @@ import { filterDuplicate } from '../../../utils'
 import SplashScreen from '../../SplashScreen'
 import HybridSelect from '../components/HybridSelect'
 import Toggle from '../components/Toggle'
+import PropTypes from 'prop-types'
 
-const form = 'scheduleMeetingSetupForm'
-
-const PeriodsForm = ({pristine, submitting, validated, periods, profile, handleSubmit, previousPage}) => {
+/**
+ * Form to set the periods filter for finding available time slots for a meeting
+ */
+const PeriodsForm = ({periods, profile, handleSubmit, previousPage}) => {
   if (!isLoaded(periods) || !isLoaded(profile)) {
     return <SplashScreen/>
   }
-  periods = periods ? filterDuplicate(Object.values(periods), 'period') : []
+  // avoid null values
+  const filteredPeriods = periods ? filterDuplicate(Object.values(periods).filter(period => period), 'period') : []
   const canRebook = !isEmpty(profile) && profile.token.claims.teacher
   return (
   <Form onSubmit={handleSubmit}>
@@ -28,7 +31,7 @@ const PeriodsForm = ({pristine, submitting, validated, periods, profile, handleS
         name="periods"
         valueField='period'
         textField='name'
-        data={periods}
+        data={filteredPeriods}
         filter='contains'
         component={HybridSelect}
       />
@@ -53,6 +56,16 @@ const PeriodsForm = ({pristine, submitting, validated, periods, profile, handleS
   )
 }
 
+PeriodsForm.propTypes = {
+  periods: PropTypes.object,
+  profile: PropTypes.object,
+  /** Handler for form submission */
+  handleSubmit: PropTypes.func.isRequired,
+  /** Handler to navigate to the previous page of the form */
+  previousPage: PropTypes.func.isRequired,
+}
+
+const form = 'scheduleMeetingSetupForm'
 const enhance = compose(
   connect((state, props) => ({
     periods: state.firestore.data.periods,

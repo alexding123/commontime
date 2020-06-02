@@ -8,7 +8,12 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import { profileCollapseToggled } from '../../actions/profilePageActions'
+import PropTypes from 'prop-types'
 
+/**
+ * Component to display a collapsible sidebar, allowing users to
+ * navigate between subpages of the Profile page
+ */
 const Sidebar = ({collapsed, location, toggleCollapsed}) => {
   const pathname = location.pathname.replace("/Profile", "")
   return (
@@ -44,6 +49,15 @@ const Sidebar = ({collapsed, location, toggleCollapsed}) => {
     </div>
     </div>
   )
+}
+
+Sidebar.propTypes = {
+  /** Whether the sidebar is collapsed or expanded */
+  collapsed: PropTypes.bool.isRequired,
+  /** Hook to toggle the visibility of the sidebar */
+  toggleCollapsed: PropTypes.func.isRequired,
+  /** Router-supplied information about the current URL */
+  location: PropTypes.object.isRequired,
 }
 
 const enhance = compose(

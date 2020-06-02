@@ -10,7 +10,11 @@ import Check from './components/Check'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline'
 import HybridSelect from './components/HybridSelect'
 import { dayMap, getUserByID } from '../../utils'
+import PropTypes from 'prop-types'
 
+/** 
+ * Subfields to edit the meeting times of the course
+ */
 const renderMeetingTimes = ({ fields, periods, rooms }) => {
   return (<div>
     <div className="d-flex mb-1">
@@ -52,6 +56,15 @@ const renderMeetingTimes = ({ fields, periods, rooms }) => {
   </div>)
 }
 
+renderMeetingTimes.propTypes = {
+  fields: PropTypes.object.isRequired,
+  periods: PropTypes.arrayOf(PropTypes.object).isRequired,
+  rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
+}
+
+/** 
+ * Subfields to edit the members of the course
+ */
 const renderMembers = ({ fields, users }) => {
   return (<div>
     <div className="d-flex mb-1">
@@ -85,18 +98,28 @@ const renderMembers = ({ fields, users }) => {
     )}
   </div>)
 }
+renderMembers.propTypes = {
+  fields: PropTypes.object.isRequired,
+  users: PropTypes.arrayOf(PropTypes.object).isRequired,
+}
 
+/**
+ * Form to edit the information of a course
+ */
 const EditCourseForm = ({periods, rooms, users, pristine, submitting, validated, handleSubmit}) => {
-  users = users ? Object.values(users) : []
-  users.sort((a, b) => a.name < b.name ? -1 : (a.name === b.name ? 0 : 1))
-  periods = periods ? Object.values(periods) : []
-  periods = periods.map(period => ({
+  // filter null values
+  const filteredUsers = users ? Object.values(users).filter(user => user) : []
+  const allUsers = filteredUsers.concat().sort((a, b) => a.name < b.name ? -1 : (a.name === b.name ? 0 : 1))
+  // filter null values
+  const filteredPeriods = periods ? Object.values(periods).filter(period => period) : []
+  const allPeriods = filteredPeriods.map(period => ({
     ...period,
     fullName: `${dayMap[period.day]} ${period.name}`,
     id: `${period.day}-${period.period}`,
   }))
-  rooms = rooms ? Object.values(rooms) : []
-  const teachers = users.filter(user => user && user.teacher)
+  // filter null values
+  const allRooms = rooms ? Object.values(rooms).filter(room => room) : []
+  const teachers = allUsers.filter(user => user && user.teacher)
   return (
   <Form onSubmit={handleSubmit}>
     <Form.Group>
@@ -158,10 +181,10 @@ const EditCourseForm = ({periods, rooms, users, pristine, submitting, validated,
     </Form.Group>
     <Form.Group>
       
-      <FieldArray name="times" component={renderMeetingTimes} rooms={rooms} periods={periods}/>
+      <FieldArray name="times" component={renderMeetingTimes} rooms={allRooms} periods={allPeriods}/>
     </Form.Group>
     <Form.Group>
-      <FieldArray name="members" component={renderMembers} users={users}/>
+      <FieldArray name="members" component={renderMembers} users={allUsers}/>
     </Form.Group>
     
     <ButtonGroup>
@@ -172,13 +195,35 @@ const EditCourseForm = ({periods, rooms, users, pristine, submitting, validated,
   )
 }
 
+EditCourseForm.propTypes = {
+  /** Whether the form has been touched */
+  pristine: PropTypes.bool.isRequired,
+  /** Whether the form is currently being submitted */
+  submitting: PropTypes.bool.isRequired,
+  /** Whether the form values are validated */
+  validated: PropTypes.bool.isRequired,
+  /** Handler for form submission */
+  handleSubmit: PropTypes.func.isRequired,
+  /** Selector of current form values */
+  selector: PropTypes.func.isRequired,
+  periods: PropTypes.object.isRequired,
+  rooms: PropTypes.object.isRequired,
+  users: PropTypes.object.isRequired,
+}
+
+/**
+ * Validates the values of the form
+ * @param {function} selector Selector of the forms
+ */
 const validate = (selector) => {
-  return (selector('name') && 
-  selector('course') &&
-  selector('section') &&
-  selector('teacher') && 
-  selector('times') && selector('times').every(time => time.period && time.room) &&
-  selector('members') && selector('members').every(member => member.id))
+  return Boolean(
+    selector('name') && 
+    selector('course') &&
+    selector('section') &&
+    selector('teacher') && 
+    selector('times') && selector('times').every(time => time.period && time.room) &&
+    selector('members') && selector('members').every(member => member.id)
+  )
 }
 
 const enhance = compose(

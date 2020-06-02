@@ -3,7 +3,11 @@ import { Modal, Button } from 'react-bootstrap'
 import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { notificationClosed } from '../../actions/notificationsActions'
+import PropTypes from 'prop-types'
 
+/**
+ * Notification that this is the user's first time logging in
+ */
 const FirstTimeLogin = ({closeNotification}) => {
   return (
     <Modal
@@ -21,6 +25,11 @@ const FirstTimeLogin = ({closeNotification}) => {
       </Modal.Footer>
     </Modal>
   )
+}
+
+FirstTimeLogin.propTypes = {
+  /** Handler to cloes the notification */
+  closeNotification: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

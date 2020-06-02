@@ -3,7 +3,11 @@ import { Alert, Button } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { notificationSet } from '../../../actions/notificationsActions'
+import PropTypes from 'prop-types'
 
+/**
+ * Component to allow an admin to relinquish their admin privileges
+ */
 const RelinquishAdmin = ({relinquish}) => {
   return (<div>
     <Alert variant="danger">
@@ -13,6 +17,10 @@ const RelinquishAdmin = ({relinquish}) => {
       Relinquish Administrator
     </Button>
   </div>)
+}
+
+RelinquishAdmin.propTypes = {
+  relinquish: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

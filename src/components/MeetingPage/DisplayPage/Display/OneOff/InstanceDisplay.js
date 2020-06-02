@@ -5,8 +5,13 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { oneoffInstanceSelected, pageSet } from '../../../../../actions/meetingPageActions'
 import { dayMap } from '../../../../../utils'
+import PropTypes from 'prop-types'
 
-const InstanceDisplay = ({instance, periods,goBookRoom}) => {
+/**
+ * Component to display an instance found under the search parameters,
+ * allowing the user to potentially book a meeting on it
+ */
+const InstanceDisplay = ({instance, periods, goBookRoom}) => {
   return <ListGroup.Item>
   <Row>
     <Col xs={7}>
@@ -38,6 +43,23 @@ const InstanceDisplay = ({instance, periods,goBookRoom}) => {
   </Row>
   
 </ListGroup.Item>
+}
+
+InstanceDisplay.propTypes = {
+  /** The time slot to display, with any preexisting meeting during it */
+  instance: PropTypes.shape({
+    period: PropTypes.string.isRequired,
+    instances: PropTypes.arrayOf(PropTypes.shape({
+      person: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+      }).isRequired,
+      private: PropTypes.bool.isRequired,
+      name: PropTypes.string.isRequired,
+    })),
+  }).isRequired,
+  periods: PropTypes.object,
+  /** Handler to navigate to the subpage to book the room */
+  goBookRoom: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

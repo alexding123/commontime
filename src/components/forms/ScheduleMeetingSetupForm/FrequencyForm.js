@@ -8,10 +8,12 @@ import { compose } from 'recompose'
 import renderButtonGroup from '../components/ButtonGroup'
 import DateRangePicker from '../components/DateRangePicker'
 import { pageSet } from '../../../actions/meetingPageActions'
+import PropTypes from 'prop-types'
 
-const form = 'scheduleMeetingSetupForm'
-
-const FrequencyForm = ({pristine, submitting, validated, people, profile, handleSubmit, previousPage, nextPage, selector}) => {
+/**
+ * Form to set the frequency filter for finding available time slots for a meeting
+ */
+const FrequencyForm = ({handleSubmit, previousPage, nextPage, selector}) => {
   const frequency = selector('frequency')
   return (
   <Form onSubmit={handleSubmit}>
@@ -52,7 +54,18 @@ const FrequencyForm = ({pristine, submitting, validated, people, profile, handle
   )
 }
 
+FrequencyForm.propTypes = {
+  /** Handler for form submission */
+  handleSubmit: PropTypes.func.isRequired,
+  /** Handler to navigate to the previous page of the form */
+  previousPage: PropTypes.func.isRequired,
+  /** Handler to navigate to the next page of the form */
+  nextPage: PropTypes.func.isRequired,
+  /** Selector of form values */
+  selector: PropTypes.func.isRequired,
+}
 
+const form = 'scheduleMeetingSetupForm'
 const enhance = compose(
   connect((state, props) => ({
     selector: (...values) => formValueSelector(form)(state, ...values),

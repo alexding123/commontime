@@ -4,7 +4,11 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { confirmAddAdmin } from '../../actions/administratorActions'
 import { notificationClosed } from '../../actions/notificationsActions'
+import PropTypes from 'prop-types'
 
+/**
+ * Notification prompting the user to confirm adding another admin
+ */
 const ConfirmAddAdmin = ({data: {email}, confirm, closeNotification}) => {
   return (
     <Modal
@@ -23,6 +27,18 @@ const ConfirmAddAdmin = ({data: {email}, confirm, closeNotification}) => {
       </Modal.Footer>
     </Modal>
   )
+}
+
+
+ConfirmAddAdmin.propTypes = {
+  /** Data to use for the notification */
+  data: PropTypes.shape({
+    email: PropTypes.string.isRequired,
+  }).isRequired,
+  /** Handler to confirm adding the admin */
+  confirm: PropTypes.func.isRequired,
+  /** Handler to cancel adding the admin and close the notification */
+  closeNotification: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

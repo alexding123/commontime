@@ -10,16 +10,26 @@ import { bookRoom, cancelBooking, rebookRoom } from '../../../actions/homeAction
 import { dayMap } from '../../../utils'
 import BookRoomForm from '../../forms/BookRoomForm'
 import RebookRoomForm from '../../forms/RebookRoomForm'
+import PropTypes from 'prop-types'
 
+/** 
+ * Component to display a single search result
+ */
 const InstanceDisplay = ({instance, users, profile, bookRoom, rebookRoom, cancelBooking}) => {
-  users = users ? Object.values(users) : []
-  let creator = instance.instance && users.length ? 
-    users.filter(user => user.id === instance.instance.creator)[0] :
+  // filter any potential null value
+  const allUsers = users ? Object.values(users).filter(user => user) : []
+
+  // find creator of the instance, if they exist
+  let creator = instance.instance && allUsers.length ? 
+  allUsers.filter(user => user.id === instance.instance.creator)[0] :
     null
   creator = creator ? creator : {}
+
+  // only teachers can book private meetings
   const canBookPrivate = !isEmpty(profile) && profile.token.claims.teacher
   return <ListGroup.Item>
   <Row>
+    {/** Information about the instance */}
     <Col xs={7}>
       {`${dayMap[instance.period.day]} ${instance.period.name}`}&nbsp;
       {
@@ -36,11 +46,14 @@ const InstanceDisplay = ({instance, users, profile, bookRoom, rebookRoom, cancel
         null
       }
     </Col>
+    {/** Room of the instance, linked */}
     <Col xs={3}>
       <Button className="inline-link" variant="link" href={`/Room/${instance.room.id}`}>{instance.room.name}</Button>
     </Col>
+    {/** All the buttons */}
     { !isEmpty(profile) ?
     <Col xs={2} className="d-flex flex-row justify-content-end pr-0 ml-auto">
+      {/** A single book/rebook button */}
       { !(instance.instance && instance.instance.creator === profile.id) ? 
       <OverlayTrigger
         rootClose={true}
@@ -67,6 +80,7 @@ const InstanceDisplay = ({instance, users, profile, bookRoom, rebookRoom, cancel
         </Button>
       </OverlayTrigger> : null
       }
+      {/** If instance is booked, render a cancel button */}
       { instance.instance ?
         <Button variant="link" className="center-button" onClick={cancelBooking(instance.instance.key)}>     
           <DeleteOutlineIcon/>
@@ -80,6 +94,22 @@ const InstanceDisplay = ({instance, users, profile, bookRoom, rebookRoom, cancel
   </Row>
   
 </ListGroup.Item>
+}
+
+InstanceDisplay.propTypes = {
+  instance: PropTypes.shape({
+    room: PropTypes.object.isRequired,
+    period: PropTypes.object.isRequired,
+    instance: PropTypes.object,
+  }).isRequired,
+  users: PropTypes.object,
+  profile: PropTypes.object,
+  /** Handler to book the instance */
+  bookRoom: PropTypes.func.isRequired,
+  /** Handler to overwrite the booking of the instance */
+  rebookRoom: PropTypes.func.isRequired,
+  /** Handler to delete the booking of the instance */
+  cancelBooking: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

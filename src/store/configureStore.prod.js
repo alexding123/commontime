@@ -7,6 +7,10 @@ import { enhanceStore } from '../firebase'
 import createRootReducer from '../reducers'
 import history from './history'
 
+/**
+ * Creates a redux Store, for development environment
+ * @param {Object} preloadedState The initial state (not needed since we're not persisting locally)
+ */
 const configureStore = preloadedState => {
   const rootReducer = createRootReducer(history)
   const store = createStore(
@@ -14,10 +18,10 @@ const configureStore = preloadedState => {
     preloadedState,
     compose(
       applyMiddleware(
-        thunk.withExtraArgument({getFirebase, getFirestore}),
-        routerMiddleware(history),
+        thunk.withExtraArgument({getFirebase, getFirestore}), // allow actions to fetch Firebase and Firestore objects
+        routerMiddleware(history), // allows action-based routing
       ),
-      enhanceStore,
+      enhanceStore, // adding support for React-Redux-Firebase
     )
   )
 

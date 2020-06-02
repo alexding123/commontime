@@ -7,7 +7,11 @@ import ErrorBoundary from '../../ErrorBoundary'
 import ProfileForm from '../../forms/ProfileForm'
 import SplashScreen from '../../SplashScreen'
 import ResetCalendar from './ResetCalendar'
+import PropTypes from 'prop-types'
 
+/**
+ * Subpage to display the user settings
+ */
 const Settings = ({auth, profile, handleSubmit}) => {
   if (!isLoaded(auth) || !isLoaded(profile)) {
     return <SplashScreen/>
@@ -25,6 +29,13 @@ const Settings = ({auth, profile, handleSubmit}) => {
     <ResetCalendar/>
     </ErrorBoundary>
   </div>)
+}
+
+Settings.propTypes = {
+  auth: PropTypes.object,
+  profile: PropTypes.object,
+  /** Handler for updating the user settings */
+  handleSubmit: PropTypes.func.isRequired,
 }
 
 const enhance = compose(
