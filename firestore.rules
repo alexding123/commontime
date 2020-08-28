@@ -20,7 +20,7 @@ service cloud.firestore {
             == [id].toSet();
       }
       function isLoggedIn() {
-       return request.auth.uid != null;
+       return request.auth != null;
       }
       function isAdmin() {
         return isLoggedIn() && 'admin' in request.auth.token && request.auth.token.admin == true;
