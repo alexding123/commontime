@@ -16,7 +16,7 @@
     "@google-cloud/tasks": "^1.9.0",
     "@sentry/node": "^5.15.5",
     "camelcase": "^5.3.1",
-    "date-and-time": "^0.13.1",
+    "date-and-time": "^0.14.2",
     "email-templates": "^7.0.5",
     "firebase-admin": "^8.12.1",
     "firebase-function-tools": "^1.1.4",
